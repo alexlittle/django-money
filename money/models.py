@@ -55,3 +55,7 @@ class Valuation(models.Model):
     date = models.DateTimeField(default=timezone.now)
     value = models.DecimalField(decimal_places=2, max_digits=20)
     
+class TransactionTag(models.Model):
+    transaction = models.ForeignKey(Transaction)
+    tag = models.ForeignKey(Tag)
+    
