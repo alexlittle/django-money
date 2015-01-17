@@ -9,22 +9,22 @@ class AccountAdmin(admin.ModelAdmin):
     list_display = ('name', 'include', 'current', 'currency', 'pension')
 
 class ExchangeRateAdmin(admin.ModelAdmin):
-    list_display = ('name', 'include', 'current', 'currency', 'pension')
+    list_display = ('from_cur', 'to_cur', 'date', 'rate')
     
 class RegularPaymentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'include', 'current', 'currency', 'pension')
+    list_display = ('account', 'description', 'credit', 'debit', 'next_date', 'end_date','payment_type')
     
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('name', 'include', 'current', 'currency', 'pension')
+    list_display = ('id','name')
     
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('name', 'include', 'current', 'currency', 'pension')
+    list_display = ('account', 'payment_type', 'date', 'credit', 'debit','on_statement' , 'description')
     
 class ValuationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'include', 'current', 'currency', 'pension')
+    list_display = ('account', 'date', 'value')
     
 class TransactionTagAdmin(admin.ModelAdmin):
-    list_display = ('name', 'include', 'current', 'currency', 'pension')
+    list_display = ('transaction', 'tag')
                  
 admin.site.register(Account,AccountAdmin)
 admin.site.register(ExchangeRate,ExchangeRateAdmin)

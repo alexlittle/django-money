@@ -11,6 +11,13 @@ PAYMENT_TYPES = (
         ('TRANSFER', 'Transfer'),
         ('PAID_IN', 'Paid in'),
         ('PAY', 'Pay'),
+        ('Standing Order', 'Standing Order'),
+        ('Cheque', 'Cheque'),
+        ('Interest', 'Interest'),
+        ('Switch', 'Switch'),
+        ('Cashpoint', 'Cashpoint'),
+        ('Direct Debit', 'Direct Debit'),
+        ('Mastercard', 'Mastercard'),
     )
 
 # Create your models here.

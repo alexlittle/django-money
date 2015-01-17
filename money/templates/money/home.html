@@ -2,7 +2,11 @@
 
 {% block content %}
 
-<h1>Money Database Home</h1>
+{% for a in accounts %}
+	<div>
+		{{ a.name }}
+	</div>
+{% endfor %}
 
 
 {% endblock %}
