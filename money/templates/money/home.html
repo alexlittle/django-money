@@ -2,10 +2,12 @@
 
 {% block content %}
 
-{% for a in accounts %}
-	<div>
-		{{ a.name }}
-	</div>
+{% for b in balances %}
+        <div class="row">
+			<div class="col-md-2">{{ b.account.name }}</div>
+			<div class="col-md-1" style="text-align:right;">{{ b.balance }} {{ b.account.currency }}</div>
+		</div>
+
 {% endfor %}
 
 

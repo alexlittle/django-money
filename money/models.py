@@ -7,10 +7,10 @@ CURRENCY_TYPES = (
     )
 
 PAYMENT_TYPES = (
-        ('VISA', 'Visa'),
-        ('TRANSFER', 'Transfer'),
-        ('PAID_IN', 'Paid in'),
-        ('PAY', 'Pay'),
+        ('Visa', 'Visa'),
+        ('Transfer', 'Transfer'),
+        ('Paid in', 'Paid in'),
+        ('Pay', 'Pay'),
         ('Standing Order', 'Standing Order'),
         ('Cheque', 'Cheque'),
         ('Interest', 'Interest'),
@@ -28,6 +28,9 @@ class Account (models.Model):
     current = models.BooleanField(blank=False, default=True)
     currency = models.CharField(max_length=3,choices=CURRENCY_TYPES)
     pension = models.BooleanField(blank=False, default=False)
+    
+    def __unicode__(self):
+        return self.name
     
 class ExchangeRate (models.Model):
     from_cur = models.CharField(max_length=3,choices=CURRENCY_TYPES)
