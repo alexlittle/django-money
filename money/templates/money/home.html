@@ -1,17 +1,17 @@
 {% extends "base.html" %}
-
+{% load humanize %}
 {% block content %}
 
 <h3>Current Accounts (GBP)</h3>
 {% for b in balances_gbp %}
        <div class="row">
-			<div class="col-md-2">{{ b.account.name }}</div>
-			<div class="col-md-1" style="text-align:right;">{{ b.balance }}</div>
+			<div class="col-md-2"><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></div>
+			<div class="col-md-1" style="text-align:right;">{{ b.balance|intcomma }}</div>
 		</div>
 {% endfor %}
 	<div class="row" style="margin-top:10px; font-weight:bold;  ">
 			<div class="col-md-2" style="border-top: 1px solid #000; padding-top:5px">Total</div>
-			<div class="col-md-1" style="text-align:right; border-top: 1px solid #000; padding-top:5px">{{ total_gbp }}</div>
+			<div class="col-md-1" style="text-align:right; border-top: 1px solid #000; padding-top:5px">{{ total_gbp|intcomma }}</div>
 		</div>
 
 <h3>Investment Accounts</h3>
@@ -19,25 +19,26 @@
 {% for b in balances_invest %}
 	
        <div class="row">
-			<div class="col-md-2">{{ b.account.name }}</div>
-			<div class="col-md-1" style="text-align:right;">{{ b.balance }}</div>
+			<div class="col-md-2"><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></div>
+			<div class="col-md-1" style="text-align:right;">{{ b.balance|intcomma }}</div>
+			<div class="col-md-1" style="text-align:right;">{{ b.date|date:"D d M Y" }}</div>
 		</div>
 {% endfor %}
 	<div class="row" style="margin-top:10px; font-weight:bold; ">
 			<div class="col-md-2" style="border-top: 1px solid #000; padding-top:5px">Total</div>
-			<div class="col-md-1" style="text-align:right; border-top: 1px solid #000; padding-top:5px">{{ total_invest }}</div>
+			<div class="col-md-1" style="text-align:right; border-top: 1px solid #000; padding-top:5px">{{ total_invest|intcomma }}</div>
 		</div>
 
 <h3>Current Accounts (EUR)</h3>
 {% for b in balances_eur %}
        <div class="row">
-			<div class="col-md-2">{{ b.account.name }}</div>
-			<div class="col-md-1" style="text-align:right;">{{ b.balance }}</div>
+			<div class="col-md-2"><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></div>
+			<div class="col-md-1" style="text-align:right;">{{ b.balance|intcomma }}</div>
 		</div>
 {% endfor %}
 	<div class="row" style="margin-top:10px; font-weight:bold;  ">
 			<div class="col-md-2" style="border-top: 1px solid #000; padding-top:5px">Total</div>
-			<div class="col-md-1" style="text-align:right; border-top: 1px solid #000; padding-top:5px">{{ total_eur }}</div>
+			<div class="col-md-1" style="text-align:right; border-top: 1px solid #000; padding-top:5px">{{ total_eur|intcomma }}</div>
 		</div>
 		
 {% endblock %}

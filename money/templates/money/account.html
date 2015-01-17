@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load admin_urls %}
+{% load humanize %}
+{% block content %}
+
+<h3>{{ account.name }}</h3>
+
+{% for t in transactions %}
+ <div class="row">
+	<div class="col-md-2">{{ t.date|date:"D d M Y"  }}</div>
+	<div class="col-md-2">{{ t.description }}</div>
+	<div class="col-md-1" style="text-align:right;">{{ t.credit|intcomma }}</div>
+	<div class="col-md-1" style="text-align:right;">{{ t.debit|intcomma }}</div>
+	<div class="col-md-1" style="text-align:right;">{{ t.on_statement }}</div>
+	<div class="col-md-1" style="text-align:right;"><a href="{% url 'admin:money_transaction_change' t.id %}">Edit</a></div>
+</div>
+{% endfor %}
+
+{% endblock %}

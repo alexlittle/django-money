@@ -27,6 +27,7 @@ def home_view(request):
         acc = {}
         acc['account'] = b
         acc['balance'] = valuation.value
+        acc['date'] = v_tmp['date']
         balances_invest.append(acc)
         total_invest += valuation.value
           
@@ -47,6 +48,9 @@ def home_view(request):
                               context_instance=RequestContext(request))
     
 def account_view(request, account_id):
+    account = Account.objects.get(pk=account_id)
+    transactions = Transaction.objects.filter(account=account).order_by('-date')[:100]
     return render_to_response('money/account.html',
-                              {'balances': balances},
+                              {'account': account,
+                               'transactions': transactions, },
                               context_instance=RequestContext(request))
