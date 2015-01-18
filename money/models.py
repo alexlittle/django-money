@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum, Max
 from django.utils import timezone
 
 CURRENCY_TYPES = (
@@ -31,6 +32,13 @@ class Account (models.Model):
     
     def __unicode__(self):
         return self.name
+    
+    def on_statement(self):
+        trans_cred = Transaction.objects.filter(account=self, on_statement=True).aggregate(Sum("credit"))
+        trans_deb = Transaction.objects.filter(account=self, on_statement=True).aggregate(Sum("debit"))
+        if trans_deb['debit__sum'] is None:
+            return trans_cred['credit__sum']
+        return trans_cred['credit__sum'] - trans_deb['debit__sum']
     
 class ExchangeRate (models.Model):
     from_cur = models.CharField(max_length=3,choices=CURRENCY_TYPES)

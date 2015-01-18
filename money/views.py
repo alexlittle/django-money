@@ -17,6 +17,8 @@ def home_view(request):
         b['account'] = Account.objects.get(pk=b['account'])
         total_gbp += b['balance']
       
+      
+      
     accs_invest = Account.objects.filter(current=True, include=False, currency='GBP').order_by('name')
     total_invest = 0
     balances_invest = []

@@ -7,7 +7,7 @@
 
 {% for t in transactions %}
  <div class="row">
-	<div class="col-md-2">{{ t.date|date:"D d M Y"  }}</div>
+	<div class="col-md-2">{{ t.date|naturalday  }}</div>
 	<div class="col-md-2">{{ t.description }}</div>
 	<div class="col-md-1" style="text-align:right;">{{ t.credit|intcomma }}</div>
 	<div class="col-md-1" style="text-align:right;">{{ t.debit|intcomma }}</div>
