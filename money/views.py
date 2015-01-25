@@ -1,15 +1,19 @@
 
+import datetime
+
 from django.db.models import Sum, Max
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.utils import timezone
 
-from money.models import Account, Transaction, Valuation
+from money.models import Account, Transaction, Valuation, RegularPayment
 
 # Create your views here.
 
 
 def home_view(request):
+    update_regular_payments()
+    
     balances_gbp = Transaction.objects.filter(account__current=True, account__include=True, account__currency='GBP').order_by('account__name').values('account').annotate(total_credit=Sum("credit"), total_debit=Sum("debit"))
     total_gbp = 0
     for b in balances_gbp:
@@ -56,3 +60,18 @@ def account_view(request, account_id):
                               {'account': account,
                                'transactions': transactions, },
                               context_instance=RequestContext(request))
+    
+def update_regular_payments():
+    payments = RegularPayment.objects.filter(next_date__lte=timezone.now())
+    print payments
+    for rp in payments:
+        # add to transactions
+        transaction = Transaction(account=rp.account, payment_type=rp.payment_type, credit=rp.credit, debit = rp.debit, description=rp.description )
+        print transaction
+        transaction.save()
+        # update regularpayment
+        next_date = rp.next_date + datetime.timedelta(days=31)
+        rp.next_date = next_date
+        rp.save()
+        print next_date
+    return

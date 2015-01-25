@@ -44,13 +44,13 @@ class ExchangeRate (models.Model):
     from_cur = models.CharField(max_length=3,choices=CURRENCY_TYPES)
     to_cur = models.CharField(max_length=3,choices=CURRENCY_TYPES)
     date = models.DateTimeField(default=timezone.now)
-    rate = models.DecimalField(decimal_places=2, max_digits=20)
+    rate = models.DecimalField(decimal_places=5, max_digits=20)
    
 class RegularPayment(models.Model):
     account = models.ForeignKey(Account)
     description = models.CharField(max_length=100, blank=False, null=False)
-    credit = models.DecimalField(decimal_places=2, max_digits=20)
-    debit = models.DecimalField(decimal_places=2, max_digits=20)
+    credit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
+    debit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     next_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField(default=timezone.now)
     payment_type = models.CharField(max_length=15,choices=PAYMENT_TYPES)
@@ -63,8 +63,8 @@ class Transaction(models.Model):
     account = models.ForeignKey(Account)
     payment_type = models.CharField(max_length=15,choices=PAYMENT_TYPES)
     date = models.DateTimeField(default=timezone.now)
-    credit = models.DecimalField(decimal_places=2, max_digits=20)
-    debit = models.DecimalField(decimal_places=2, max_digits=20)
+    credit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
+    debit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     on_statement = models.BooleanField(blank=False, default=False)
     description = models.CharField(max_length=100, blank=False, null=False)
     
