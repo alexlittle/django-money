@@ -1,19 +1,35 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load admin_urls %}
 {% load humanize %}
 {% block content %}
 
 <h3>{{ account.name }}</h3>
 
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Date' %}</th>
+				<th>{% trans 'Description' %}</th>
+				<th class="number">{% trans 'Credit' %}</th>
+				<th class="number">{% trans 'Debit' %}</th>
+				<th class="number">{% trans 'On Statement' %}</th>
+				<th class="number">{% trans 'Options' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+		
 {% for t in transactions %}
- <div class="row">
-	<div class="col-md-2">{{ t.date|naturalday  }}</div>
-	<div class="col-md-2">{{ t.description }}</div>
-	<div class="col-md-1" style="text-align:right;">{{ t.credit|intcomma }}</div>
-	<div class="col-md-1" style="text-align:right;">{{ t.debit|intcomma }}</div>
-	<div class="col-md-1" style="text-align:right;">{{ t.on_statement }}</div>
-	<div class="col-md-1" style="text-align:right;"><a href="{% url 'admin:money_transaction_change' t.id %}">Edit</a></div>
-</div>
+ <tr>
+	<td>{{ t.date|naturalday  }}</td>
+	<td>{{ t.description }}</td>
+	<td class="number">{{ t.credit|intcomma }}</td>
+	<td class="number">{{ t.debit|intcomma }}</td>
+	<td class="number">{{ t.on_statement }}</td>
+	<td class="number"><a href="{% url 'admin:money_transaction_change' t.id %}">Edit</a></td>
+</tr>
 {% endfor %}
-
+</tbody>
+</table>
 {% endblock %}

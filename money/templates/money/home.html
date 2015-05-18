@@ -1,63 +1,98 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load humanize %}
+
 {% block content %}
 
 <h3>Current Accounts (GBP)</h3>
-<div class="row" style="margin-top:10px; font-weight:bold;  ">
-	<div class="col-md-2" style="border-bottom: 1px solid #000; padding-bottom:5px">Account</div>
-	<div class="col-md-1" style="text-align:right; border-bottom: 1px solid #000; padding-bottom:5px">Balance</div>
-	<div class="col-md-1" style="text-align:right; border-bottom: 1px solid #000; padding-bottom:5px">On statement</div>
-</div>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Account' %}</th>
+				<th class="number">{% trans 'Balance' %}</th>
+				<th class="number">{% trans 'On Statement' %}</th>
+			</tr>
+		</thead>
+		<tbody>
 		
 {% for b in balances_gbp %}
-       <div class="row">
-			<div class="col-md-2"><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></div>
-			<div class="col-md-1" style="text-align:right;">{{ b.balance|intcomma }}</div>
-			<div class="col-md-1" style="text-align:right;">{{ b.account.on_statement|intcomma }}</div>
-		</div>
+       <tr>
+			<td><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></td>
+			<td class="number">{{ b.balance|intcomma }}</td>
+			<td class="number">{{ b.account.on_statement|intcomma }}</td>
+		</tr>
 {% endfor %}
-	<div class="row" style="margin-top:10px; font-weight:bold;  ">
-			<div class="col-md-2" style="border-top: 1px solid #000; padding-top:5px">Total</div>
-			<div class="col-md-1" style="text-align:right; border-top: 1px solid #000; padding-top:5px">{{ total_gbp|intcomma }}</div>
-		</div>
+</tbody>
+<tfoot>
+			<tr>
+				<th>Total</th>
+				<th class="number">{{ total_gbp|intcomma }}</th>
+				<th>&nbsp;</th>
+			</tr>
+		</tfoot>
+</table>
 
 <h3>Investment Accounts</h3>
-<div class="row" style="margin-top:10px; font-weight:bold;  ">
-	<div class="col-md-2" style="border-bottom: 1px solid #000; padding-bottom:5px">Account</div>
-	<div class="col-md-1" style="text-align:right; border-bottom: 1px solid #000; padding-bottom:5px">Valuation</div>
-	<div class="col-md-2" style="text-align:right; border-bottom: 1px solid #000; padding-bottom:5px">Valuation date</div>
-</div>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Account' %}</th>
+				<th class="number">{% trans 'Valuation' %}</th>
+				<th class="number">{% trans 'Valuation date' %}</th>
+			</tr>
+		</thead>
+		<tbody>
 {% for b in balances_invest %}
-	
-       <div class="row">
-			<div class="col-md-2"><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></div>
-			<div class="col-md-1" style="text-align:right;">{{ b.balance|intcomma }}</div>
-			<div class="col-md-2" style="text-align:right;">{{ b.date|date:"D d M Y" }}</div>
-		</div>
+       <tr>
+			<td><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></td>
+			<td class="number">{{ b.balance|intcomma }}</td>
+			<td class="number">{{ b.date|date:"D d M Y" }}</td>
+		</tr>
 {% endfor %}
-	<div class="row" style="margin-top:10px; font-weight:bold; ">
-			<div class="col-md-2" style="border-top: 1px solid #000; padding-top:5px">Total</div>
-			<div class="col-md-1" style="text-align:right; border-top: 1px solid #000; padding-top:5px">{{ total_invest|intcomma }}</div>
-		</div>
+</tbody>
+<tfoot>
+			<tr>
+				<th>Total</th>
+				<th class="number">{{ total_invest|intcomma }}</th>
+				<th>&nbsp;</th>
+			</tr>
+		</tfoot>
+</table>
 
 <h3>Current Accounts (EUR)</h3>
-<div class="row" style="margin-top:10px; font-weight:bold;  ">
-	<div class="col-md-2" style="border-bottom: 1px solid #000; padding-bottom:5px">Account</div>
-	<div class="col-md-1" style="text-align:right; border-bottom: 1px solid #000; padding-bottom:5px">Balance</div>
-	<div class="col-md-1" style="text-align:right; border-bottom: 1px solid #000; padding-bottom:5px">On statement</div>
-	<div class="col-md-1" style="text-align:right; border-bottom: 1px solid #000; padding-bottom:5px">In GBP</div>
-</div>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Account' %}</th>
+				<th class="number">{% trans 'Balance' %}</th>
+				<th class="number">{% trans 'On statement' %}</th>
+				<th class="number">{% trans 'In GBP' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+		
 
 {% for b in balances_eur %}
-       <div class="row">
-			<div class="col-md-2"><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></div>
-			<div class="col-md-1" style="text-align:right;">{{ b.balance|intcomma }}</div>
-			<div class="col-md-1" style="text-align:right;">{{ b.account.on_statement|intcomma }}</div>
-		</div>
+       <tr>
+			<td><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></td>
+			<td class="number">{{ b.balance|intcomma }}</td>
+			<td class="number">{{ b.account.on_statement|intcomma }}</td>
+			<td class="number">&nbsp;</td>
+		</tr>
 {% endfor %}
-	<div class="row" style="margin-top:10px; font-weight:bold;  ">
-			<div class="col-md-2" style="border-top: 1px solid #000; padding-top:5px">Total</div>
-			<div class="col-md-1" style="text-align:right; border-top: 1px solid #000; padding-top:5px">{{ total_eur|intcomma }}</div>
-		</div>
+
+</tbody>
+<tfoot>
+			<tr>
+				<th>Total</th>
+				<th class="number">{{ total_eur|intcomma }}</th>
+				<th class="number">&nbsp;</th>
+				<th class="number">&nbsp;</th>
+			</tr>
+		</tfoot>
+</table>
 		
 {% endblock %}

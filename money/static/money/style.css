@@ -215,3 +215,7 @@ div.photo {
 	text-align:center;
 	margin:10px;
 }
+
+th.number, td.number {
+	text-align:right;
+}
