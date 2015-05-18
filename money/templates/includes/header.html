@@ -12,7 +12,14 @@
 	  </div>
 	  <div class="navbar-collapse collapse">
 		    <ul class="nav navbar-nav navbar-right">
-		    	<li><a href="">{% trans 'Reports' %}</a></li>
+		    	<li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">{% trans 'Reports' %} <b class="caret"></b></a>
+		    		<ul class="dropdown-menu">
+							<li><a href="{% url 'money_report_by_month' 'GBP' %}">{% trans 'Balance by Month - GBP' %}</a></li>
+							<li><a href="{% url 'money_report_by_month' 'EUR' %}">{% trans 'Balance by Month - EUR' %}</a></li>
+							<li><a href="{% url 'money_report_by_year' 'GBP' %}">{% trans 'Balance by Year - GBP' %}</a></li>
+							<li><a href="{% url 'money_report_by_year' 'EUR' %}">{% trans 'Balance by Year - EUR' %}</a></li>
+					</ul>
+				</li>
 		        <li><a href="{% url 'admin:money_transaction_add' %}">{% trans 'Add Transaction' %}</a></li>
 		    </ul>
 	  </div>
