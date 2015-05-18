@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block extra_scripts %}
+	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+	<script type="text/javascript">
+	
+	// Load the Visualization API and the piechart package.
+	google.load('visualization', '1.0', {'packages':['corechart']});
+
+	// Set a callback to run when the Google Visualization API is loaded.
+	google.setOnLoadCallback(drawChart);
+	function drawChart() {
+
+		// activity graph
+		var data = new google.visualization.DataTable();
+		data.addColumn('string', "{% trans 'Date' %}");
+		data.addColumn('number', "{% trans 'Total' %}");
+		data.addColumn('number', "{% trans 'Valuation GBP' %}");
+		data.addColumn('number', "{% trans 'Standard GBP' %}");
+		data.addRows( {{ balances|length }} );
+		
+		{% for b in balances %}
+			data.setValue({{ forloop.counter0 }},0,'{{ b.date|date:"Y-M" }}');
+			data.setValue({{ forloop.counter0 }},1,{{ b.total }});
+			data.setValue({{ forloop.counter0 }},2,{{ b.valuation_gbp }});
+			data.setValue({{ forloop.counter0 }},3,{{ b.non_valuation_gbp }});
+		{% endfor %}
+
+        var chart = new google.visualization.LineChart(document.getElementById('graph_div'));
+        chart.draw(data, {	width: "100%", 
+                			height: 400,
+                			vAxis: {title: "{% trans 'Balance' %}"},
+                			pointSize:5,
+                			chartArea:{left:100,top:50,width:"70%",height:"70%"},
+                			backgroundColor: 'transparent',
+                			legend: {position:'right'}
+							});	
+	}
+	
+</script>
+{% endblock extra_scripts %}
+
+
+
+{% block content %}
+
+<h2>Graph</h2>
+
+<div id="graph_div" class="graph">{% trans 'graph_generating'%}</div>
+
+{% endblock %}

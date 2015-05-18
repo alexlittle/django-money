@@ -1,4 +1,5 @@
 import datetime
+import dateutil.relativedelta
 
 from django.db.models import Sum, Max
 from django.shortcuts import render, render_to_response
@@ -45,3 +46,57 @@ def by_year_view(request,currency='GBP'):
                                'currency': currency,
                                'transactions': transactions},
                               context_instance=RequestContext(request))
+    
+    
+def graph_view(request,currency='GBP'):
+    
+    now = datetime.datetime.now()
+    tz = timezone.get_default_timezone()
+    
+    balances = []
+    
+    valuation_accounts = Valuation.objects.filter(account__pension=False).values_list('account_id').distinct()
+    
+    print valuation_accounts
+    
+    for i in range(96,-1,-1):
+        balance = {} 
+        old_date = now - dateutil.relativedelta.relativedelta(months=i)
+        last_day = datetime.datetime(int(old_date.strftime("%Y")), int(old_date.strftime("%m")), 1, 23, 59, tzinfo=tz)\
+                     + dateutil.relativedelta.relativedelta(day=1, months=+1, days=-1)
+        
+        # non valuation GBP accounts
+        transactions_gbp = Transaction.objects.filter(account__currency='GBP',date__lte=last_day, account__current=True, account__include=True).\
+                                        exclude(account__pension=False, account_id__in=valuation_accounts, payment_type='Transfer').\
+                                        aggregate(sum_in=Sum('credit'),sum_out=Sum('debit'))
+        non_valuation_gbp = transactions_gbp['sum_in']-transactions_gbp['sum_out'] 
+        
+        valuation_gbp = 0
+        # valuation GBP accounts
+        for va in valuation_accounts:
+            v = Valuation.objects.filter(account_id=va, date__lte=last_day).aggregate(max=Max('date'))
+            value = Valuation.objects.filter(account_id=va,date=v['max'])
+            if value:
+                valuation_gbp += value[0].value
+        
+        # non valuation EUR accounts
+        transactions_eur = Transaction.objects.filter(account__currency='EUR',date__lte=last_day, account__current=True, account__include=True).\
+                                        exclude(account__pension=False, account_id__in=valuation_accounts, payment_type='Transfer').\
+                                        aggregate(sum_in=Sum('credit'),sum_out=Sum('debit'))
+                                        
+        # valuation EUR accounts
+                                        
+        balance['date'] = last_day
+        balance['total'] = non_valuation_gbp + valuation_gbp
+        balance['valuation_gbp'] = valuation_gbp
+        balance['non_valuation_gbp'] = non_valuation_gbp
+        
+        
+        balances.append(balance) 
+                            
+    
+    return render_to_response('money/reports/graph.html',
+                              {
+                               'balances': balances},
+                              context_instance=RequestContext(request))
+    
