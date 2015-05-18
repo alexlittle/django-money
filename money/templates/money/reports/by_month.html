@@ -9,18 +9,18 @@
 		<thead>
 			<tr>
 				<th>{% trans 'Date' %}</th>
-				<th>{% trans 'Sum In' %}</th>
-				<th>{% trans 'Sum Out' %}</th>
-				<th>{% trans 'Balance' %}</th>
+				<th class="number">{% trans 'Sum In' %}</th>
+				<th class="number">{% trans 'Sum Out' %}</th>
+				<th class="number">{% trans 'Balance' %}</th>
 			</tr>
 		</thead>
 		<tbody>
 {% for t in transactions %}
  <tr>
 	<td>{{ t.month  }} {{ t.year  }}</td>
-	<td>{{ t.sum_in  }}</td>
-	<td>{{ t.sum_out  }}</td>
-	<td>{{ t.balance  }}</td>
+	<td class="number {% if t.sum_in < 0 %}negative{% endif %}">{{ t.sum_in  }}</td>
+	<td class="number {% if t.sum_out < 0 %}negative{% endif %}">{{ t.sum_out  }}</td>
+	<td class="number {% if t.balance < 0 %}negative{% endif %}">{{ t.balance  }}</td>
 </tr>
 {% endfor %}	
 </tbody>

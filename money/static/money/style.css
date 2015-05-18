@@ -219,3 +219,7 @@ div.photo {
 th.number, td.number {
 	text-align:right;
 }
+
+th.negative, td.negative {
+	color:#ff0000;
+}

@@ -19,8 +19,8 @@
 {% for b in balances_gbp %}
        <tr>
 			<td><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></td>
-			<td class="number">{{ b.balance|intcomma }}</td>
-			<td class="number">{{ b.account.on_statement|intcomma }}</td>
+			<td class="number {% if b.balance < 0 %}negative{% endif %}">{{ b.balance|intcomma }}</td>
+			<td class="number {% if b.account.on_statement < 0 %}negative{% endif %}">{{ b.account.on_statement|intcomma }}</td>
 		</tr>
 {% endfor %}
 </tbody>
