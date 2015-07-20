@@ -94,5 +94,33 @@
 			</tr>
 		</tfoot>
 </table>
+
+
+<h3>Pensions</h3>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Account' %}</th>
+				<th class="number">{% trans 'Balance' %}</th>
+				<th class="number">{% trans 'On statement' %}</th>
+				<th class="number">{% trans 'In GBP' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+		
+
+{% for p in pensions %}
+       <tr>
+			<td><a href="{% url 'money_account' p.id %}">{{ p.name }}</a></td>
+			<td class="number">{{ b.balance|intcomma }}</td>
+			<td class="number">{{ b.account.on_statement|intcomma }}</td>
+			<td class="number">&nbsp;</td>
+		</tr>
+{% endfor %}
+
+</tbody>
+</table>
+
 		
 {% endblock %}

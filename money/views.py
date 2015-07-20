@@ -43,14 +43,17 @@ def home_view(request):
         b['balance'] = b['total_credit'] - b['total_debit']
         b['account'] = Account.objects.get(pk=b['account'])
         total_eur += b['balance']
-        
+     
+    pensions = Account.objects.filter(pension=True).order_by('name')
+       
     return render_to_response('money/home.html',
                               {'balances_gbp': balances_gbp,
                                'total_gbp': total_gbp,
                                'balances_invest': balances_invest,
                                'total_invest': total_invest,
                                'balances_eur': balances_eur,
-                               'total_eur': total_eur,},
+                               'total_eur': total_eur,
+                               'pensions': pensions,},
                               context_instance=RequestContext(request))
     
 def account_view(request, account_id):

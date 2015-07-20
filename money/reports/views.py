@@ -6,7 +6,7 @@ from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.utils import timezone
 
-from money.models import Account, Transaction, Valuation, RegularPayment
+from money.models import Account, Transaction, Valuation, RegularPayment, ExchangeRate
 
 # Create your views here.
 
@@ -66,8 +66,8 @@ def graph_view(request,currency='GBP'):
                      + dateutil.relativedelta.relativedelta(day=1, months=+1, days=-1)
         
         # non valuation GBP accounts
-        transactions_gbp = Transaction.objects.filter(account__currency='GBP',date__lte=last_day, account__current=True, account__include=True).\
-                                        exclude(account__pension=False, account_id__in=valuation_accounts, payment_type='Transfer').\
+        transactions_gbp = Transaction.objects.filter(account__currency='GBP',date__lte=last_day, account__pension=False).\
+                                        exclude( account_id__in=valuation_accounts, payment_type='Transfer').\
                                         aggregate(sum_in=Sum('credit'),sum_out=Sum('debit'))
         non_valuation_gbp = transactions_gbp['sum_in']-transactions_gbp['sum_out'] 
         
@@ -80,17 +80,22 @@ def graph_view(request,currency='GBP'):
                 valuation_gbp += value[0].value
         
         # non valuation EUR accounts
-        transactions_eur = Transaction.objects.filter(account__currency='EUR',date__lte=last_day, account__current=True, account__include=True).\
-                                        exclude(account__pension=False, account_id__in=valuation_accounts, payment_type='Transfer').\
+        transactions_eur = Transaction.objects.filter(account__currency='EUR',date__lte=last_day, account__pension=False).\
+                                        exclude(account_id__in=valuation_accounts, payment_type='Transfer').\
                                         aggregate(sum_in=Sum('credit'),sum_out=Sum('debit'))
-                                        
-        # valuation EUR accounts
-                                        
+         
+        non_valuation_eur = 0
+        d = ExchangeRate.objects.filter(date__lte=last_day).order_by('-date')[:1]
+        if d.count() > 0:
+            ex_rate = d[0].rate
+            non_valuation_eur = (transactions_eur['sum_in']-transactions_eur['sum_out']) * ex_rate
+            print non_valuation_eur
+                                            
         balance['date'] = last_day
-        balance['total'] = non_valuation_gbp + valuation_gbp
+        balance['total'] = non_valuation_gbp + valuation_gbp + non_valuation_eur
         balance['valuation_gbp'] = valuation_gbp
         balance['non_valuation_gbp'] = non_valuation_gbp
-        
+        balance['non_valuation_eur'] = non_valuation_eur
         
         balances.append(balance) 
                             
