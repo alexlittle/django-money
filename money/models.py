@@ -21,14 +21,19 @@ PAYMENT_TYPES = (
         ('Mastercard', 'Mastercard'),
     )
 
+ACCOUNT_TYPES = (
+        ('cash','Cash'),
+        ('invest','Investment'),
+        ('property', 'Property'),
+        ('pension', 'Pension')
+    )
 # Create your models here.
 
 class Account (models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
-    include = models.BooleanField(blank=False, default=True)
-    current = models.BooleanField(blank=False, default=True)
+    active = models.BooleanField(blank=False, default=True)
     currency = models.CharField(max_length=3,choices=CURRENCY_TYPES)
-    pension = models.BooleanField(blank=False, default=False)
+    type = models.CharField(max_length=100, choices=ACCOUNT_TYPES, default='cash')
     
     def __unicode__(self):
         return self.name

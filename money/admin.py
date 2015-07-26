@@ -6,7 +6,7 @@ from money.models import Account, ExchangeRate, RegularPayment, Tag, Transaction
 
 
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ('name', 'include', 'current', 'currency', 'pension')
+    list_display = ('name', 'active', 'currency', 'type')
 
 class ExchangeRateAdmin(admin.ModelAdmin):
     list_display = ('from_cur', 'to_cur', 'date', 'rate')

@@ -55,7 +55,7 @@ def graph_view(request,currency='GBP'):
     
     balances = []
     
-    valuation_accounts = Valuation.objects.filter(account__pension=False).values_list('account_id').distinct()
+    valuation_accounts = Valuation.objects.filter(account__type='invest').values_list('account_id').distinct()
     
     print valuation_accounts
     
@@ -66,7 +66,7 @@ def graph_view(request,currency='GBP'):
                      + dateutil.relativedelta.relativedelta(day=1, months=+1, days=-1)
         
         # non valuation GBP accounts
-        transactions_gbp = Transaction.objects.filter(account__currency='GBP',date__lte=last_day, account__pension=False).\
+        transactions_gbp = Transaction.objects.filter(account__currency='GBP',date__lte=last_day, account__type='cash').\
                                         exclude( account_id__in=valuation_accounts, payment_type='Transfer').\
                                         aggregate(sum_in=Sum('credit'),sum_out=Sum('debit'))
         non_valuation_gbp = transactions_gbp['sum_in']-transactions_gbp['sum_out'] 
@@ -80,7 +80,7 @@ def graph_view(request,currency='GBP'):
                 valuation_gbp += value[0].value
         
         # non valuation EUR accounts
-        transactions_eur = Transaction.objects.filter(account__currency='EUR',date__lte=last_day, account__pension=False).\
+        transactions_eur = Transaction.objects.filter(account__currency='EUR',date__lte=last_day, account__type='cash').\
                                         exclude(account_id__in=valuation_accounts, payment_type='Transfer').\
                                         aggregate(sum_in=Sum('credit'),sum_out=Sum('debit'))
          

@@ -14,7 +14,7 @@ from money.models import Account, Transaction, Valuation, RegularPayment
 def home_view(request):
     update_regular_payments()
     
-    balances_gbp = Transaction.objects.filter(account__current=True, account__include=True, account__currency='GBP').order_by('account__name').values('account').annotate(total_credit=Sum("credit"), total_debit=Sum("debit"))
+    balances_gbp = Transaction.objects.filter(account__active=True, account__type='cash', account__currency='GBP').order_by('account__name').values('account').annotate(total_credit=Sum("credit"), total_debit=Sum("debit"))
     total_gbp = 0
     for b in balances_gbp:
         b['balance'] = b['total_credit'] - b['total_debit']
@@ -23,7 +23,7 @@ def home_view(request):
       
       
       
-    accs_invest = Account.objects.filter(current=True, include=False, currency='GBP').order_by('name')
+    accs_invest = Account.objects.filter(active=True, type='invest', currency='GBP').order_by('name')
     total_invest = 0
     balances_invest = []
     for b in accs_invest:
@@ -37,14 +37,14 @@ def home_view(request):
         balances_invest.append(acc)
         total_invest += valuation.value
           
-    balances_eur = Transaction.objects.filter(account__current=True, account__include=True, account__currency='EUR').order_by('account__name').values('account').annotate(total_credit=Sum("credit"), total_debit=Sum("debit"))
+    balances_eur = Transaction.objects.filter(account__active=True, account__type='cash', account__currency='EUR').order_by('account__name').values('account').annotate(total_credit=Sum("credit"), total_debit=Sum("debit"))
     total_eur = 0
     for b in balances_eur:
         b['balance'] = b['total_credit'] - b['total_debit']
         b['account'] = Account.objects.get(pk=b['account'])
         total_eur += b['balance']
      
-    pensions = Account.objects.filter(pension=True).order_by('name')
+    pensions = Account.objects.filter(type='pension',active=True).order_by('name')
        
     return render_to_response('money/home.html',
                               {'balances_gbp': balances_gbp,
