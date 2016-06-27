@@ -33,33 +33,6 @@
 		</tfoot>
 </table>
 
-<h3>Investment Accounts</h3>
-<div class="table-responsive">
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>{% trans 'Account' %}</th>
-				<th class="number">{% trans 'Valuation' %}</th>
-				<th class="number">{% trans 'Valuation date' %}</th>
-			</tr>
-		</thead>
-		<tbody>
-{% for b in balances_invest %}
-       <tr>
-			<td><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></td>
-			<td class="number">{{ b.balance|intcomma }}</td>
-			<td class="number">{{ b.date|date:"D d M Y" }}</td>
-		</tr>
-{% endfor %}
-</tbody>
-<tfoot>
-			<tr>
-				<th>Total</th>
-				<th class="number">{{ total_invest|intcomma }}</th>
-				<th>&nbsp;</th>
-			</tr>
-		</tfoot>
-</table>
 
 <h3>Current Accounts (EUR)</h3>
 <div class="table-responsive">
@@ -94,6 +67,65 @@
 			</tr>
 		</tfoot>
 </table>
+
+
+<h3>Investment Accounts (EUR)</h3>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Account' %}</th>
+				<th class="number">{% trans 'Valuation' %}</th>
+				<th class="number">{% trans 'Valuation date' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+{% for b in balances_eur_invest %}
+       <tr>
+			<td><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></td>
+			<td class="number">{{ b.balance|intcomma }}</td>
+			<td class="number">{{ b.date|date:"D d M Y" }}</td>
+		</tr>
+{% endfor %}
+</tbody>
+<tfoot>
+			<tr>
+				<th>Total</th>
+				<th class="number">{{ total_eur_invest|intcomma }}</th>
+				<th>&nbsp;</th>
+			</tr>
+		</tfoot>
+</table>
+
+<h3>Investment Accounts (GBP)</h3>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Account' %}</th>
+				<th class="number">{% trans 'Valuation' %}</th>
+				<th class="number">{% trans 'Valuation date' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+{% for b in balances_gbp_invest %}
+       <tr>
+			<td><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></td>
+			<td class="number">{{ b.balance|intcomma }}</td>
+			<td class="number">{{ b.date|date:"D d M Y" }}</td>
+		</tr>
+{% endfor %}
+</tbody>
+<tfoot>
+			<tr>
+				<th>Total</th>
+				<th class="number">{{ total_gbp_invest|intcomma }}</th>
+				<th>&nbsp;</th>
+			</tr>
+		</tfoot>
+</table>
+
+
 
 
 <h3>Pensions</h3>

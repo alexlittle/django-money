@@ -17,6 +17,7 @@
 		data.addColumn('string', "{% trans 'Date' %}");
 		data.addColumn('number', "{% trans 'Total' %}");
 		data.addColumn('number', "{% trans 'Valuation GBP' %}");
+		data.addColumn('number', "{% trans 'Valuation EUR' %}");
 		data.addColumn('number', "{% trans 'Standard GBP' %}");
 		data.addColumn('number', "{% trans 'Standard EUR' %}");
 		data.addRows( {{ balances|length }} );
@@ -25,8 +26,9 @@
 			data.setValue({{ forloop.counter0 }},0,'{{ b.date|date:"Y-M" }}');
 			data.setValue({{ forloop.counter0 }},1,{{ b.total }});
 			data.setValue({{ forloop.counter0 }},2,{{ b.valuation_gbp }});
-			data.setValue({{ forloop.counter0 }},3,{{ b.non_valuation_gbp }});
-			data.setValue({{ forloop.counter0 }},4,{{ b.non_valuation_eur }});
+			data.setValue({{ forloop.counter0 }},3,{{ b.valuation_eur }});
+			data.setValue({{ forloop.counter0 }},4,{{ b.non_valuation_gbp }});
+			data.setValue({{ forloop.counter0 }},5,{{ b.non_valuation_eur }});
 		{% endfor %}
 
         var chart = new google.visualization.LineChart(document.getElementById('graph_div'));
