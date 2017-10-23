@@ -76,7 +76,7 @@ def home_view(request):
 def account_view(request, account_id):
     account = Account.objects.get(pk=account_id)
     transactions = Transaction.objects.filter(account=account).order_by('-date')[:100]
-    return rrender(request,'money/account.html',
+    return render(request,'money/account.html',
                               {'account': account,
                                'transactions': transactions, })
     
