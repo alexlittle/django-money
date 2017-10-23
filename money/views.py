@@ -2,7 +2,7 @@
 import datetime
 
 from django.db.models import Sum, Max
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
 from django.utils import timezone
 
@@ -62,7 +62,7 @@ def home_view(request):
      
     pensions_gbp = Account.objects.filter(type='pension',active=True, currency='GBP').order_by('name')
        
-    return render_to_response('money/home.html',
+    return render(request, 'money/home.html',
                               {'balances_gbp': balances_gbp,
                                'total_gbp': total_gbp,
                                'balances_gbp_invest': balances_gbp_invest,
@@ -71,16 +71,14 @@ def home_view(request):
                                'total_eur_invest': total_eur_invest,
                                'balances_eur': balances_eur,
                                'total_eur': total_eur,
-                               'pensions': pensions_gbp,},
-                              context_instance=RequestContext(request))
+                               'pensions': pensions_gbp,})
     
 def account_view(request, account_id):
     account = Account.objects.get(pk=account_id)
     transactions = Transaction.objects.filter(account=account).order_by('-date')[:100]
-    return render_to_response('money/account.html',
+    return rrender(request,'money/account.html',
                               {'account': account,
-                               'transactions': transactions, },
-                              context_instance=RequestContext(request))
+                               'transactions': transactions, })
     
 def update_regular_payments():
     payments = RegularPayment.objects.filter(next_date__lte=timezone.now())

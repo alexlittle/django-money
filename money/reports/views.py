@@ -2,7 +2,7 @@ import datetime
 import dateutil.relativedelta
 
 from django.db.models import Sum, Max
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
 from django.utils import timezone
 
@@ -23,11 +23,10 @@ def by_month_view(request,currency='GBP'):
     for b in transactions:
         b['balance'] = b['sum_in'] - b['sum_out']
 
-    return render_to_response('money/reports/by_month.html',
+    return render(request,'money/reports/by_month.html',
                               {
                                'currency': currency,
-                               'transactions': transactions},
-                              context_instance=RequestContext(request))
+                               'transactions': transactions})
     
 def by_year_view(request,currency='GBP'):
     
@@ -41,11 +40,10 @@ def by_year_view(request,currency='GBP'):
     for b in transactions:
         b['balance'] = b['sum_in'] - b['sum_out']
 
-    return render_to_response('money/reports/by_year.html',
+    return render(request,'money/reports/by_year.html',
                               {
                                'currency': currency,
-                               'transactions': transactions},
-                              context_instance=RequestContext(request))
+                               'transactions': transactions})
     
     
 def graph_view(request,currency='GBP'):
@@ -109,8 +107,7 @@ def graph_view(request,currency='GBP'):
         balances.append(balance) 
                             
     
-    return render_to_response('money/reports/graph.html',
+    return render(request,'money/reports/graph.html',
                               {
-                               'balances': balances},
-                              context_instance=RequestContext(request))
+                               'balances': balances})
     

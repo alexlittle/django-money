@@ -1,12 +1,11 @@
 # money/urls.py
 from django.conf import settings
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 
+from money import views as money_views
 
-urlpatterns = patterns('',
-
-    url(r'^$', 'money.views.home_view', name="money_home"),
-    url(r'^account/(?P<account_id>\d+)/$', 'money.views.account_view', name="money_account"),
-    
+urlpatterns = [
+    url(r'^$', money_views.home_view, name="money_home"),
+    url(r'^account/(?P<account_id>\d+)/$', money_views.account_view, name="money_account"),
     url(r'^reports/', include('money.reports.urls')),
-)
+]

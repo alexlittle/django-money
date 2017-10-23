@@ -1,16 +1,14 @@
 # money/reports/urls.py
 from django.conf import settings
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 
+from money.reports import views as report_views
 
-urlpatterns = patterns('',
-
-    url(r'^graph/$', 'money.reports.views.graph_view', name="money_report_graph"),
+urlpatterns = [
+    url(r'^graph/$', report_views.graph_view, name="money_report_graph"),
+    url(r'^bymonth/$', report_views.by_month_view, name="money_report_by_month"),
+    url(r'^bymonth/(?P<currency>\w[\w/-]*)$', report_views.by_month_view, name="money_report_by_month"),
+    url(r'^byyear/$', report_views.by_year_view, name="money_report_by_year"),
+    url(r'^byyear/(?P<currency>\w[\w/-]*)$', report_views.by_year_view, name="money_report_by_year"),
     
-    url(r'^bymonth/$', 'money.reports.views.by_month_view', name="money_report_by_month"),
-    url(r'^bymonth/(?P<currency>\w[\w/-]*)$', 'money.reports.views.by_month_view', name="money_report_by_month"),
-    
-    url(r'^byyear/$', 'money.reports.views.by_year_view', name="money_report_by_year"),
-    url(r'^byyear/(?P<currency>\w[\w/-]*)$', 'money.reports.views.by_year_view', name="money_report_by_year"),
-    
-)
+]
