@@ -16,11 +16,11 @@
 		</thead>
 		<tbody>
 		
-{% for b in balances_gbp %}
+{% for acc in gbp_accounts %}
        <tr>
-			<td><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></td>
-			<td class="number {% if b.balance < 0 %}negative{% endif %}">{{ b.balance|intcomma }}</td>
-			<td class="number {% if b.account.on_statement < 0 %}negative{% endif %}">{{ b.account.on_statement|intcomma }}</td>
+			<td><a href="{% url 'money_account' acc.id %}">{{ acc.name }}</a></td>
+			<td class="number {% if acc.get_balance < 0 %}negative{% endif %}">{{ acc.get_balance|intcomma }}</td>
+			<td class="number {% if acc.on_statement < 0 %}negative{% endif %}">{{ acc.on_statement|intcomma }}</td>
 		</tr>
 {% endfor %}
 </tbody>
@@ -42,18 +42,16 @@
 				<th>{% trans 'Account' %}</th>
 				<th class="number">{% trans 'Balance' %}</th>
 				<th class="number">{% trans 'On statement' %}</th>
-				<th class="number">{% trans 'In GBP' %}</th>
 			</tr>
 		</thead>
 		<tbody>
 		
 
-{% for b in balances_eur %}
+{% for acc in eur_accounts %}
        <tr>
-			<td><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></td>
-			<td class="number">{{ b.balance|intcomma }}</td>
-			<td class="number">{{ b.account.on_statement|intcomma }}</td>
-			<td class="number">&nbsp;</td>
+			<td><a href="{% url 'money_account' acc.id %}">{{ acc.name }}</a></td>
+			<td class="number {% if acc.get_balance < 0 %}negative{% endif %}">{{ acc.get_balance|intcomma }}</td>
+			<td class="number {% if acc.on_statement < 0 %}negative{% endif %}">{{ acc.on_statement|intcomma }}</td>
 		</tr>
 {% endfor %}
 
@@ -62,7 +60,6 @@
 			<tr>
 				<th>Total</th>
 				<th class="number">{{ total_eur|intcomma }}</th>
-				<th class="number">&nbsp;</th>
 				<th class="number">&nbsp;</th>
 			</tr>
 		</tfoot>
@@ -80,11 +77,11 @@
 			</tr>
 		</thead>
 		<tbody>
-{% for b in balances_eur_invest %}
+{% for acc in eur_invest %}
        <tr>
-			<td><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></td>
-			<td class="number">{{ b.balance|intcomma }}</td>
-			<td class="number">{{ b.date|date:"D d M Y" }}</td>
+			<td><a href="{% url 'money_account' acc.id %}">{{ acc.name }}</a></td>
+			<td class="number">{{ acc.get_valuation.value|intcomma }}</td>
+			<td class="number">{{ acc.get_valuation.date|date:"D d M Y" }}</td>
 		</tr>
 {% endfor %}
 </tbody>
@@ -108,11 +105,11 @@
 			</tr>
 		</thead>
 		<tbody>
-{% for b in balances_gbp_invest %}
+{% for acc in gbp_invest %}
        <tr>
-			<td><a href="{% url 'money_account' b.account.id %}">{{ b.account.name }}</a></td>
-			<td class="number">{{ b.balance|intcomma }}</td>
-			<td class="number">{{ b.date|date:"D d M Y" }}</td>
+			<td><a href="{% url 'money_account' acc.id %}">{{ acc.name }}</a></td>
+			<td class="number">{{ acc.get_valuation.value|intcomma }}</td>
+			<td class="number">{{ acc.get_valuation.date|date:"D d M Y" }}</td>
 		</tr>
 {% endfor %}
 </tbody>
@@ -126,33 +123,6 @@
 </table>
 
 
-
-
-<h3>Pensions</h3>
-<div class="table-responsive">
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>{% trans 'Account' %}</th>
-				<th class="number">{% trans 'Balance' %}</th>
-				<th class="number">{% trans 'On statement' %}</th>
-				<th class="number">{% trans 'In GBP' %}</th>
-			</tr>
-		</thead>
-		<tbody>
-		
-
-{% for p in pensions %}
-       <tr>
-			<td><a href="{% url 'money_account' p.id %}">{{ p.name }}</a></td>
-			<td class="number">{{ b.balance|intcomma }}</td>
-			<td class="number">{{ b.account.on_statement|intcomma }}</td>
-			<td class="number">&nbsp;</td>
-		</tr>
-{% endfor %}
-
-</tbody>
-</table>
 
 		
 {% endblock %}

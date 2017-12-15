@@ -4,7 +4,8 @@
 {% load humanize %}
 {% block content %}
 
-<h3>{{ account.name }}</h3>
+<h3>{{ account.name }}: {{ account.get_balance|intcomma }}</h3>
+
 
 <div class="table-responsive">
 	<table class="table table-striped">

@@ -25,7 +25,6 @@ ACCOUNT_TYPES = (
         ('property', 'Property'),
         ('pension', 'Pension')
     )
-# Create your models here.
 
 class Account (models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
@@ -42,6 +41,23 @@ class Account (models.Model):
         if trans_deb['debit__sum'] is None:
             return trans_cred['credit__sum']
         return trans_cred['credit__sum'] - trans_deb['debit__sum']
+    
+    def get_balance(self):
+        trans_cred = Transaction.objects.filter(account=self).aggregate(Sum("credit"))
+        trans_deb = Transaction.objects.filter(account=self).aggregate(Sum("debit"))
+        if trans_deb['debit__sum'] is None:
+            return trans_cred['credit__sum']
+        return trans_cred['credit__sum'] - trans_deb['debit__sum']
+        
+    def get_valuation(self):
+        v_tmp = Valuation.objects.filter(account=self).aggregate(date=Max('date'))
+        if v_tmp['date'] is not None:
+            valuation = Valuation.objects.get(account=self, date=v_tmp['date'])
+            return valuation
+        else:
+            return 0
+    
+    
     
 class ExchangeRate (models.Model):
     from_cur = models.CharField(max_length=3,choices=settings.CURRENCIES_AVAILABLE)
