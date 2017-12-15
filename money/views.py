@@ -2,6 +2,7 @@
 import datetime
 
 from django.conf import settings
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db.models import Sum, Max
 from django.shortcuts import render
 from django.template import RequestContext
@@ -37,10 +38,23 @@ def home_view(request):
     
 def account_view(request, account_id):
     account = Account.objects.get(pk=account_id)
-    transactions = Transaction.objects.filter(account=account).order_by('-date')[:100]
+    trans = Transaction.objects.filter(account=account).order_by('-date')
+    
+    paginator = Paginator(trans, 100)
+    
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+    
+    try:
+        transactions = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        transactions = paginator.page(paginator.num_pages)
+    
     return render(request,'money/account.html',
                               {'account': account,
-                               'transactions': transactions, })
+                               'page': transactions, })
     
 def update_regular_payments():
     payments = RegularPayment.objects.filter(next_date__lte=timezone.now())

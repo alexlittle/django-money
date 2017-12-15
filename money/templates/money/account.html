@@ -7,6 +7,10 @@
 <h3>{{ account.name }}: {{ account.get_balance|intcomma }}</h3>
 
 
+{% if page.object_list.count > 0  %}
+	{% include "includes/transaction_nav.html" %}
+{% endif %}
+
 <div class="table-responsive">
 	<table class="table table-striped">
 		<thead>
@@ -21,7 +25,7 @@
 		</thead>
 		<tbody>
 		
-{% for t in transactions %}
+{% for t in page.object_list %}
  <tr>
 	<td>{{ t.date|naturalday  }}</td>
 	<td>{{ t.description }}</td>
@@ -33,4 +37,9 @@
 {% endfor %}
 </tbody>
 </table>
+
+{% if page.object_list.count > 0  %}
+	{% include "includes/transaction_nav.html" %}
+{% endif %}
+
 {% endblock %}
