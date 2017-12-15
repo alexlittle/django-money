@@ -1,11 +1,9 @@
+
+from django.conf import settings
 from django.db import models
 from django.db.models import Sum, Max
 from django.utils import timezone
-
-CURRENCY_TYPES = (
-        ('GBP', 'GBP'),
-        ('EUR', 'EUR'),
-    )
+from django.utils.translation import ugettext_lazy as _
 
 PAYMENT_TYPES = (
         ('Visa', 'Visa'),
@@ -32,7 +30,7 @@ ACCOUNT_TYPES = (
 class Account (models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
     active = models.BooleanField(blank=False, default=True)
-    currency = models.CharField(max_length=3,choices=CURRENCY_TYPES)
+    currency = models.CharField(max_length=3,choices=settings.CURRENCIES_AVAILABLE)
     type = models.CharField(max_length=100, choices=ACCOUNT_TYPES, default='cash')
     
     def __unicode__(self):
@@ -46,8 +44,8 @@ class Account (models.Model):
         return trans_cred['credit__sum'] - trans_deb['debit__sum']
     
 class ExchangeRate (models.Model):
-    from_cur = models.CharField(max_length=3,choices=CURRENCY_TYPES)
-    to_cur = models.CharField(max_length=3,choices=CURRENCY_TYPES)
+    from_cur = models.CharField(max_length=3,choices=settings.CURRENCIES_AVAILABLE)
+    to_cur = models.CharField(max_length=3,choices=settings.CURRENCIES_AVAILABLE)
     date = models.DateTimeField(default=timezone.now)
     rate = models.DecimalField(decimal_places=5, max_digits=20)
    

@@ -1,12 +1,16 @@
 
 import datetime
 
+from django.conf import settings
 from django.db.models import Sum, Max
 from django.shortcuts import render
 from django.template import RequestContext
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 
 from money.models import Account, Transaction, Valuation, RegularPayment
+
+
 
 # Create your views here.
 
@@ -60,6 +64,8 @@ def home_view(request):
         b['account'] = Account.objects.get(pk=b['account'])
         total_eur += b['balance']
      
+    pensions_gbp = Account.objects.filter(type='pension',active=True, currency='GBP').order_by('name')
+    
     pensions_gbp = Account.objects.filter(type='pension',active=True, currency='GBP').order_by('name')
        
     return render(request, 'money/home.html',
