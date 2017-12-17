@@ -59,13 +59,13 @@ def graph_view(request):
                      + dateutil.relativedelta.relativedelta(day=1, months=+1, days=-1)
         
         cash_total = 0
-        accs = Account.objects.filter(active=True, type='cash') 
+        accs = Account.objects.filter(type='cash') 
         for acc in accs:
             if Account.get_balance_base_currency_at_date(acc,last_day):
                 cash_total += Account.get_balance_base_currency_at_date(acc,last_day)
         
         invest_total = 0 
-        accs = Account.objects.filter(active=True, type='invest') 
+        accs = Account.objects.filter(type='invest') 
         for acc in accs:
             if Account.get_valuation_base_currency_at_date(acc,last_day):
                 invest_total += Account.get_valuation_base_currency_at_date(acc,last_day)

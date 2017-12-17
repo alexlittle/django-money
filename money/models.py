@@ -184,6 +184,7 @@ class ExchangeRate (models.Model):
    
     @staticmethod
     def at_date(date, from_currency, to_currency):
+        
         tmp_date = ExchangeRate.objects.filter(from_cur=from_currency, to_cur=to_currency, date__lte=date).aggregate(date=Max('date'))
         if tmp_date['date'] is not None:
             rate = ExchangeRate.objects.get(from_cur=from_currency, to_cur=to_currency, date=tmp_date['date'])
