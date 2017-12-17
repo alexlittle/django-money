@@ -71,5 +71,44 @@
 			</tfoot>
 	</table>
 {% endfor %}
-		
+	
+	
+<h3>Property</h3>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Account' %}</th>
+				<th class="number">{% trans 'Valuation' %}</th>
+				<th class="number">{% trans 'Valuation date' %}</th>
+				<th class="number">{% trans 'In Base Currency' %} ({{ BASE_CURRENCY }})</th>
+			</tr>
+		</thead>
+		<tbody>
+
+{% for prop in property.accounts %}
+       <tr>
+		<td>{{ prop.name }}</td>
+		{% if prop.get_valuation %}
+			<td class="number">{{ prop.get_valuation.value|intcomma }} ({{ prop.currency }})</td>
+			<td class="number">{{ prop.get_valuation.date|date:"D d M Y" }}</td>
+			<td class="number">{{ prop.get_valuation_base_currency|floatformat:2|intcomma }}</td>
+		{% else %}
+			<td class="number">&nbsp;</td>
+			<td class="number">&nbsp;</td>
+			<td class="number">&nbsp;</td>
+		{% endif %}
+	</tr>
+{% endfor %}
+</tbody>
+<tfoot>
+			<tr>
+				<th>Total</th>
+				<td class="number">&nbsp;</td>
+				<th>&nbsp;</th>
+				<th class="number">{{ property.total_base_currency|floatformat:2|intcomma }}</th>
+			</tr>
+		</tfoot>
+</table>
+	
 {% endblock %}

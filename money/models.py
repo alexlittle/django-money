@@ -55,7 +55,7 @@ class Account (models.Model):
             valuation = Valuation.objects.get(account=self, date=v_tmp['date'])
             return valuation
         else:
-            return 0
+            return None
     
     def get_balance_base_currency(self):
         if self.currency == settings.BASE_CURRENCY:
@@ -109,6 +109,14 @@ class Account (models.Model):
     @staticmethod
     def get_valuation_base_currency_total(type, currency):
         accs = Account.objects.filter(active=True,type=type, currency=currency)
+        total = 0
+        for acc in accs:
+            total += acc.get_valuation_base_currency()
+        return total
+    
+    @staticmethod
+    def get_val_base_currency_total(type):
+        accs = Account.objects.filter(active=True,type=type)
         total = 0
         for acc in accs:
             total += acc.get_valuation_base_currency()

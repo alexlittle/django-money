@@ -33,10 +33,14 @@ def home_view(request):
         currency['total_base_currency'] = Account.get_valuation_base_currency_total('invest', k)   
         invest_accounts.append(currency) 
      
-        
+    property = {}
+    property['accounts'] = Account.objects.filter(active=True, type='property').order_by('name') 
+    property['total_base_currency'] = Account.get_val_base_currency_total('property')   
+      
     return render(request, 'money/home.html',
                               {'cash_accounts': cash_accounts,
-                               'invest_accounts': invest_accounts
+                               'invest_accounts': invest_accounts,
+                               'property': property,
                                })
     
 def account_view(request, account_id):
