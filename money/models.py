@@ -48,11 +48,28 @@ class Account (models.Model):
         if trans_deb['debit__sum'] is None:
             return trans_cred['credit__sum']
         return trans_cred['credit__sum'] - trans_deb['debit__sum']
-        
+     
+    @staticmethod   
+    def get_balance_at_date(account, date):
+        trans_cred = Transaction.objects.filter(account=account, date__lte=date).aggregate(Sum("credit"))
+        trans_deb = Transaction.objects.filter(account=account, date__lte=date).aggregate(Sum("debit"))
+        if trans_deb['debit__sum'] is None:
+            return trans_cred['credit__sum']
+        return trans_cred['credit__sum'] - trans_deb['debit__sum']
+    
     def get_valuation(self):
         v_tmp = Valuation.objects.filter(account=self).aggregate(date=Max('date'))
         if v_tmp['date'] is not None:
             valuation = Valuation.objects.get(account=self, date=v_tmp['date'])
+            return valuation
+        else:
+            return None
+        
+    @staticmethod     
+    def get_valuation_at_date(account, date):
+        v_tmp = Valuation.objects.filter(account=account, date__lte=date).aggregate(date=Max('date'))
+        if v_tmp['date'] is not None:
+            valuation = Valuation.objects.get(account=account, date=v_tmp['date'])
             return valuation
         else:
             return None
@@ -63,6 +80,17 @@ class Account (models.Model):
         else:
             rate = ExchangeRate.most_recent(settings.BASE_CURRENCY, self.currency)
             return self.get_balance()/rate
+    
+    @staticmethod   
+    def get_balance_base_currency_at_date(account, date):
+        if account.currency == settings.BASE_CURRENCY:
+            return Account.get_balance_at_date(account, date)
+        else:
+            rate = ExchangeRate.at_date(date, settings.BASE_CURRENCY, account.currency)
+            if Account.get_balance_at_date(account, date):
+                return Account.get_balance_at_date(account, date)/rate
+            else:
+                return 0
         
     def get_valuation_base_currency(self):
         if self.currency == settings.BASE_CURRENCY:
@@ -71,6 +99,20 @@ class Account (models.Model):
             rate = ExchangeRate.most_recent(settings.BASE_CURRENCY, self.currency)
             return self.get_valuation().value/rate
      
+    @staticmethod  
+    def get_valuation_base_currency_at_date(account, date):
+        if account.currency == settings.BASE_CURRENCY:
+            if Account.get_valuation_at_date(account, date):
+                return Account.get_valuation_at_date(account, date).value
+            else:
+                return 0
+        else:
+            rate = ExchangeRate.at_date(date, settings.BASE_CURRENCY, account.currency)
+            if Account.get_valuation_at_date(account, date):
+                return Account.get_valuation_at_date(account, date).value/rate
+            else:
+                return 0
+    
     @staticmethod
     def get_balance_total(type, currency):
         accs = Account.objects.filter(active=True,type=type, currency=currency)
@@ -139,6 +181,18 @@ class ExchangeRate (models.Model):
             rate = ExchangeRate.objects.get(from_cur=to_currency, to_cur=from_currency, date=tmp_date['date'])
             return 1/rate.rate   
         return 1  
+   
+    @staticmethod
+    def at_date(date, from_currency, to_currency):
+        tmp_date = ExchangeRate.objects.filter(from_cur=from_currency, to_cur=to_currency, date__lte=date).aggregate(date=Max('date'))
+        if tmp_date['date'] is not None:
+            rate = ExchangeRate.objects.get(from_cur=from_currency, to_cur=to_currency, date=tmp_date['date'])
+            return rate.rate
+        tmp_date = ExchangeRate.objects.filter(from_cur=to_currency, to_cur=from_currency, date__lte=date).aggregate(date=Max('date'))
+        if tmp_date['date'] is not None:
+            rate = ExchangeRate.objects.get(from_cur=to_currency, to_cur=from_currency, date=tmp_date['date'])
+            return 1/rate.rate   
+        return 1 
    
 class RegularPayment(models.Model):
     account = models.ForeignKey(Account)

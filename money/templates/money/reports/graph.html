@@ -16,19 +16,16 @@
 		var data = new google.visualization.DataTable();
 		data.addColumn('string', "{% trans 'Date' %}");
 		data.addColumn('number', "{% trans 'Total' %}");
-		data.addColumn('number', "{% trans 'Valuation GBP' %}");
-		data.addColumn('number', "{% trans 'Valuation EUR' %}");
-		data.addColumn('number', "{% trans 'Standard GBP' %}");
-		data.addColumn('number', "{% trans 'Standard EUR' %}");
+		data.addColumn('number', "{% trans 'Cash' %}");
+		data.addColumn('number', "{% trans 'Investment' %}");
 		data.addRows( {{ balances|length }} );
 		
 		{% for b in balances %}
 			data.setValue({{ forloop.counter0 }},0,'{{ b.date|date:"Y-M" }}');
 			data.setValue({{ forloop.counter0 }},1,{{ b.total }});
-			data.setValue({{ forloop.counter0 }},2,{{ b.valuation_gbp }});
-			data.setValue({{ forloop.counter0 }},3,{{ b.valuation_eur }});
-			data.setValue({{ forloop.counter0 }},4,{{ b.non_valuation_gbp }});
-			data.setValue({{ forloop.counter0 }},5,{{ b.non_valuation_eur }});
+			data.setValue({{ forloop.counter0 }},2,{{ b.cash }});
+			data.setValue({{ forloop.counter0 }},3,{{ b.invest }});
+
 		{% endfor %}
 
         var chart = new google.visualization.LineChart(document.getElementById('graph_div'));
