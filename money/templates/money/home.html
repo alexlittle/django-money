@@ -30,9 +30,9 @@
 	<tfoot>
 				<tr>
 					<th>Total</th>
-					<th class="number">{{ total_gbp|intcomma }}</th>
-					<th>&nbsp;</th>
-					<th>&nbsp;</th>
+					<th class="number">{{ curr.total_balance|intcomma }}</th>
+					<th class="number">{{ curr.total_on_statement|intcomma }}</th>
+					<th class="number">{{ curr.total_base_currency|floatformat:2|intcomma }}</th>
 				</tr>
 			</tfoot>
 	</table>
@@ -64,9 +64,9 @@
 	<tfoot>
 				<tr>
 					<th>Total</th>
-					<th class="number">{{ total_gbp|intcomma }}</th>
+					<th class="number">{{ curr.total_valuation|intcomma }}</th>
 					<th>&nbsp;</th>
-					<th>&nbsp;</th>
+					<th class="number">{{ curr.total_base_currency|floatformat:2|intcomma }}</th>
 				</tr>
 			</tfoot>
 	</table>

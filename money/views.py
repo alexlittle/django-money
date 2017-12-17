@@ -18,14 +18,19 @@ def home_view(request):
     for k,v in settings.CURRENCIES_AVAILABLE:
         currency = {}
         currency['currency'] = k
-        currency['account'] = Account.objects.filter(active=True, type='cash', currency=k).order_by('name')        
+        currency['account'] = Account.objects.filter(active=True, type='cash', currency=k).order_by('name')  
+        currency['total_balance'] = Account.get_balance_total('cash', k)  
+        currency['total_on_statement'] = Account.get_on_statment_total('cash', k)    
+        currency['total_base_currency'] = Account.get_balance_base_currency_total('cash', k)    
         cash_accounts.append(currency)
     
     invest_accounts = []
     for k,v in settings.CURRENCIES_AVAILABLE:
         currency = {}
         currency['currency'] = k
-        currency['account'] = Account.objects.filter(active=True, type='invest', currency=k).order_by('name')        
+        currency['account'] = Account.objects.filter(active=True, type='invest', currency=k).order_by('name')   
+        currency['total_valuation'] = Account.get_valuation_total('invest', k)    
+        currency['total_base_currency'] = Account.get_valuation_base_currency_total('invest', k)   
         invest_accounts.append(currency) 
      
         

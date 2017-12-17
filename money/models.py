@@ -70,7 +70,50 @@ class Account (models.Model):
         else:
             rate = ExchangeRate.most_recent(settings.BASE_CURRENCY, self.currency)
             return self.get_valuation().value/rate
+     
+    @staticmethod
+    def get_balance_total(type, currency):
+        accs = Account.objects.filter(active=True,type=type, currency=currency)
+        total = 0
+        for acc in accs:
+            total += acc.get_balance()
+        return total
         
+      
+    @staticmethod
+    def get_on_statment_total(type, currency):
+        accs = Account.objects.filter(active=True, type=type, currency=currency)
+        total = 0
+        for acc in accs:
+            if acc.on_statement() is not None:
+                total += acc.on_statement()
+        return total  
+     
+    @staticmethod
+    def get_balance_base_currency_total(type, currency):
+        accs = Account.objects.filter(active=True,type=type, currency=currency)
+        total = 0
+        for acc in accs:
+            total += acc.get_balance_base_currency()
+        return total   
+    
+    @staticmethod
+    def get_valuation_total(type, currency):
+        accs = Account.objects.filter(active=True,type=type, currency=currency)
+        total = 0
+        for acc in accs:
+            if acc.get_valuation() is not 0:
+                total += acc.get_valuation().value
+        return total
+    
+    @staticmethod
+    def get_valuation_base_currency_total(type, currency):
+        accs = Account.objects.filter(active=True,type=type, currency=currency)
+        total = 0
+        for acc in accs:
+            total += acc.get_valuation_base_currency()
+        return total
+            
 class ExchangeRate (models.Model):
     from_cur = models.CharField(max_length=3,choices=settings.CURRENCIES_AVAILABLE)
     to_cur = models.CharField(max_length=3,choices=settings.CURRENCIES_AVAILABLE)
