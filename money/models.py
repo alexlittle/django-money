@@ -57,13 +57,37 @@ class Account (models.Model):
         else:
             return 0
     
-    
-    
+    def get_balance_base_currency(self):
+        if self.currency == settings.BASE_CURRENCY:
+            return self.get_balance()
+        else:
+            rate = ExchangeRate.most_recent(settings.BASE_CURRENCY, self.currency)
+            return self.get_balance()/rate
+        
+    def get_valuation_base_currency(self):
+        if self.currency == settings.BASE_CURRENCY:
+            return self.get_valuation().value
+        else:
+            rate = ExchangeRate.most_recent(settings.BASE_CURRENCY, self.currency)
+            return self.get_valuation().value/rate
+        
 class ExchangeRate (models.Model):
     from_cur = models.CharField(max_length=3,choices=settings.CURRENCIES_AVAILABLE)
     to_cur = models.CharField(max_length=3,choices=settings.CURRENCIES_AVAILABLE)
     date = models.DateTimeField(default=timezone.now)
     rate = models.DecimalField(decimal_places=5, max_digits=20)
+    
+    @staticmethod
+    def most_recent(from_currency, to_currency):
+        tmp_date = ExchangeRate.objects.filter(from_cur=from_currency, to_cur=to_currency).aggregate(date=Max('date'))
+        if tmp_date['date'] is not None:
+            rate = ExchangeRate.objects.get(from_cur=from_currency, to_cur=to_currency, date=tmp_date['date'])
+            return rate.rate
+        tmp_date = ExchangeRate.objects.filter(from_cur=to_currency, to_cur=from_currency).aggregate(date=Max('date'))
+        if tmp_date['date'] is not None:
+            rate = ExchangeRate.objects.get(from_cur=to_currency, to_cur=from_currency, date=tmp_date['date'])
+            return 1/rate.rate   
+        return 1  
    
 class RegularPayment(models.Model):
     account = models.ForeignKey(Account)

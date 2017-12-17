@@ -14,26 +14,24 @@ from money.models import Account, Transaction, Valuation, RegularPayment
 def home_view(request):
     update_regular_payments()
     
-    gbp_accounts = Account.objects.filter(active=True, type='cash', currency='GBP').order_by('name')
-    eur_accounts = Account.objects.filter(active=True, type='cash', currency='EUR').order_by('name')
-      
-    gbp_invest = Account.objects.filter(active=True, type='invest', currency='GBP').order_by('name')
-    eur_invest = Account.objects.filter(active=True, type='invest', currency='EUR').order_by('name')
-        
-     
-    pensions = None
-    
-    property = None
-       
-       
+    cash_accounts = []
     for k,v in settings.CURRENCIES_AVAILABLE:
-        print k
+        currency = {}
+        currency['currency'] = k
+        currency['account'] = Account.objects.filter(active=True, type='cash', currency=k).order_by('name')        
+        cash_accounts.append(currency)
+    
+    invest_accounts = []
+    for k,v in settings.CURRENCIES_AVAILABLE:
+        currency = {}
+        currency['currency'] = k
+        currency['account'] = Account.objects.filter(active=True, type='invest', currency=k).order_by('name')        
+        invest_accounts.append(currency) 
+     
         
     return render(request, 'money/home.html',
-                              {'gbp_accounts': gbp_accounts,
-                               'eur_accounts': eur_accounts,
-                               'gbp_invest': gbp_invest,
-                               'eur_invest': eur_invest,
+                              {'cash_accounts': cash_accounts,
+                               'invest_accounts': invest_accounts
                                })
     
 def account_view(request, account_id):

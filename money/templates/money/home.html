@@ -4,125 +4,72 @@
 
 {% block content %}
 
-<h3>Current Accounts (GBP)</h3>
-<div class="table-responsive">
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>{% trans 'Account' %}</th>
-				<th class="number">{% trans 'Balance' %}</th>
-				<th class="number">{% trans 'On Statement' %}</th>
-			</tr>
-		</thead>
-		<tbody>
-		
-{% for acc in gbp_accounts %}
-       <tr>
-			<td><a href="{% url 'money_account' acc.id %}">{{ acc.name }}</a></td>
-			<td class="number {% if acc.get_balance < 0 %}negative{% endif %}">{{ acc.get_balance|intcomma }}</td>
-			<td class="number {% if acc.on_statement < 0 %}negative{% endif %}">{{ acc.on_statement|intcomma }}</td>
-		</tr>
-{% endfor %}
-</tbody>
-<tfoot>
-			<tr>
-				<th>Total</th>
-				<th class="number">{{ total_gbp|intcomma }}</th>
-				<th>&nbsp;</th>
-			</tr>
-		</tfoot>
-</table>
+{% for curr in cash_accounts %}
+	<h3>Current Accounts ({{ curr.currency}})</h3>
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>{% trans 'Account' %}</th>
+					<th class="number">{% trans 'Balance' %} ({{ curr.currency}})</th>
+					<th class="number">{% trans 'On Statement' %} ({{ curr.currency}})</th>
+					<th class="number">{% trans 'In Base Currency' %} ({{ BASE_CURRENCY }})</th>
+				</tr>
+			</thead>
+			<tbody>
 
-
-<h3>Current Accounts (EUR)</h3>
-<div class="table-responsive">
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>{% trans 'Account' %}</th>
-				<th class="number">{% trans 'Balance' %}</th>
-				<th class="number">{% trans 'On statement' %}</th>
+	{% for acc in curr.account %}
+	       <tr>
+				<td><a href="{% url 'money_account' acc.id %}">{{ acc.name }}</a></td>
+				<td class="number {% if acc.get_balance < 0 %}negative{% endif %}">{{ acc.get_balance|intcomma }}</td>
+				<td class="number {% if acc.on_statement < 0 %}negative{% endif %}">{{ acc.on_statement|intcomma }}</td>
+				<td class="number {% if acc.get_balance_base_currency < 0 %}negative{% endif %}">{{ acc.get_balance_base_currency|floatformat:2|intcomma }}</td>
 			</tr>
-		</thead>
-		<tbody>
-		
-
-{% for acc in eur_accounts %}
-       <tr>
-			<td><a href="{% url 'money_account' acc.id %}">{{ acc.name }}</a></td>
-			<td class="number {% if acc.get_balance < 0 %}negative{% endif %}">{{ acc.get_balance|intcomma }}</td>
-			<td class="number {% if acc.on_statement < 0 %}negative{% endif %}">{{ acc.on_statement|intcomma }}</td>
-		</tr>
+	{% endfor %}
+	</tbody>
+	<tfoot>
+				<tr>
+					<th>Total</th>
+					<th class="number">{{ total_gbp|intcomma }}</th>
+					<th>&nbsp;</th>
+					<th>&nbsp;</th>
+				</tr>
+			</tfoot>
+	</table>
 {% endfor %}
 
-</tbody>
-<tfoot>
-			<tr>
-				<th>Total</th>
-				<th class="number">{{ total_eur|intcomma }}</th>
-				<th class="number">&nbsp;</th>
-			</tr>
-		</tfoot>
-</table>
+{% for curr in invest_accounts %}
+	<h3>Investment Accounts ({{ curr.currency}})</h3>
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>{% trans 'Account' %}</th>
+					<th class="number">{% trans 'Valuation' %}</th>
+					<th class="number">{% trans 'Valuation date' %}</th>
+					<th class="number">{% trans 'In Base Currency' %} ({{ BASE_CURRENCY }})</th>
+				</tr>
+			</thead>
+			<tbody>
 
-
-<h3>Investment Accounts (EUR)</h3>
-<div class="table-responsive">
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>{% trans 'Account' %}</th>
-				<th class="number">{% trans 'Valuation' %}</th>
-				<th class="number">{% trans 'Valuation date' %}</th>
-			</tr>
-		</thead>
-		<tbody>
-{% for acc in eur_invest %}
-       <tr>
+	{% for acc in curr.account %}
+	       <tr>
 			<td><a href="{% url 'money_account' acc.id %}">{{ acc.name }}</a></td>
 			<td class="number">{{ acc.get_valuation.value|intcomma }}</td>
 			<td class="number">{{ acc.get_valuation.date|date:"D d M Y" }}</td>
+			<td class="number">{{ acc.get_valuation_base_currency|floatformat:2|intcomma }}</td>
 		</tr>
+	{% endfor %}
+	</tbody>
+	<tfoot>
+				<tr>
+					<th>Total</th>
+					<th class="number">{{ total_gbp|intcomma }}</th>
+					<th>&nbsp;</th>
+					<th>&nbsp;</th>
+				</tr>
+			</tfoot>
+	</table>
 {% endfor %}
-</tbody>
-<tfoot>
-			<tr>
-				<th>Total</th>
-				<th class="number">{{ total_eur_invest|intcomma }}</th>
-				<th>&nbsp;</th>
-			</tr>
-		</tfoot>
-</table>
-
-<h3>Investment Accounts (GBP)</h3>
-<div class="table-responsive">
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>{% trans 'Account' %}</th>
-				<th class="number">{% trans 'Valuation' %}</th>
-				<th class="number">{% trans 'Valuation date' %}</th>
-			</tr>
-		</thead>
-		<tbody>
-{% for acc in gbp_invest %}
-       <tr>
-			<td><a href="{% url 'money_account' acc.id %}">{{ acc.name }}</a></td>
-			<td class="number">{{ acc.get_valuation.value|intcomma }}</td>
-			<td class="number">{{ acc.get_valuation.date|date:"D d M Y" }}</td>
-		</tr>
-{% endfor %}
-</tbody>
-<tfoot>
-			<tr>
-				<th>Total</th>
-				<th class="number">{{ total_gbp_invest|intcomma }}</th>
-				<th>&nbsp;</th>
-			</tr>
-		</tfoot>
-</table>
-
-
-
 		
 {% endblock %}

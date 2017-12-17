@@ -1,5 +1,7 @@
+
+
 def modify(settings):
     
-    settings['BASE_CURRENCY'] = 'GBP'
+    settings['BASE_CURRENCY'] = 'EUR'
     
-    settings['CURRENCIES_AVAILABLE'] = (('GBP', 'GBP'),('EUR','EUR'))
+    settings['CURRENCIES_AVAILABLE'] = (('EUR','EUR'),('GBP', 'GBP'))
