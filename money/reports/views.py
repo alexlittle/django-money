@@ -10,39 +10,72 @@ from django.utils import timezone
 from money.models import Account, Transaction, Valuation, RegularPayment, ExchangeRate
 
 
-def by_month_view(request,currency='GBP'):
+def by_month_view(request):
     
-    transactions = Transaction.objects.filter(account__currency=currency).exclude(payment_type='Transfer').\
-                                        extra(select={'year': "EXTRACT(year FROM date)", 'month': "EXTRACT(month FROM date)"}).\
-                                        values('year','month').\
-                                        annotate(sum_in=Sum('credit'),sum_out=Sum('debit')).\
-                                        order_by('-year','-month')
+    tz = timezone.get_default_timezone()
+    now = datetime.datetime.now()
     
-    balance = 0
-    for b in transactions:
-        b['balance'] = b['sum_in'] - b['sum_out']
-
+    report = []
+    
+    for i in range(96,-1,-1):
+        report_month = now - dateutil.relativedelta.relativedelta(months=i)
+        
+        report_row = {}
+        report_row['month'] = report_month.month
+        report_row['year'] = report_month.year
+        report_row['sum_in'] = 0
+        report_row['sum_out'] = 0
+        for k,v in settings.CURRENCIES_AVAILABLE:
+            transactions = Transaction.objects.filter(account__currency=k, date__month=report_month.month, date__year=report_month.year).exclude(payment_type='Transfer').\
+                                                extra(select={'year': "EXTRACT(year FROM date)", 'month': "EXTRACT(month FROM date)"}).\
+                                                values('year','month').\
+                                                annotate(sum_in=Sum('credit'),sum_out=Sum('debit'))
+            date = datetime.datetime(report_month.year, report_month.month, 1, tzinfo=tz)
+            
+            rate = ExchangeRate.at_date(date, settings.BASE_CURRENCY, k)
+            for t in transactions:
+                report_row['sum_in']  += t['sum_in']/rate
+                report_row['sum_out']  += t['sum_out']/rate
+        report_row['balance'] = report_row['sum_in'] - report_row['sum_out']
+                
+        report.append(report_row)
+        
+    report.reverse()
     return render(request,'money/reports/by_month.html',
-                              {
-                               'currency': currency,
-                               'transactions': transactions})
+                              {'report': report})
     
-def by_year_view(request,currency='GBP'):
+def by_year_view(request):
     
-    transactions = Transaction.objects.filter(account__currency=currency).exclude(payment_type='Transfer').\
-                                        extra(select={'year': "EXTRACT(year FROM date)"}).\
-                                        values('year').\
-                                        annotate(sum_in=Sum('credit'),sum_out=Sum('debit')).\
-                                        order_by('-year')
+    tz = timezone.get_default_timezone()
+    now = datetime.datetime.now()
     
-    balance = 0
-    for b in transactions:
-        b['balance'] = b['sum_in'] - b['sum_out']
-
+    report = []
+    
+    for i in range(10,-1,-1):
+        report_year = now - dateutil.relativedelta.relativedelta(years=i)
+        
+        report_row = {}
+        report_row['year'] = report_year.year
+        report_row['sum_in'] = 0
+        report_row['sum_out'] = 0
+        for k,v in settings.CURRENCIES_AVAILABLE:
+            transactions = Transaction.objects.filter(account__currency=k, date__year=report_year.year).exclude(payment_type='Transfer').\
+                                                extra(select={'year': "EXTRACT(year FROM date)"}).\
+                                                values('year').\
+                                                annotate(sum_in=Sum('credit'),sum_out=Sum('debit'))
+            date = datetime.datetime(report_year.year, 12, 31, tzinfo=tz)
+            
+            rate = ExchangeRate.at_date(date, settings.BASE_CURRENCY, k)
+            for t in transactions:
+                report_row['sum_in']  += t['sum_in']/rate
+                report_row['sum_out']  += t['sum_out']/rate
+        report_row['balance'] = report_row['sum_in'] - report_row['sum_out']
+                
+        report.append(report_row)
+        
+    report.reverse()
     return render(request,'money/reports/by_year.html',
-                              {
-                               'currency': currency,
-                               'transactions': transactions})
+                               {'report': report})
     
     
 def graph_view(request):
