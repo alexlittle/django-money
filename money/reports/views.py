@@ -94,19 +94,29 @@ def graph_view(request):
         cash_total = 0
         accs = Account.objects.filter(type='cash') 
         for acc in accs:
-            if Account.get_balance_base_currency_at_date(acc,last_day):
-                cash_total += Account.get_balance_base_currency_at_date(acc,last_day)
+            acc_balance = Account.get_balance_base_currency_at_date(acc,last_day)
+            if acc_balance:
+                cash_total += acc_balance
         
         invest_total = 0 
         accs = Account.objects.filter(type='invest') 
         for acc in accs:
-            if Account.get_valuation_base_currency_at_date(acc,last_day):
-                invest_total += Account.get_valuation_base_currency_at_date(acc,last_day)
+            acc_balance = Account.get_valuation_base_currency_at_date(acc,last_day)
+            if acc_balance:
+                invest_total += acc_balance
+        
+        property_total = 0 
+        accs = Account.objects.filter(type='property') 
+        for acc in accs:
+            acc_balance = Account.get_valuation_base_currency_at_date(acc,last_day)
+            if acc_balance:
+                property_total += acc_balance
                                             
         balance['date'] = last_day
-        balance['total'] = cash_total + invest_total
+        balance['total'] = cash_total + invest_total + property_total
         balance['cash'] = cash_total
         balance['invest'] = invest_total
+        balance['property'] = property_total
         
         balances.append(balance) 
                             

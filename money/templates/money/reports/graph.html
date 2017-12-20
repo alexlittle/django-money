@@ -18,6 +18,7 @@
 		data.addColumn('number', "{% trans 'Total' %}");
 		data.addColumn('number', "{% trans 'Cash' %}");
 		data.addColumn('number', "{% trans 'Investment' %}");
+		data.addColumn('number', "{% trans 'Property' %}");
 		data.addRows( {{ balances|length }} );
 		
 		{% for b in balances %}
@@ -25,6 +26,7 @@
 			data.setValue({{ forloop.counter0 }},1,{{ b.total }});
 			data.setValue({{ forloop.counter0 }},2,{{ b.cash }});
 			data.setValue({{ forloop.counter0 }},3,{{ b.invest }});
+			data.setValue({{ forloop.counter0 }},4,{{ b.property }});
 
 		{% endfor %}
 
