@@ -25,8 +25,9 @@ def by_month_view(request):
         report_row['year'] = report_month.year
         report_row['sum_in'] = 0
         report_row['sum_out'] = 0
+        
         for k,v in settings.CURRENCIES_AVAILABLE:
-            transactions = Transaction.objects.filter(account__currency=k, date__month=report_month.month, date__year=report_month.year).exclude(payment_type='Transfer').\
+            transactions = Transaction.objects.filter(account__currency=k, date__year=report_month.year, date__month=report_month.month).exclude(payment_type='Transfer').\
                                                 extra(select={'year': "EXTRACT(year FROM date)", 'month': "EXTRACT(month FROM date)"}).\
                                                 values('year','month').\
                                                 annotate(sum_in=Sum('credit'),sum_out=Sum('debit'))
@@ -38,8 +39,7 @@ def by_month_view(request):
                 report_row['sum_out']  += t['sum_out']/rate
         report_row['balance'] = report_row['sum_in'] - report_row['sum_out']
                 
-        report.append(report_row)
-        
+        report.append(report_row)  
     report.reverse()
     return render(request,'money/reports/by_month.html',
                               {'report': report})
