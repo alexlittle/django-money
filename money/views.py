@@ -68,7 +68,6 @@ def update_regular_payments():
     for rp in payments:
         # add to transactions
         transaction = Transaction(account=rp.account, payment_type=rp.payment_type, credit=rp.credit, debit = rp.debit, description=rp.description )
-        print transaction
         transaction.save()
         # update regular payment
         next_date = rp.next_date + datetime.timedelta(days=31)

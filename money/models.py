@@ -196,7 +196,7 @@ class ExchangeRate (models.Model):
         return 1 
    
 class RegularPayment(models.Model):
-    account = models.ForeignKey(Account)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
     description = models.CharField(max_length=100, blank=False, null=False)
     credit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     debit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
@@ -209,7 +209,7 @@ class Tag(models.Model):
     
     
 class Transaction(models.Model):
-    account = models.ForeignKey(Account)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
     payment_type = models.CharField(max_length=15,choices=PAYMENT_TYPES)
     date = models.DateTimeField(default=timezone.now)
     credit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
@@ -218,11 +218,11 @@ class Transaction(models.Model):
     description = models.CharField(max_length=100, blank=False, null=False)
     
 class Valuation(models.Model):
-    account = models.ForeignKey(Account)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
     date = models.DateTimeField(default=timezone.now)
     value = models.DecimalField(decimal_places=2, max_digits=20)
     
 class TransactionTag(models.Model):
-    transaction = models.ForeignKey(Transaction)
-    tag = models.ForeignKey(Tag)
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     

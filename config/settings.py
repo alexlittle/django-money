@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 import os,sys
 
-from django.core import urlresolvers
+from django import urls
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__)) 
 if BASE_DIR not in sys.path:
@@ -20,7 +20,7 @@ if BASE_DIR not in sys.path:
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost.money']
+ALLOWED_HOSTS = ['localhost.money', 'localhost']
 
 ADMINS = (
     ('Alex Little', 'consult@alexlittle.net'),
@@ -47,14 +47,14 @@ INSTALLED_APPS = [
 ]
 
 
-MIDDLEWARE_CLASSES = [
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+MIDDLEWARE = [
+'django.middleware.security.SecurityMiddleware',
+'django.contrib.sessions.middleware.SessionMiddleware',
+'django.middleware.common.CommonMiddleware',
+'django.middleware.csrf.CsrfViewMiddleware',
+'django.contrib.auth.middleware.AuthenticationMiddleware',
+'django.contrib.messages.middleware.MessageMiddleware',
+'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 
@@ -118,7 +118,7 @@ EMAIL_FILE_PATH = '/tmp/'
 
 #####################################################################
 # Authentication
-LOGIN_URL = urlresolvers.reverse_lazy('profile_login')
+LOGIN_URL = urls.reverse_lazy('profile_login')
 AUTHENTICATION_BACKENDS =  [
     'django.contrib.auth.backends.ModelBackend',
 ]
