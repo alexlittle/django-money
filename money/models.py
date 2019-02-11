@@ -32,7 +32,7 @@ class Account (models.Model):
     currency = models.CharField(max_length=3,choices=settings.CURRENCIES_AVAILABLE)
     type = models.CharField(max_length=100, choices=ACCOUNT_TYPES, default='cash')
     
-    def __unicode__(self):
+    def __str__(self):
         return self.name
     
     def on_statement(self):
