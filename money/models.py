@@ -1,4 +1,4 @@
-
+import os
 from django.conf import settings
 from django.db import models
 from django.db.models import Sum, Max
@@ -118,7 +118,8 @@ class Account (models.Model):
         accs = Account.objects.filter(active=True,type=type, currency=currency)
         total = 0
         for acc in accs:
-            total += acc.get_balance()
+            if acc.get_balance():
+                total += acc.get_balance()
         return total
         
       
@@ -136,7 +137,8 @@ class Account (models.Model):
         accs = Account.objects.filter(active=True,type=type, currency=currency)
         total = 0
         for acc in accs:
-            total += acc.get_balance_base_currency()
+            if acc.get_balance_base_currency():
+                total += acc.get_balance_base_currency()
         return total   
     
     @staticmethod
@@ -219,6 +221,9 @@ class Transaction(models.Model):
     sales_tax_charged = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     sales_tax_paid = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     file = models.FileField(upload_to="transaction", blank=True, default=None)
+    
+    def filename(self):
+        return os.path.basename(self.file.name)
     
 class Valuation(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
