@@ -128,8 +128,8 @@ def graph_view(request):
 def consulting_view(request):
     CONSULTING_ID = 47
     CONSULTING_EXTRAS_ID = 49
-    START_DATE = datetime.datetime(2019,7,1,0,0,0)
-    END_DATE = datetime.datetime(2019,9,30,23,59,59)
+    START_DATE = datetime.datetime(2019,10,1,0,0,0)
+    END_DATE = datetime.datetime(2019,12,31,23,59,59)
     
     consulting_account = Account.objects.get(pk=CONSULTING_ID)
     consulting = Transaction.objects.filter(account_id=CONSULTING_ID, date__gte=START_DATE, date__lte=END_DATE).order_by('date')
