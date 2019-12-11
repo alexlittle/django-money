@@ -31,7 +31,7 @@
 	<td>{{ t.description }}</td>
 	<td class="number">{{ t.credit|intcomma }}</td>
 	<td class="number">{{ t.debit|intcomma }}</td>
-	<td class="number">{{ t.on_statement }}</td>
+	<td class="number"><a href="{% url 'transaction_toggle' t.id %}">{{ t.on_statement }}</a></td>
 	<td class="number"><a href="{% url 'admin:money_transaction_change' t.id %}">Edit</a></td>
 </tr>
 {% endfor %}

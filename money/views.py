@@ -4,8 +4,10 @@ import datetime
 from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db.models import Sum, Max
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template import RequestContext
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -62,7 +64,17 @@ def account_view(request, account_id):
     return render(request,'money/account.html',
                               {'account': account,
                                'page': transactions, })
+
+def transaction_toggle(request, transaction_id):
+    transaction = Transaction.objects.get(pk=transaction_id)
+    if transaction.on_statement:
+        transaction.on_statement = False
+    else:
+        transaction.on_statement = True
+    transaction.save()
+    return HttpResponseRedirect(reverse('money_account', kwargs={'account_id': transaction.account.id }))   
     
+      
 def update_regular_payments():
     payments = RegularPayment.objects.filter(next_date__lte=timezone.now())
     for rp in payments:
