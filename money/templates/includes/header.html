@@ -17,7 +17,11 @@
 		    				<li><a href="{% url 'money_report_graph' %}">{% trans 'Graph' %}</a></li>
 							<li><a href="{% url 'money_report_by_month' %}">{% trans 'Balance by Month' %}</a></li>
 							<li><a href="{% url 'money_report_by_year' %}">{% trans 'Balance by Year' %}</a></li>
-							<li><a href="{% url 'money_consulting' %}">{% trans 'Consulting' %}</a></li>
+							<li><a href="{% url 'money_consulting' '2019-4' %}">{% trans 'Consulting 2019 Q4' %}</a></li>
+							<li><a href="{% url 'money_consulting' '2020-1' %}">{% trans 'Consulting 2020 Q1' %}</a></li>
+							<li><a href="{% url 'money_consulting' '2020-2' %}">{% trans 'Consulting 2020 Q2' %}</a></li>
+							<li><a href="{% url 'money_consulting' '2020-3' %}">{% trans 'Consulting 2020 Q3' %}</a></li>
+							<li><a href="{% url 'money_consulting' '2020-4' %}">{% trans 'Consulting 2020 Q4' %}</a></li>
 					</ul>
 				</li>
 		        <li><a href="{% url 'admin:money_transaction_add' %}">{% trans 'Add Transaction' %}</a></li>

@@ -125,11 +125,25 @@ def graph_view(request):
                               {'balances': balances})
     
     
-def consulting_view(request):
+def consulting_view(request, quarter):
     CONSULTING_ID = 47
     CONSULTING_EXTRAS_ID = 49
-    START_DATE = datetime.datetime(2019,10,1,0,0,0)
-    END_DATE = datetime.datetime(2019,12,31,23,59,59)
+    
+    QUARTERS = {
+                '2019-4': { 'start_date': datetime.datetime(2019, 10, 1, 0, 0, 0),
+                            'end_date': datetime.datetime(2019, 12, 31, 23, 59, 59)},
+                '2020-1': { 'start_date': datetime.datetime(2020, 1, 1, 0, 0, 0),
+                            'end_date': datetime.datetime(2020, 3, 31, 23, 59, 59)},
+                '2020-2': { 'start_date': datetime.datetime(2020, 4, 1, 0, 0, 0),
+                            'end_date': datetime.datetime(2020, 6, 30, 23, 59, 59)},
+                '2020-3': { 'start_date': datetime.datetime(2020, 7, 1, 0, 0, 0),
+                            'end_date': datetime.datetime(2020, 9, 30, 23, 59, 59)},
+                '2020-4': { 'start_date': datetime.datetime(2020, 10, 1, 0, 0, 0),
+                            'end_date': datetime.datetime(2020, 12, 31, 23, 59, 59)},
+                }
+    
+    START_DATE = QUARTERS[quarter]['start_date']
+    END_DATE = QUARTERS[quarter]['end_date']
     
     consulting_account = Account.objects.get(pk=CONSULTING_ID)
     consulting = Transaction.objects.filter(account_id=CONSULTING_ID, date__gte=START_DATE, date__lte=END_DATE).order_by('date')
