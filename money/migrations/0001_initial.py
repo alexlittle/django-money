@@ -16,19 +16,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Account',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
                 ('active', models.BooleanField(default=True)),
-                ('currency', models.CharField(choices=[('EUR', 'EUR'), ('GBP', 'GBP')], max_length=3)),
-                ('type', models.CharField(choices=[('cash', 'Cash'), ('invest', 'Investment'), ('property', 'Property'), ('pension', 'Pension')], default='cash', max_length=100)),
+                ('currency', models.CharField(choices=[
+                 ('EUR', 'EUR'), ('GBP', 'GBP')], max_length=3)),
+                ('type', models.CharField(choices=[('cash', 'Cash'), ('invest', 'Investment'), (
+                    'property', 'Property'), ('pension', 'Pension')], default='cash', max_length=100)),
             ],
         ),
         migrations.CreateModel(
             name='ExchangeRate',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('from_cur', models.CharField(choices=[('EUR', 'EUR'), ('GBP', 'GBP')], max_length=3)),
-                ('to_cur', models.CharField(choices=[('EUR', 'EUR'), ('GBP', 'GBP')], max_length=3)),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('from_cur', models.CharField(choices=[
+                 ('EUR', 'EUR'), ('GBP', 'GBP')], max_length=3)),
+                ('to_cur', models.CharField(choices=[
+                 ('EUR', 'EUR'), ('GBP', 'GBP')], max_length=3)),
                 ('date', models.DateTimeField(default=django.utils.timezone.now)),
                 ('rate', models.DecimalField(decimal_places=5, max_digits=20)),
             ],
@@ -36,51 +42,69 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='RegularPayment',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('description', models.CharField(max_length=100)),
-                ('credit', models.DecimalField(decimal_places=2, default=0, max_digits=20)),
-                ('debit', models.DecimalField(decimal_places=2, default=0, max_digits=20)),
-                ('next_date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('end_date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('payment_type', models.CharField(choices=[('Visa', 'Visa'), ('Transfer', 'Transfer'), ('Paid in', 'Paid in'), ('Pay', 'Pay'), ('Standing Order', 'Standing Order'), ('Cheque', 'Cheque'), ('Interest', 'Interest'), ('Switch', 'Switch'), ('Cashpoint', 'Cashpoint'), ('Direct Debit', 'Direct Debit'), ('Mastercard', 'Mastercard')], max_length=15)),
-                ('account', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='money.Account')),
+                ('credit', models.DecimalField(
+                    decimal_places=2, default=0, max_digits=20)),
+                ('debit', models.DecimalField(
+                    decimal_places=2, default=0, max_digits=20)),
+                ('next_date', models.DateTimeField(
+                    default=django.utils.timezone.now)),
+                ('end_date', models.DateTimeField(
+                    default=django.utils.timezone.now)),
+                ('payment_type', models.CharField(choices=[('Visa', 'Visa'), ('Transfer', 'Transfer'), ('Paid in', 'Paid in'), ('Pay', 'Pay'), ('Standing Order', 'Standing Order'), (
+                    'Cheque', 'Cheque'), ('Interest', 'Interest'), ('Switch', 'Switch'), ('Cashpoint', 'Cashpoint'), ('Direct Debit', 'Direct Debit'), ('Mastercard', 'Mastercard')], max_length=15)),
+                ('account', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='money.Account')),
             ],
         ),
         migrations.CreateModel(
             name='Tag',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
             name='Transaction',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('payment_type', models.CharField(choices=[('Visa', 'Visa'), ('Transfer', 'Transfer'), ('Paid in', 'Paid in'), ('Pay', 'Pay'), ('Standing Order', 'Standing Order'), ('Cheque', 'Cheque'), ('Interest', 'Interest'), ('Switch', 'Switch'), ('Cashpoint', 'Cashpoint'), ('Direct Debit', 'Direct Debit'), ('Mastercard', 'Mastercard')], max_length=15)),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('payment_type', models.CharField(choices=[('Visa', 'Visa'), ('Transfer', 'Transfer'), ('Paid in', 'Paid in'), ('Pay', 'Pay'), ('Standing Order', 'Standing Order'), (
+                    'Cheque', 'Cheque'), ('Interest', 'Interest'), ('Switch', 'Switch'), ('Cashpoint', 'Cashpoint'), ('Direct Debit', 'Direct Debit'), ('Mastercard', 'Mastercard')], max_length=15)),
                 ('date', models.DateTimeField(default=django.utils.timezone.now)),
-                ('credit', models.DecimalField(decimal_places=2, default=0, max_digits=20)),
-                ('debit', models.DecimalField(decimal_places=2, default=0, max_digits=20)),
+                ('credit', models.DecimalField(
+                    decimal_places=2, default=0, max_digits=20)),
+                ('debit', models.DecimalField(
+                    decimal_places=2, default=0, max_digits=20)),
                 ('on_statement', models.BooleanField(default=False)),
                 ('description', models.CharField(max_length=100)),
-                ('account', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='money.Account')),
+                ('account', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='money.Account')),
             ],
         ),
         migrations.CreateModel(
             name='TransactionTag',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('tag', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='money.Tag')),
-                ('transaction', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='money.Transaction')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('tag', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='money.Tag')),
+                ('transaction', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='money.Transaction')),
             ],
         ),
         migrations.CreateModel(
             name='Valuation',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateTimeField(default=django.utils.timezone.now)),
                 ('value', models.DecimalField(decimal_places=2, max_digits=20)),
-                ('account', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='money.Account')),
+                ('account', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='money.Account')),
             ],
         ),
     ]
