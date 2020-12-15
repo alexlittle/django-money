@@ -160,6 +160,18 @@ def consulting_view(request, quarter):
                 '2020-4':
                     {'start_date': datetime.datetime(2020, 10, 1, 0, 0, 0),
                      'end_date': datetime.datetime(2020, 12, 31, 23, 59, 59)},
+                '2021-1':
+                    {'start_date': datetime.datetime(2021, 1, 1, 0, 0, 0),
+                     'end_date': datetime.datetime(2021, 3, 31, 23, 59, 59)},
+                '2021-2':
+                    {'start_date': datetime.datetime(2021, 4, 1, 0, 0, 0),
+                     'end_date': datetime.datetime(2021, 6, 30, 23, 59, 59)},
+                '2021-3':
+                    {'start_date': datetime.datetime(2021, 7, 1, 0, 0, 0),
+                     'end_date': datetime.datetime(2021, 9, 30, 23, 59, 59)},
+                '2021-4':
+                    {'start_date': datetime.datetime(2021, 10, 1, 0, 0, 0),
+                     'end_date': datetime.datetime(2021, 12, 31, 23, 59, 59)},
                 }
 
     START_DATE = QUARTERS[quarter]['start_date']
