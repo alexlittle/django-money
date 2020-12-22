@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% block content %}
+
+<h2>{{ year }}</h2>
+
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Desc' %}</th>
+				<th>{% trans 'Total' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+			 <tr>
+				<td><b>{% trans 'Income' %}</b></td>
+				<td><b>{{ income }}</b></td>
+			</tr>
+			 <tr>
+				<td><b>{% trans 'Core expenses' %}</b></td>
+				<td><b>{{ core_expenses }}</b></td>
+			</tr>
+			<tr>
+				<td><b>{% trans 'Extra expenses' %}</b></td>
+				<td><b>{{ extra_expenses }}</b></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+{% endblock %}

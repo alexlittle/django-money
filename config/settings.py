@@ -10,7 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
-import os, sys
+import os
+import sys
 
 from django import urls
 
@@ -117,9 +118,7 @@ EMAIL_FILE_PATH = '/tmp/'
 #####################################################################
 # Authentication
 LOGIN_URL = urls.reverse_lazy('profile_login')
-AUTHENTICATION_BACKENDS =  [
-    'django.contrib.auth.backends.ModelBackend',
-]
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 #####################################################################
 
 

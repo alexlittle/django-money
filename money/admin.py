@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from money.models import Account, ExchangeRate, RegularPayment, Tag, Transaction, Valuation, TransactionTag
+from money.models import Account, ExchangeRate, RegularPayment, \
+    Tag, Transaction, Valuation, TransactionTag
+
 
 # Register your models here.
-
-
 class AccountAdmin(admin.ModelAdmin):
     list_display = ('name', 'active', 'currency', 'type')
 
@@ -33,6 +33,7 @@ class ValuationAdmin(admin.ModelAdmin):
 
 class TransactionTagAdmin(admin.ModelAdmin):
     list_display = ('transaction', 'tag')
+
 
 admin.site.register(Account, AccountAdmin)
 admin.site.register(ExchangeRate, ExchangeRateAdmin)

@@ -3,15 +3,12 @@ import datetime
 
 from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.db.models import Sum, Max
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.template import RequestContext
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
 
-from money.models import Account, Transaction, Valuation, RegularPayment
+from money.models import Account, Transaction, RegularPayment
 
 
 def home_view(request):
@@ -26,8 +23,8 @@ def home_view(request):
         currency['total_balance'] = Account.get_balance_total('cash', k)
         currency['total_on_statement'] = Account.get_on_statment_total(
             'cash', k)
-        currency['total_base_currency'] = Account.get_balance_base_currency_total(
-            'cash', k)
+        currency['total_base_currency'] = Account \
+            .get_balance_base_currency_total('cash', k)
         cash_accounts.append(currency)
 
     invest_accounts = []
@@ -37,8 +34,8 @@ def home_view(request):
         currency['account'] = Account.objects.filter(
             active=True, type='invest', currency=k).order_by('name')
         currency['total_valuation'] = Account.get_valuation_total('invest', k)
-        currency['total_base_currency'] = Account.get_valuation_base_currency_total(
-            'invest', k)
+        currency['total_base_currency'] = Account \
+            .get_valuation_base_currency_total('invest', k)
         invest_accounts.append(currency)
 
     property = {}
@@ -50,8 +47,7 @@ def home_view(request):
     return render(request, 'money/home.html',
                   {'cash_accounts': cash_accounts,
                    'invest_accounts': invest_accounts,
-                   'property': property,
-                               })
+                   'property': property})
 
 
 def account_view(request, account_id):
@@ -72,7 +68,7 @@ def account_view(request, account_id):
 
     return render(request, 'money/account.html',
                   {'account': account,
-                   'page': transactions, })
+                   'page': transactions})
 
 
 def transaction_toggle(request, transaction_id):
@@ -82,18 +78,22 @@ def transaction_toggle(request, transaction_id):
     else:
         transaction.on_statement = True
     transaction.save()
-    return HttpResponseRedirect(reverse('money_account', kwargs={'account_id': transaction.account.id}))
+    return HttpResponseRedirect(reverse('money_account',
+                                        kwargs={'account_id':
+                                                transaction.account.id}))
 
 
 def update_regular_payments():
     payments = RegularPayment.objects.filter(next_date__lte=timezone.now())
     for rp in payments:
         # add to transactions
-        transaction = Transaction(account=rp.account, payment_type=rp.payment_type,
-                                  credit=rp.credit, debit=rp.debit, description=rp.description)
+        transaction = Transaction(account=rp.account,
+                                  payment_type=rp.payment_type,
+                                  credit=rp.credit,
+                                  debit=rp.debit,
+                                  description=rp.description)
         transaction.save()
         # update regular payment
         next_date = rp.next_date + datetime.timedelta(days=31)
         rp.next_date = next_date
         rp.save()
-    return

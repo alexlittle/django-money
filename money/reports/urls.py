@@ -10,6 +10,7 @@ urlpatterns = [
         name="money_report_by_month"),
     url(r'^byyear/$', report_views.by_year_view, name="money_report_by_year"),
     url(r'^consulting/(?P<quarter>\w[\w/-]*)/$',
-        report_views.consulting_view, name="money_consulting"),
-
+        report_views.consulting_quarters, name="money_consulting"),
+    url(r'^annual/(?P<year>\d+)/$',
+        report_views.consulting_annual, name="consulting_annual"),
 ]
