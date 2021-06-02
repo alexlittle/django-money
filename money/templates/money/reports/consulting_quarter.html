@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load humanize %}
+{% load mathfilters %}
 {% block content %}
 
 <div class="table-responsive">
@@ -12,6 +13,7 @@
 				<th class="number">{% trans 'Credit' %}</th>
 				<th class="number">{% trans 'Debit' %}</th>
 				<th class="number">{% trans 'Balance' %}</th>
+				<th class="number">{% trans 'Excl. ALV' %}</th>
 				<th class="number">{% trans 'ALV Charged' %}</th>
 				<th class="number">{% trans 'ALV Paid' %}</th>
 				<th>{% trans 'File' %}</th>
@@ -27,6 +29,7 @@
 	<td class="number"><b>{{ opening_balance|floatformat:2|intcomma }}</b></td>
 	<td class="number"></td>
 	<td class="number"></td>
+	<td class="number"></td>
 	<td></td>
 </tr>
 
@@ -37,6 +40,7 @@
 	<td class="number">{% if d.transaction.credit %}{{ d.transaction.credit|floatformat:2|intcomma }}{% endif %}</td>
 	<td class="number">{% if d.transaction.debit %}{{ d.transaction.debit|floatformat:2|intcomma }}{% endif %}</td>
 	<td class="number">{{ d.balance|floatformat:2|intcomma }}</td>
+	<td class="number">{% if d.ex_sales_tax %}{{ d.ex_sales_tax|floatformat:2|intcomma }}{% endif %}</td>
 	<td class="number">{% if d.transaction.sales_tax_charged %}{{ d.transaction.sales_tax_charged|floatformat:2|intcomma }}{% endif %}</td>
 	<td class="number">{% if d.transaction.sales_tax_paid %}{{ d.transaction.sales_tax_paid|floatformat:2|intcomma }}{% endif %}</td>
 	<td><a href="{{ MEDIA_URL }}{{ d.transaction.file }}" target="_blank">{{ d.transaction.filename }}</a></td>
@@ -49,6 +53,7 @@
 	<td class="number"></td>
 	<td class="number"></td>
 	<td class="number"><b>{{ closing_balance|floatformat:2|intcomma }}</b></td>
+	<td class="number"></td>
 	<td class="number"></td>
 	<td class="number"></td>
 	<td></td>
@@ -66,6 +71,7 @@
 				<th>{% trans 'Description' %}</th>
 				<th class="number">{% trans 'Debit' %}</th>
 				<th class="number">{% trans 'ALV Paid' %}</th>
+				<th class="number">{% trans 'Excl. ALV' %}</th>
 				<th>{% trans 'File' %}</th>
 			</tr>
 		</thead>
@@ -76,6 +82,7 @@
 	<td><a href="{% url 'admin:money_transaction_change' ce.id %}" target="_blank">{{ ce.description }}</a></td>
 	<td class="number">{% if ce.debit %}{{ ce.debit|floatformat:2|intcomma }}{% endif %}</td>
 	<td class="number">{% if ce.sales_tax_paid %}{{ ce.sales_tax_paid|floatformat:2|intcomma }}{% endif %}</td>
+	<td class="number">{{ ce.debit|sub:ce.sales_tax_paid }}</td>
 	<td><a href="{{ MEDIA_URL }}{{ ce.file }}" target="_blank">{{ ce.filename }}</a></td>
 </tr>
 {% endfor %}

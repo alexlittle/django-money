@@ -59,6 +59,8 @@ def consulting_quarters(request, quarter):
         obj = {'transaction': c,
                'balance': Account.get_balance_base_currency_at_date(
             c.account, c.date)}
+        if c.debit != 0 and c.sales_tax_paid != 0:
+            obj['ex_sales_tax'] = c.debit - c.sales_tax_paid
         data.append(obj)
 
     opening_balance = Account.get_balance_base_currency_at_date(
