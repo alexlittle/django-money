@@ -1,4 +1,4 @@
-django==2.2.22
+django==2.2.24
 django-crispy-forms==1.7.1
 pytz
 django-mathfilters==1.0.0
