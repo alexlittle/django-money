@@ -10,3 +10,4 @@
 /media/
 /static/
 /uwsgi.sock
+/env/
