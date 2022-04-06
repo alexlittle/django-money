@@ -1,5 +1,5 @@
-django==2.2.27
-django-crispy-forms==1.7.1
+django==3.2.12
+django-crispy-forms==1.14.0
 pytz
 django-mathfilters==1.0.0
 mysqlclient==2.1.0
