@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% block content %}
+
+<h2>Bills</h2>
+
+<h3>Electrics</h3>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Year' %}</th>
+				<th class="number">{% trans 'Total' %}</th>
+				<th class="number">{% trans 'Avg per month' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+{% for e in electric %}
+ <tr>
+	<td>{{ e.year }}</td>
+	<td class="number">{{ e.total }}</td>
+	<td class="number"> {{ e.monthly_avg|floatformat:2|intcomma }} ({{ e.no_months }})</td>
+</tr>
+{% endfor %}	
+</tbody>
+</table>
+
+<h3>Rubbish</h3>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Year' %}</th>
+				<th class="number">{% trans 'Total' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+{% for r in rubbish %}
+ <tr>
+	<td>{{ r.year }}</td>
+	<td class="number">{{ r.total }}</td>
+</tr>
+{% endfor %}	
+</tbody>
+</table>
+
+<h3>Water</h3>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Year' %}</th>
+				<th class="number">{% trans 'Total' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+{% for w in water %}
+ <tr>
+	<td>{{ w.year }}</td>
+	<td class="number">{{ w.total }}</td>
+</tr>
+{% endfor %}	
+</tbody>
+</table>
+
+<h3>House Tax</h3>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Year' %}</th>
+				<th class="number">{% trans 'Total' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+{% for ht in house_tax %}
+ <tr>
+	<td>{{ ht.year }}</td>
+	<td class="number">{{ ht.total }}</td>
+</tr>
+{% endfor %}	
+</tbody>
+</table>
+
+<h3>Car</h3>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Year' %}</th>
+				<th class="number">{% trans 'Total' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+{% for c in car %}
+ <tr>
+	<td>{{ c.year }}</td>
+	<td class="number">{{ c.total }}</td>
+</tr>
+{% endfor %}	
+</tbody>
+</table>
+
+<h3>Insurance</h3>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Year' %}</th>
+				<th class="number">{% trans 'Total' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+{% for i in insurance %}
+ <tr>
+	<td>{{ i.year }}</td>
+	<td class="number">{{ i.total }}</td>
+</tr>
+{% endfor %}	
+</tbody>
+</table>
+
+</div>
+	
+
+{% endblock %}
+
+
