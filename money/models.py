@@ -165,7 +165,7 @@ class Account (models.Model):
             active=True, type=type, currency=currency)
         total = 0
         for acc in accs:
-            if acc.get_valuation() is not 0:
+            if acc.get_valuation() != 0:
                 total += acc.get_valuation().value
         return total
 
