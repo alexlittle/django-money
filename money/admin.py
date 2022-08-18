@@ -25,7 +25,7 @@ class TagAdmin(admin.ModelAdmin):
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ('account', 'payment_type', 'date', 'credit',
                     'debit', 'on_statement', 'description')
-
+    search_fields = ['description']
 
 class ValuationAdmin(admin.ModelAdmin):
     list_display = ('account', 'date', 'value')
