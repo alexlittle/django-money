@@ -55,6 +55,30 @@ def consulting_quarters(request, quarter):
                 '2022-4':
                     {'start_date': datetime.datetime(2022, 10, 1, 0, 0, 0),
                      'end_date': datetime.datetime(2022, 12, 31, 23, 59, 59)},
+                '2023-1':
+                    {'start_date': datetime.datetime(2023, 1, 1, 0, 0, 0),
+                     'end_date': datetime.datetime(2023, 3, 31, 23, 59, 59)},
+                '2023-2':
+                    {'start_date': datetime.datetime(2023, 4, 1, 0, 0, 0),
+                     'end_date': datetime.datetime(2023, 6, 30, 23, 59, 59)},
+                '2023-3':
+                    {'start_date': datetime.datetime(2023, 7, 1, 0, 0, 0),
+                     'end_date': datetime.datetime(2023, 9, 30, 23, 59, 59)},
+                '2023-4':
+                    {'start_date': datetime.datetime(2023, 10, 1, 0, 0, 0),
+                     'end_date': datetime.datetime(2023, 12, 31, 23, 59, 59)},
+                '2024-1':
+                    {'start_date': datetime.datetime(2024, 1, 1, 0, 0, 0),
+                     'end_date': datetime.datetime(2024, 3, 31, 23, 59, 59)},
+                '2024-2':
+                    {'start_date': datetime.datetime(2024, 4, 1, 0, 0, 0),
+                     'end_date': datetime.datetime(2024, 6, 30, 23, 59, 59)},
+                '2024-3':
+                    {'start_date': datetime.datetime(2024, 7, 1, 0, 0, 0),
+                     'end_date': datetime.datetime(2024, 9, 30, 23, 59, 59)},
+                '2024-4':
+                    {'start_date': datetime.datetime(2024, 10, 1, 0, 0, 0),
+                     'end_date': datetime.datetime(2024, 12, 31, 23, 59, 59)},
                 }
 
     START_DATE = QUARTERS[quarter]['start_date']
