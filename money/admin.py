@@ -27,6 +27,7 @@ class TransactionAdmin(admin.ModelAdmin):
                     'debit', 'on_statement', 'description')
     search_fields = ['description']
 
+
 class ValuationAdmin(admin.ModelAdmin):
     list_display = ('account', 'date', 'value')
 

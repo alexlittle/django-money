@@ -3,7 +3,6 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Sum, Max
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 
 PAYMENT_TYPES = (
         ('Visa', 'Visa'),
@@ -144,7 +143,7 @@ class Account (models.Model):
                 return credit['paid_in']/rate
             else:
                 return 0
-            
+
     @staticmethod
     def get_balance_total(type, currency):
         accs = Account.objects.filter(

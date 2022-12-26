@@ -10,10 +10,7 @@ urlpatterns = [
     path('investment-graph/', report_views.graph_investment_view, name="investment_graph"),
     path('bymonth/', report_views.by_month_view, name="by_month"),
     path('byyear/', report_views.by_year_view, name="by_year"),
-    path('consulting/<str:quarter>/',
-        report_views.consulting_quarters, name="consulting"),
-    path('annual/<int:year>/',
-        report_views.consulting_annual, name="consulting_annual"),
-    path('bills/',
-        report_views.bills_view, name="bills"),
+    path('consulting/<str:quarter>/', report_views.consulting_quarters, name="consulting"),
+    path('annual/<int:year>/', report_views.consulting_annual, name="consulting_annual"),
+    path('bills/', report_views.bills_view, name="bills"),
 ]

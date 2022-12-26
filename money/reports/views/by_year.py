@@ -2,14 +2,13 @@ import datetime
 import dateutil.relativedelta
 
 from django.conf import settings
-from django.db.models import Sum, Max
+from django.db.models import Sum
 from django.shortcuts import render
-from django.template import RequestContext
 from django.utils import timezone
 
-from money.models import Account, Transaction, Valuation, RegularPayment, \
-    ExchangeRate
-    
+from money.models import Transaction, ExchangeRate
+
+
 def by_year_view(request):
 
     tz = timezone.get_default_timezone()

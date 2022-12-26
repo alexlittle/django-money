@@ -8,14 +8,14 @@ from money.models import Account
 
 
 def graph_investment_view(request):
-    
+
     accounts = []
-    
+
     now = datetime.datetime.now()
     tz = timezone.get_default_timezone()
-    
+
     accs = Account.objects.filter(type='invest')
-    
+
     for account in accs:
         resp_account = {}
         resp_account['account'] = account
@@ -28,19 +28,17 @@ def graph_investment_view(request):
                                          int(old_date.strftime("%m")),
                                          1, 23, 59, tzinfo=tz) \
                 + dateutil.relativedelta.relativedelta(day=1, months=+1, days=-1)
-            
-            acc_value = Account.get_valuation_base_currency_at_date(account, last_day) 
-            acc_paid_in = Account.get_paid_in_base_currency_at_date(account, last_day) 
-             
+
+            acc_value = Account.get_valuation_base_currency_at_date(account, last_day)
+            acc_paid_in = Account.get_paid_in_base_currency_at_date(account, last_day)
+
             valuation['date'] = last_day
             valuation['value'] = acc_value
-            valuation['paid_in'] = acc_paid_in     
+            valuation['paid_in'] = acc_paid_in
             valuations.append(valuation)
-        
+
         resp_account['valuations'] = valuations
-        
+
         accounts.append(resp_account)
-        
-                                  
-    return render(request, 'money/reports/investment-graph.html',
-                  {'accounts': accounts})
+
+    return render(request, 'money/reports/investment-graph.html', {'accounts': accounts})
