@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block extra_scripts %}
+	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+	<script type="text/javascript">
+	
+	// Load the Visualization API and the piechart package.
+	google.load('visualization', '1.0', {'packages':['corechart']});
+
+	// Set a callback to run when the Google Visualization API is loaded.
+	google.setOnLoadCallback(drawChart);
+	function drawChart() {
+
+	{% for a in accounts %}	
+		// activity graph
+		var data = new google.visualization.DataTable();
+		data.addColumn('string', "{% trans 'Date' %}");
+		data.addColumn('number', "{% trans 'Value' %}");
+		data.addColumn('number', "{% trans 'Paid In' %}");
+		data.addRows( {{ a.valuations|length }} );
+		
+		{% for v in a.valuations %}
+			data.setValue({{ forloop.counter0 }},0,'{{ v.date|date:"Y-M" }}');
+			data.setValue({{ forloop.counter0 }},1,{{ v.value }});
+			data.setValue({{ forloop.counter0 }},2,{{ v.paid_in }});
+
+		{% endfor %}
+
+        var chart = new google.visualization.LineChart(document.getElementById('{{ a.account.id }}_graph_div'));
+        chart.draw(data, {	width: "100%", 
+                			height: 400,
+                			vAxis: {title: "{% trans 'Balance' %}"},
+                			pointSize:5,
+                			chartArea:{left:100,top:50,width:"70%",height:"70%"},
+                			backgroundColor: 'transparent',
+                			legend: {position:'right'}
+							});
+		{% endfor %}	
+	}
+	
+</script>
+{% endblock extra_scripts %}
+
+
+
+{% block content %}
+
+<h2>Investment Graphs</h2>
+
+{% for a in accounts %}
+	<h3>{{ a.account.name }}</h3>
+	<div id="{{ a.account.id }}_graph_div" class="graph">{% trans 'graph_generating'%}</div>
+{% endfor %}
+
+{% endblock %}

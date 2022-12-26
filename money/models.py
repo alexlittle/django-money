@@ -130,6 +130,22 @@ class Account (models.Model):
                 return 0
 
     @staticmethod
+    def get_paid_in_base_currency_at_date(account, date):
+        if account.currency == settings.BASE_CURRENCY:
+            credit = Transaction.objects.filter(account=account, date__lte=date).aggregate(paid_in=Sum("credit"))
+            if credit['paid_in']:
+                return credit['paid_in']
+            else:
+                return 0
+        else:
+            rate = ExchangeRate.at_date(date, settings.BASE_CURRENCY, account.currency)
+            credit = Transaction.objects.filter(account=account, date__lte=date).aggregate(paid_in=Sum("credit"))
+            if credit['paid_in']:
+                return credit['paid_in']/rate
+            else:
+                return 0
+            
+    @staticmethod
     def get_balance_total(type, currency):
         accs = Account.objects.filter(
             active=True, type=type, currency=currency)
