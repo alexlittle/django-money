@@ -13,6 +13,7 @@
 				<th class="number">{% trans 'Sum In' %} ({{ BASE_CURRENCY }})</th>
 				<th class="number">{% trans 'Sum Out' %} ({{ BASE_CURRENCY }})</th>
 				<th class="number">{% trans 'Balance' %} ({{ BASE_CURRENCY }})</th>
+				<th>{% trans 'Actions' %}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -22,6 +23,7 @@
 	<td class="number {% if r.sum_in < 0 %}negative{% endif %}">{{ r.sum_in|floatformat:2|intcomma   }}</td>
 	<td class="number {% if r.sum_out < 0 %}negative{% endif %}">{{ r.sum_out|floatformat:2|intcomma   }}</td>
 	<td class="number {% if r.balance < 0 %}negative{% endif %}">{{ r.balance|floatformat:2|intcomma   }}</td>
+	<td><a href="{% url 'money:monthly_transactions' r.year r.month%}">[{% trans 'transactions' %}]</a></td>
 </tr>
 {% endfor %}	
 </tbody>

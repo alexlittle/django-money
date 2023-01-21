@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% block content %}
+
+<h2>Transactions by Month</h2>
+
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Date' %}</th>
+				<th>{% trans 'Account' %}</th>
+				<th>{% trans 'Description' %}</th>
+				<th class="number">{% trans 'Credit' %}</th>
+				<th class="number">{% trans 'Debit' %}</th>
+				<th class="number">{% trans 'Type' %}</th>
+				<th>{% trans 'Actions' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+{% for t in transactions %}
+ <tr>
+	<td>{{ t.date }}</td>
+	<td>{{ t.account.name }}</td>
+	<td>{{ t.description }}</td>
+	<td class="number">{{ t.credit|floatformat:2|intcomma }}</td>
+	<td class="number">{{ t.debit|floatformat:2|intcomma }}</td>
+	<td class="number">{{ t.payment_type }}</td>
+	<td><a href="{% url 'admin:money_transaction_change' t.id %}" target="_blank">{% trans 'Edit' %}</a></td>
+{% endfor %}	
+</tbody>
+</table>
+</div>
+	
+
+{% endblock %}

@@ -8,27 +8,27 @@
 	      <span class="icon-bar"></span>
 	      <span class="icon-bar"></span>
 	    </button>
-	    <a class="navbar-brand" href="{% url 'money_home' %}">{% trans 'Money Database' %}</a>
+	    <a class="navbar-brand" href="{% url 'money:money_home' %}">{% trans 'Money Database' %}</a>
 	  </div>
 	  <div class="navbar-collapse collapse">
 		    <ul class="nav navbar-nav navbar-right">
 		    	<li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">{% trans 'Reports' %} <b class="caret"></b></a>
 		    		<ul class="dropdown-menu">
-		    				<li><a href="{% url 'reports:graph' %}">{% trans 'Graph' %}</a></li>
-		    				<li><a href="{% url 'reports:investment_graph' %}">{% trans 'Investment Graphs' %}</a></li>
-							<li><a href="{% url 'reports:by_month' %}">{% trans 'Balance by Month' %}</a></li>
-							<li><a href="{% url 'reports:by_year' %}">{% trans 'Balance by Year' %}</a></li>
-							<li><a href="{% url 'reports:bills' %}">{% trans 'Bills' %}</a></li>
+		    				<li><a href="{% url 'money:graph' %}">{% trans 'Graph' %}</a></li>
+		    				<li><a href="{% url 'money:investment_graph' %}">{% trans 'Investment Graphs' %}</a></li>
+							<li><a href="{% url 'money:by_month' %}">{% trans 'Balance by Month' %}</a></li>
+							<li><a href="{% url 'money:by_year' %}">{% trans 'Balance by Year' %}</a></li>
+							<li><a href="{% url 'money:bills' %}">{% trans 'Bills' %}</a></li>
 							
-							<li><a href="{% url 'reports:consulting' '2023-4' %}">{% trans 'Consulting 2023 Q4' %}</a></li>
-							<li><a href="{% url 'reports:consulting' '2023-3' %}">{% trans 'Consulting 2023 Q3' %}</a></li>
-							<li><a href="{% url 'reports:consulting' '2023-2' %}">{% trans 'Consulting 2023 Q2' %}</a></li>
-							<li><a href="{% url 'reports:consulting' '2023-1' %}">{% trans 'Consulting 2023 Q1' %}</a></li>
+							<li><a href="{% url 'money:consulting' '2023-4' %}">{% trans 'Consulting 2023 Q4' %}</a></li>
+							<li><a href="{% url 'money:consulting' '2023-3' %}">{% trans 'Consulting 2023 Q3' %}</a></li>
+							<li><a href="{% url 'money:consulting' '2023-2' %}">{% trans 'Consulting 2023 Q2' %}</a></li>
+							<li><a href="{% url 'money:consulting' '2023-1' %}">{% trans 'Consulting 2023 Q1' %}</a></li>
 							
-							<li><a href="{% url 'reports:consulting' '2022-4' %}">{% trans 'Consulting 2022 Q4' %}</a></li>
-							<li><a href="{% url 'reports:consulting' '2022-3' %}">{% trans 'Consulting 2022 Q3' %}</a></li>
-							<li><a href="{% url 'reports:consulting' '2022-2' %}">{% trans 'Consulting 2022 Q2' %}</a></li>
-							<li><a href="{% url 'reports:consulting' '2022-1' %}">{% trans 'Consulting 2022 Q1' %}</a></li>
+							<li><a href="{% url 'money:consulting' '2022-4' %}">{% trans 'Consulting 2022 Q4' %}</a></li>
+							<li><a href="{% url 'money:consulting' '2022-3' %}">{% trans 'Consulting 2022 Q3' %}</a></li>
+							<li><a href="{% url 'money:consulting' '2022-2' %}">{% trans 'Consulting 2022 Q2' %}</a></li>
+							<li><a href="{% url 'money:consulting' '2022-1' %}">{% trans 'Consulting 2022 Q1' %}</a></li>
 							
 					</ul>
 				</li>

@@ -20,7 +20,7 @@
 
 	{% for acc in curr.account %}
 	       <tr>
-				<td><a href="{% url 'money_account' acc.id %}">{{ acc.name }}</a></td>
+				<td><a href="{% url 'money:money_account' acc.id %}">{{ acc.name }}</a></td>
 				<td class="number {% if acc.get_balance < 0 %}negative{% endif %}">{{ acc.get_balance|intcomma }}</td>
 				<td class="number {% if acc.on_statement < 0 %}negative{% endif %}">{{ acc.on_statement|intcomma }}</td>
 				<td class="number {% if acc.get_balance_base_currency < 0 %}negative{% endif %}">{{ acc.get_balance_base_currency|floatformat:2|intcomma }}</td>
@@ -54,7 +54,7 @@
 
 	{% for acc in curr.account %}
 	       <tr>
-			<td><a href="{% url 'money_account' acc.id %}">{{ acc.name }}</a></td>
+			<td><a href="{% url 'money:money_account' acc.id %}">{{ acc.name }}</a></td>
 			<td class="number">{{ acc.get_valuation.value|intcomma }}</td>
 			<td class="number">{{ acc.get_valuation.date|date:"D d M Y" }}</td>
 			<td class="number">{{ acc.get_valuation_base_currency|floatformat:2|intcomma }}</td>

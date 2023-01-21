@@ -5,3 +5,4 @@ from money.reports.views.consulting_annual import *
 from money.reports.views.graph import *
 from money.reports.views.bills import *
 from money.reports.views.graph_investment import *
+from money.reports.views.monthly_transactions import *
