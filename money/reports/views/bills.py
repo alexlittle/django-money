@@ -61,6 +61,15 @@ def bills_view(request):
         .annotate(total=Sum('debit'), no_months=Count('id')) \
         .annotate(monthly_avg=F('total') / F('no_months')) \
         .order_by('-year')
+    
+    phone = Transaction.objects.filter(
+        description__icontains="elisa", account__id=39) \
+        .annotate(year=ExtractYear('date')) \
+        .values('year') \
+        .filter(year__gte=2016) \
+        .annotate(total=Sum('debit'), no_months=Count('id')) \
+        .annotate(monthly_avg=F('total') / F('no_months')) \
+        .order_by('-year')
 
     return render(request, 'money/reports/bills.html',
                   {'electric': electric,
@@ -68,4 +77,5 @@ def bills_view(request):
                    'water': water,
                    'house_tax': house_tax,
                    'car': car,
-                   'insurance': insurance})
+                   'insurance': insurance,
+                   'phone': phone})

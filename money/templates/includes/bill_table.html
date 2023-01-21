@@ -1,0 +1,23 @@
+{% load i18n %}
+{% load humanize %}
+
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Year' %}</th>
+				<th class="number">{% trans 'Total' %}</th>
+				<th class="number">{% trans 'Avg per month' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+{% for o in bill_object %}
+ <tr>
+	<td>{{ o.year }}</td>
+	<td class="number">{{ o.total }}</td>
+	<td class="number"> {{ o.monthly_avg|floatformat:2|intcomma }} ({{ o.no_months }})</td>
+</tr>
+{% endfor %}	
+</tbody>
+</table>
+</div>
