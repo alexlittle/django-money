@@ -78,7 +78,7 @@ def transaction_toggle(request, transaction_id):
     else:
         transaction.on_statement = True
     transaction.save()
-    return HttpResponseRedirect(reverse('money_account',
+    return HttpResponseRedirect(reverse('money:money_account',
                                         kwargs={'account_id':
                                                 transaction.account.id}))
 
