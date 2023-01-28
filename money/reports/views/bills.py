@@ -5,71 +5,25 @@ from django.shortcuts import render
 
 from money.models import Transaction
 
+def bill_transaction_filter(description_filtered):
+    return description_filtered \
+                .annotate(year=ExtractYear('date')) \
+                .values('year') \
+                .filter(year__gte=2016) \
+                .annotate(total=Sum('debit'), no_payments=Count('id')) \
+                .annotate(payment_avg=F('total') / F('no_payments'),
+                          monthly_avg=F('total')/12) \
+                .order_by('-year')
 
 def bills_view(request):
 
-    electric = Transaction.objects.filter(
-        description="Fortum - electric") \
-        .annotate(year=ExtractYear('date')) \
-        .values('year') \
-        .filter(year__gte=2016) \
-        .annotate(total=Sum('debit'), no_months=Count('id')) \
-        .annotate(monthly_avg=F('total') / F('no_months')) \
-        .order_by('-year')
-
-    rubbish = Transaction.objects.filter(
-        description__icontains="rubbish") \
-        .annotate(year=ExtractYear('date')) \
-        .values('year') \
-        .filter(year__gte=2016) \
-        .annotate(total=Sum('debit'), no_months=Count('id')) \
-        .annotate(monthly_avg=F('total') / F('no_months')) \
-        .order_by('-year')
-
-    water = Transaction.objects.filter(
-        description__icontains="water bill") \
-        .annotate(year=ExtractYear('date')) \
-        .values('year') \
-        .filter(year__gte=2016) \
-        .annotate(total=Sum('debit'), no_months=Count('id')) \
-        .annotate(monthly_avg=F('total') / F('no_months')) \
-        .order_by('-year')
-
-    house_tax = Transaction.objects.filter(
-        description__icontains="house tax") \
-        .annotate(year=ExtractYear('date')) \
-        .values('year') \
-        .filter(year__gte=2016) \
-        .annotate(total=Sum('debit'), no_months=Count('id')) \
-        .annotate(monthly_avg=F('total') / F('no_months')) \
-        .order_by('-year')
-
-    car = Transaction.objects.filter(
-        description__istartswith="car ") \
-        .annotate(year=ExtractYear('date')) \
-        .values('year') \
-        .filter(year__gte=2016) \
-        .annotate(total=Sum('debit'), no_months=Count('id')) \
-        .annotate(monthly_avg=F('total') / F('no_months')) \
-        .order_by('-year')
-
-    insurance = Transaction.objects.filter(
-        description__icontains="insurance") \
-        .annotate(year=ExtractYear('date')) \
-        .values('year') \
-        .filter(year__gte=2016) \
-        .annotate(total=Sum('debit'), no_months=Count('id')) \
-        .annotate(monthly_avg=F('total') / F('no_months')) \
-        .order_by('-year')
-    
-    phone = Transaction.objects.filter(
-        description__icontains="elisa", account__id=39) \
-        .annotate(year=ExtractYear('date')) \
-        .values('year') \
-        .filter(year__gte=2016) \
-        .annotate(total=Sum('debit'), no_months=Count('id')) \
-        .annotate(monthly_avg=F('total') / F('no_months')) \
-        .order_by('-year')
+    electric = bill_transaction_filter(Transaction.objects.filter(description="Fortum - electric"))
+    rubbish = bill_transaction_filter(Transaction.objects.filter(description__icontains="rubbish"))
+    water = bill_transaction_filter(Transaction.objects.filter(description__icontains="water bill"))
+    house_tax = bill_transaction_filter(Transaction.objects.filter(description__icontains="house tax"))
+    car = bill_transaction_filter(Transaction.objects.filter(description__istartswith="car "))
+    insurance = bill_transaction_filter(Transaction.objects.filter(description__icontains="insurance")) 
+    phone = bill_transaction_filter(Transaction.objects.filter(description__icontains="elisa", account__id=39)) 
 
     return render(request, 'money/reports/bills.html',
                   {'electric': electric,

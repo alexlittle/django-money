@@ -7,6 +7,8 @@
 			<tr>
 				<th>{% trans 'Year' %}</th>
 				<th class="number">{% trans 'Total' %}</th>
+				<th class="number">{% trans 'No payments' %}</th>
+				<th class="number">{% trans 'Avg per payment' %}</th>
 				<th class="number">{% trans 'Avg per month' %}</th>
 			</tr>
 		</thead>
@@ -15,7 +17,9 @@
  <tr>
 	<td>{{ o.year }}</td>
 	<td class="number">{{ o.total }}</td>
-	<td class="number"> {{ o.monthly_avg|floatformat:2|intcomma }} ({{ o.no_months }})</td>
+	<td class="number">{{ o.no_payments }}</td>
+	<td class="number"> {{ o.payment_avg|floatformat:2|intcomma }}</td>
+	<td class="number"> {{ o.monthly_avg|floatformat:2|intcomma }}</td>
 </tr>
 {% endfor %}	
 </tbody>
