@@ -29,8 +29,10 @@ def by_month_view(request):
             transactions = Transaction.objects \
                 .filter(account__currency=k,
                         date__year=report_month.year,
-                        date__month=report_month.month) \
+                        date__month=report_month.month,
+                        on_statement=True) \
                 .exclude(payment_type='Transfer') \
+                .exclude(account__id=49) \
                 .extra(select={'year': "EXTRACT(year FROM date)",
                                'month': "EXTRACT(month FROM date)"}) \
                 .values('year', 'month') \

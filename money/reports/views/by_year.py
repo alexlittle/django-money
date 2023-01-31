@@ -26,8 +26,10 @@ def by_year_view(request):
         for k, v in settings.CURRENCIES_AVAILABLE:
             transactions = Transaction.objects \
                 .filter(account__currency=k,
-                        date__year=report_year.year) \
+                        date__year=report_year.year,
+                        on_statement=True) \
                 .exclude(payment_type='Transfer') \
+                .exclude(account__id=49) \
                 .extra(select={'year': "EXTRACT(year FROM date)"}) \
                 .values('year') \
                 .annotate(sum_in=Sum('credit'), sum_out=Sum('debit'))
