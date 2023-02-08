@@ -24,6 +24,7 @@ def bills_view(request):
     car = bill_transaction_filter(Transaction.objects.filter(description__istartswith="car "))
     insurance = bill_transaction_filter(Transaction.objects.filter(description__icontains="insurance")) 
     phone = bill_transaction_filter(Transaction.objects.filter(description__icontains="elisa", account__id=39)) 
+    accounting_fees = bill_transaction_filter(Transaction.objects.filter(description__icontains="accounting")) 
 
     return render(request, 'money/reports/bills.html',
                   {'electric': electric,
@@ -32,4 +33,5 @@ def bills_view(request):
                    'house_tax': house_tax,
                    'car': car,
                    'insurance': insurance,
-                   'phone': phone})
+                   'phone': phone,
+                   'accounting_fees': accounting_fees})
