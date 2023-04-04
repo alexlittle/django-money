@@ -9,6 +9,8 @@ from money.models import Account
 
 def graph_view(request):
 
+    CONSULTING_EXTRAS_ID = 49
+    
     now = datetime.datetime.now()
     tz = timezone.get_default_timezone()
 
@@ -23,26 +25,23 @@ def graph_view(request):
             + dateutil.relativedelta.relativedelta(day=1, months=+1, days=-1)
 
         cash_total = 0
-        accs = Account.objects.filter(type='cash')
+        accs = Account.objects.filter(type='cash').exclude(pk=CONSULTING_EXTRAS_ID)
         for acc in accs:
-            acc_balance = Account.get_balance_base_currency_at_date(
-                acc, last_day)
+            acc_balance = Account.get_balance_base_currency_at_date(acc, last_day)
             if acc_balance:
                 cash_total += acc_balance
 
         invest_total = 0
         accs = Account.objects.filter(type='invest')
         for acc in accs:
-            acc_balance = Account.get_valuation_base_currency_at_date(
-                acc, last_day)
+            acc_balance = Account.get_valuation_base_currency_at_date(acc, last_day)
             if acc_balance:
                 invest_total += acc_balance
 
         property_total = 0
         accs = Account.objects.filter(type='property')
         for acc in accs:
-            acc_balance = Account.get_valuation_base_currency_at_date(
-                acc, last_day)
+            acc_balance = Account.get_valuation_base_currency_at_date(acc, last_day)
             if acc_balance:
                 property_total += acc_balance
 
