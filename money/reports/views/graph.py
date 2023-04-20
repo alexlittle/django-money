@@ -10,7 +10,7 @@ from money.models import Account
 def graph_view(request):
 
     CONSULTING_EXTRAS_ID = 49
-    
+
     now = datetime.datetime.now()
     tz = timezone.get_default_timezone()
 

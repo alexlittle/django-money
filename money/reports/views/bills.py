@@ -5,6 +5,7 @@ from django.shortcuts import render
 
 from money.models import Transaction
 
+
 def bill_transaction_filter(description_filtered):
     return description_filtered \
                 .annotate(year=ExtractYear('date')) \
@@ -15,6 +16,7 @@ def bill_transaction_filter(description_filtered):
                           monthly_avg=F('total')/12) \
                 .order_by('-year')
 
+
 def bills_view(request):
 
     electric = bill_transaction_filter(Transaction.objects.filter(description="Fortum - electric"))
@@ -22,9 +24,9 @@ def bills_view(request):
     water = bill_transaction_filter(Transaction.objects.filter(description__icontains="water bill"))
     house_tax = bill_transaction_filter(Transaction.objects.filter(description__icontains="house tax"))
     car = bill_transaction_filter(Transaction.objects.filter(description__istartswith="car "))
-    insurance = bill_transaction_filter(Transaction.objects.filter(description__icontains="insurance")) 
-    phone = bill_transaction_filter(Transaction.objects.filter(description__icontains="elisa", account__id=39)) 
-    accounting_fees = bill_transaction_filter(Transaction.objects.filter(description__icontains="accounting")) 
+    insurance = bill_transaction_filter(Transaction.objects.filter(description__icontains="insurance"))
+    phone = bill_transaction_filter(Transaction.objects.filter(description__icontains="elisa", account__id=39))
+    accounting_fees = bill_transaction_filter(Transaction.objects.filter(description__icontains="accounting"))
 
     return render(request, 'money/reports/bills.html',
                   {'electric': electric,
