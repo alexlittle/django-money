@@ -259,11 +259,11 @@ class Tag(models.Model):
 
     class Meta:
         ordering = ["name"]
-        
+
     def __str__(self):
         return self.name
-    
-    
+
+
 class Transaction(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     payment_type = models.CharField(max_length=15, choices=PAYMENT_TYPES)
