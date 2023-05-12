@@ -21,12 +21,23 @@ class RegularPaymentAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
 
-
+class TransactionTagAdmin(admin.ModelAdmin):
+    list_display = ('transaction', 'tag')
+    
+class TransactionTagsInline(admin.TabularInline):
+    model = TransactionTag
+    
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('account', 'payment_type', 'date', 'credit',
-                    'debit', 'on_statement', 'description')
+    list_display = ('account', 'payment_type', 'date', 'credit', 'debit', 'on_statement', 'description', 'tags')
     search_fields = ['description']
-
+    
+    inlines = [
+        TransactionTagsInline,
+    ]
+    
+    def tags(self, obj):
+        return list(Tag.objects.filter(transactiontag__transaction=obj).values_list("name", flat=True))
+        
 
 class ValuationAdmin(admin.ModelAdmin):
     list_display = ('account', 'date', 'value')
