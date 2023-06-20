@@ -38,32 +38,38 @@ class Account (models.Model):
         return self.name
 
     def on_statement(self):
-        trans_cred = Transaction.objects.filter(
-            account=self, on_statement=True).aggregate(Sum("credit"))
-        trans_deb = Transaction.objects.filter(
-            account=self, on_statement=True).aggregate(Sum("debit"))
+        trans_cred = Transaction.objects.filter(account=self, on_statement=True).aggregate(Sum("credit"))
+        trans_deb = Transaction.objects.filter(account=self, on_statement=True).aggregate(Sum("debit"))
         if trans_deb['debit__sum'] is None:
             return trans_cred['credit__sum']
         return trans_cred['credit__sum'] - trans_deb['debit__sum']
 
     def get_balance(self):
-        trans_cred = Transaction.objects.filter(
-            account=self).aggregate(Sum("credit"))
-        trans_deb = Transaction.objects.filter(
-            account=self).aggregate(Sum("debit"))
+        trans_cred = Transaction.objects.filter(account=self).aggregate(Sum("credit"))
+        trans_deb = Transaction.objects.filter(account=self).aggregate(Sum("debit"))
         if trans_deb['debit__sum'] is None:
             return trans_cred['credit__sum']
         return trans_cred['credit__sum'] - trans_deb['debit__sum']
 
     @staticmethod
-    def get_balance_at_date(account, date):
-        trans_cred = Transaction.objects.filter(
-            account=account, date__lte=date).aggregate(Sum("credit"))
-        trans_deb = Transaction.objects.filter(
-            account=account, date__lte=date).aggregate(Sum("debit"))
-        if trans_deb['debit__sum'] is None:
+    def get_balance_at_date(account, date, tag=None):
+        trans_cred = Transaction.objects.filter(account=account, date__lte=date)
+        trans_deb = Transaction.objects.filter(account=account, date__lte=date)
+        if tag:
+            trans_cred = trans_cred.filter(transactiontag__tag__name=tag).aggregate(Sum("credit"))
+            trans_deb = trans_deb.filter(transactiontag__tag__name=tag).aggregate(Sum("debit"))
+        else:
+            trans_cred = trans_cred.aggregate(Sum("credit"))
+            trans_deb = trans_deb.aggregate(Sum("debit"))
+
+        if trans_deb['debit__sum'] is None and trans_cred['credit__sum'] is None:
+            return 0
+        elif trans_deb['debit__sum'] is None:
             return trans_cred['credit__sum']
-        return trans_cred['credit__sum'] - trans_deb['debit__sum']
+        elif trans_cred['credit__sum'] is None:
+            return trans_deb['debit__sum']
+        else:
+            return trans_cred['credit__sum'] - trans_deb['debit__sum']
 
     def get_valuation(self):
         v_tmp = Valuation.objects.filter(
@@ -89,19 +95,18 @@ class Account (models.Model):
         if self.currency == settings.BASE_CURRENCY:
             return self.get_balance()
         else:
-            rate = ExchangeRate.most_recent(
-                settings.BASE_CURRENCY, self.currency)
+            rate = ExchangeRate.most_recent(settings.BASE_CURRENCY, self.currency)
             return self.get_balance()/rate
 
     @staticmethod
-    def get_balance_base_currency_at_date(account, date):
+    def get_balance_base_currency_at_date(account, date, tag=None):
         if account.currency == settings.BASE_CURRENCY:
-            return Account.get_balance_at_date(account, date)
+            return Account.get_balance_at_date(account, date, tag)
         else:
-            rate = ExchangeRate.at_date(
-                date, settings.BASE_CURRENCY, account.currency)
-            if Account.get_balance_at_date(account, date):
-                return Account.get_balance_at_date(account, date)/rate
+            rate = ExchangeRate.at_date(date, settings.BASE_CURRENCY, account.currency)
+            balance = Account.get_balance_at_date(account, date, tag)
+            if balance:
+                return balance/rate
             else:
                 return 0
 
@@ -109,8 +114,7 @@ class Account (models.Model):
         if self.currency == settings.BASE_CURRENCY:
             return self.get_valuation().value
         else:
-            rate = ExchangeRate.most_recent(
-                settings.BASE_CURRENCY, self.currency)
+            rate = ExchangeRate.most_recent(settings.BASE_CURRENCY, self.currency)
             return self.get_valuation().value/rate
 
     @staticmethod
@@ -267,7 +271,7 @@ class Tag(models.Model):
 class Transaction(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     payment_type = models.CharField(max_length=15, choices=PAYMENT_TYPES)
-    date = models.DateTimeField(default=timezone.now)
+    date = models.DateField(default=timezone.now)
     credit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     debit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     on_statement = models.BooleanField(blank=False, default=False)
@@ -284,7 +288,7 @@ class Transaction(models.Model):
 
 class Valuation(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    date = models.DateTimeField(default=timezone.now)
+    date = models.DateField(default=timezone.now)
     value = models.DecimalField(decimal_places=2, max_digits=20)
 
 

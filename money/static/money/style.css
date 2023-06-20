@@ -208,6 +208,18 @@ th.number, td.number {
 	text-align:right;
 }
 
+td.total {
+	font-weight:bold;
+}
+
+.table>tbody>tr>td.sum-column {
+	border-top: 2px solid;
+}
+
+.table>tbody>tr>td.head-column {
+	border-bottom: 2px solid;
+}
+
 th.negative, td.negative {
 	color:#ff0000;
 }
