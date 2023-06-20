@@ -75,7 +75,8 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.request',
                 'django.contrib.messages.context_processors.messages',
-                'money.context_processors.base_currency'
+                'money.context_processors.base_currency',
+                'money.context_processors.kollektiivi_menu'
             ],
             'debug': DEBUG,
         },

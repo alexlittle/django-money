@@ -32,6 +32,13 @@
 							
 					</ul>
 				</li>
+				<li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">{% trans 'Kollektiivi' %} <b class="caret"></b></a>
+		    		<ul class="dropdown-menu">
+							{% for i in KOLLEKTIIVI_MENU %}
+								<li><a href="{% url 'money:kollektiivi_monthly' i.year i.month %}">{{ i.name }} {{ i.year }}</a></li>
+							{% endfor %}							
+					</ul>
+				</li>
 		        <li><a href="{% url 'admin:money_transaction_add' %}">{% trans 'Add Transaction' %}</a></li>
 		    </ul>
 	  </div>
