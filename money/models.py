@@ -1,7 +1,7 @@
 import os
 from django.conf import settings
 from django.db import models
-from django.db.models import Sum, Max
+from django.db.models import Sum, Max, F
 from django.utils import timezone
 
 PAYMENT_TYPES = (
@@ -53,23 +53,31 @@ class Account (models.Model):
 
     @staticmethod
     def get_balance_at_date(account, date, tag=None):
-        trans_cred = Transaction.objects.filter(account=account, date__lte=date)
-        trans_deb = Transaction.objects.filter(account=account, date__lte=date)
         if tag:
-            trans_cred = trans_cred.filter(transactiontag__tag__name=tag).aggregate(Sum("credit"))
-            trans_deb = trans_deb.filter(transactiontag__tag__name=tag).aggregate(Sum("debit"))
+            trans_cred = Transaction.objects.filter(
+                account=account,
+                date__lte=date,
+                transactiontag__tag__name=tag).annotate(
+                    credit_percent=F("credit")*F("transactiontag__percent")/100
+                    ).aggregate(credit_sum=Sum("credit_percent"))
+            trans_deb = Transaction.objects.filter(
+                account=account,
+                date__lte=date,
+                transactiontag__tag__name=tag).annotate(
+                    debit_percent=F("debit")*F("transactiontag__percent")/100
+                    ).aggregate(debit_sum=Sum("debit_percent"))
         else:
-            trans_cred = trans_cred.aggregate(Sum("credit"))
-            trans_deb = trans_deb.aggregate(Sum("debit"))
+            trans_cred = Transaction.objects.filter(account=account, date__lte=date).aggregate(credit_sum=Sum("credit"))
+            trans_deb = Transaction.objects.filter(account=account, date__lte=date).aggregate(debit_sum=Sum("debit"))
 
-        if trans_deb['debit__sum'] is None and trans_cred['credit__sum'] is None:
+        if trans_deb['debit_sum'] is None and trans_cred['credit_sum'] is None:
             return 0
-        elif trans_deb['debit__sum'] is None:
-            return trans_cred['credit__sum']
-        elif trans_cred['credit__sum'] is None:
-            return trans_deb['debit__sum']
+        elif trans_deb['debit_sum'] is None:
+            return trans_cred['credit_sum']
+        elif trans_cred['credit_sum'] is None:
+            return trans_deb['debit_sum']
         else:
-            return trans_cred['credit__sum'] - trans_deb['debit__sum']
+            return trans_cred['credit_sum'] - trans_deb['debit_sum']
 
     def get_valuation(self):
         v_tmp = Valuation.objects.filter(
@@ -271,15 +279,13 @@ class Tag(models.Model):
 class Transaction(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     payment_type = models.CharField(max_length=15, choices=PAYMENT_TYPES)
-    date = models.DateField(default=timezone.now)
+    date = models.DateTimeField(default=timezone.now)
     credit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     debit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     on_statement = models.BooleanField(blank=False, default=False)
     description = models.CharField(max_length=100, blank=False, null=False)
-    sales_tax_charged = models.DecimalField(
-        decimal_places=2, max_digits=20, default=0)
-    sales_tax_paid = models.DecimalField(
-        decimal_places=2, max_digits=20, default=0)
+    sales_tax_charged = models.DecimalField(decimal_places=2, max_digits=20, default=0)
+    sales_tax_paid = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     file = models.FileField(upload_to="transaction", blank=True, default=None)
 
     def filename(self):
@@ -295,3 +301,4 @@ class Valuation(models.Model):
 class TransactionTag(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    percent = models.DecimalField(decimal_places=2, max_digits=20, default=100)
