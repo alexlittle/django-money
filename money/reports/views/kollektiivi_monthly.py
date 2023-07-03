@@ -12,18 +12,18 @@ KOLLEKTIIVI_TAG = "kollektiivi"
 KOLLEKTIIVI_EXTRAS_ID = 53
     
 def kollektiivi_balance_at_date(date):
-    trans_cred = Transaction.objects.filter(
-        account_id__in=(CONSULTING_ID, KOLLEKTIIVI_EXTRAS_ID),
-        date__lte=date,
-        transactiontag__tag__name=KOLLEKTIIVI_TAG).annotate(
-            credit_percent=F("credit")*F("transactiontag__percent")/100
-            ).aggregate(credit_sum=Sum("credit_percent"))
-    trans_deb = Transaction.objects.filter(
-        account_id__in=(CONSULTING_ID, KOLLEKTIIVI_EXTRAS_ID),
-        date__lte=date,
-        transactiontag__tag__name=KOLLEKTIIVI_TAG).annotate(
-            debit_percent=F("debit")*F("transactiontag__percent")/100
-            ).aggregate(debit_sum=Sum("debit_percent"))
+    trans_cred = Transaction.objects \
+        .filter(account_id__in=(CONSULTING_ID, KOLLEKTIIVI_EXTRAS_ID),
+                date__lte=date,
+                transactiontag__tag__name=KOLLEKTIIVI_TAG) \
+        .annotate(credit_percent=F("credit")*F("transactiontag__percent")/100) \
+        .aggregate(credit_sum=Sum("credit_percent"))
+    trans_deb = Transaction.objects \
+        .filter(account_id__in=(CONSULTING_ID, KOLLEKTIIVI_EXTRAS_ID),
+                date__lte=date,
+                transactiontag__tag__name=KOLLEKTIIVI_TAG) \
+        .annotate(debit_percent=F("debit")*F("transactiontag__percent")/100) \
+        .aggregate(debit_sum=Sum("debit_percent"))
 
     if trans_deb['debit_sum'] is None and trans_cred['credit_sum'] is None:
         return 0
@@ -50,8 +50,7 @@ def kollektiivi_monthly(request, year, month):
     data = []
     
     for c in consulting:
-        obj = {'transaction': c,
-               'balance': kollektiivi_balance_at_date(c.date)}
+        obj = {'transaction': c, 'balance': kollektiivi_balance_at_date(c.date)}
         data.append(obj)
 
     start_date = datetime(year, month, 1, 0, 0, 0) - timedelta(days=1)
