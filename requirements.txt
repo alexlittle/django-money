@@ -1,5 +1,5 @@
 django==4.2.3
 pytz
 django-mathfilters==1.0.0
-mysqlclient==2.1.1
+mysqlclient==2.2.0
 python-dateutil
