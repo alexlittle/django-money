@@ -53,7 +53,7 @@ def kollektiivi_monthly(request, year, month):
         obj = {'transaction': c, 'balance': kollektiivi_balance_at_date(c.date)}
         data.append(obj)
 
-    start_date = datetime(year, month, 1, 0, 0, 0) - timedelta(days=1)
+    start_date = datetime(year, month, 1, 23, 59, 59) - timedelta(days=1)
     end_date = datetime(year, month, calendar.monthrange(year, month)[1], 23, 59, 59)
     
     opening_balance = kollektiivi_balance_at_date(start_date)
