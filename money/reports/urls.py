@@ -15,4 +15,5 @@ urlpatterns = [
     path('annual/<int:year>/', report_views.consulting_annual, name="consulting_annual"),
     path('bills/', report_views.bills_view, name="bills"),
     path('kollektiivi/<int:year>/<int:month>/', report_views.kollektiivi_monthly, name="kollektiivi_monthly"),
+    path('tags/<int:year>/', report_views.TagsByYearView.as_view(), name="tags_by_year"),
 ]

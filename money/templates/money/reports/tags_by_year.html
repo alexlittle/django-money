@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load mathfilters %}
+
+    
+{% block content %}
+
+<h2>Tags - {{ year }}</h2>
+
+<div class="table-responsive">
+<table class="table table-striped" id="tagtable">
+	<thead>
+		<tr>
+			<th>{% trans 'Tag' %}</th>
+			<th>{% trans 'Credit' %}</th>
+			<th>{% trans 'Debit' %}</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for tag in tags %}
+		 <tr>
+			<td>{{ tag.name }}</td>
+			<td class="number">{{ tag.sum_in|floatformat:2|intcomma }}</td>
+			<td class="number">{{ tag.sum_out|floatformat:2|intcomma }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+</div>
+<script>
+	
+var dt = new DataTable('#tagtable', {order: [[0, 'asc']], searching: false, paging: false, info: false});
+dt.page.len(-1).draw();
+</script>
+{% endblock %}
