@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load mathfilters %}
+
+    
+{% block content %}
+
+<h2>{{ tag.name }}</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>{% trans 'Year' %}</th>
+            <th>{% trans 'Credit' %}</th>
+            <th>{% trans 'Debit' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for years in totals_by_year %}
+         <tr>
+            <td>{{ years.year }}</td>
+            <td class="number">{{ years.sum_in|floatformat:2|intcomma }}</td>
+            <td class="number">{{ years.sum_out|floatformat:2|intcomma }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>{% trans 'Date' %}</th>
+            <th>{% trans 'Account' %}</th>
+            <th>{% trans 'Description' %}</th>
+            <th class="number">{% trans 'Credit' %}</th>
+            <th class="number">{% trans 'Debit' %}</th>
+            <th class="number">{% trans 'Type' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in transactions %}
+         <tr>
+            <td>{{ t.date }}</td>
+            <td>{{ t.account.name }}</td>
+            <td>{{ t.description }}</td>
+            <td class="number">{{ t.credit|floatformat:2|intcomma }}</td>
+            <td class="number">{{ t.debit|floatformat:2|intcomma }}</td>
+            <td class="number">{{ t.payment_type }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

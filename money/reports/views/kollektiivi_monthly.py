@@ -11,7 +11,8 @@ from money.models import Account, Transaction
 CONSULTING_ID = 47
 KOLLEKTIIVI_TAG = "kollektiivi"
 KOLLEKTIIVI_EXTRAS_ID = 53
-    
+
+
 def kollektiivi_balance_at_date(date):
     trans_cred = Transaction.objects \
         .filter(account_id__in=(CONSULTING_ID, KOLLEKTIIVI_EXTRAS_ID),
@@ -35,6 +36,7 @@ def kollektiivi_balance_at_date(date):
     else:
         return trans_cred['credit_sum'] - trans_deb['debit_sum']
 
+
 def kollektiivi_monthly(request, year, month):
 
     consulting = Transaction.objects.filter(
@@ -49,14 +51,14 @@ def kollektiivi_monthly(request, year, month):
             ).order_by('date')
 
     data = []
-    
+
     for c in consulting:
         obj = {'transaction': c, 'balance': kollektiivi_balance_at_date(c.date)}
         data.append(obj)
 
     start_date = datetime(year, month, 1, 23, 59, 59) - timedelta(days=1)
     end_date = datetime(year, month, calendar.monthrange(year, month)[1], 23, 59, 59)
-    
+
     opening_balance = kollektiivi_balance_at_date(start_date)
     closing_balance = kollektiivi_balance_at_date(end_date)
 
@@ -64,7 +66,7 @@ def kollektiivi_monthly(request, year, month):
                                   total_debit=Sum("debit_percent"),
                                   total_alv_charged=Sum('sales_tax_charged_percent'),
                                   total_alv_paid=Sum('sales_tax_paid_percent'))
-     
+
     objects = {'data': data,
                'opening_balance': opening_balance,
                'closing_balance': closing_balance,
@@ -75,6 +77,5 @@ def kollektiivi_monthly(request, year, month):
     if end_date.month == datetime.now().month and end_date.year == datetime.now().year:
         objects['deposit_balance'] = settings.DEPOSIT_BALANCE
         objects['funds_available'] = closing_balance - settings.DEPOSIT_BALANCE
-        
+
     return render(request, 'money/reports/kollektiivi.html', objects)
-    

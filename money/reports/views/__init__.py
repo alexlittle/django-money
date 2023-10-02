@@ -8,3 +8,4 @@ from money.reports.views.graph_investment import *
 from money.reports.views.monthly_transactions import *
 from money.reports.views.kollektiivi_monthly import *
 from money.reports.views.tags_by_year import *
+from money.reports.views.tag_detail import *
