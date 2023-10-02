@@ -59,14 +59,38 @@
 
  <tr>
 	<td><b>{{ end_date|date:"j M Y" }}</b></td>
-	<td><b>{% trans 'Closing Balance' %}</b></td>
+	<td><b>{% trans 'Closing balance' %}</b></td>
 	<td class="number"></td>
 	<td class="number"></td>
 	<td class="number"></td>
 	<td class="number"></td>
 	<td class="number total">{{ closing_balance|floatformat:2|intcomma }}</td>
 	<td></td>
-</tr>	
+</tr>
+
+{% if deposit_balance %}
+ <tr>
+	<td><b>{{ end_date|date:"j M Y" }}</b></td>
+	<td><b>{% trans 'Deposit balance' %}</b></td>
+	<td class="number"></td>
+	<td class="number"></td>
+	<td class="number"></td>
+	<td class="number"></td>
+	<td class="number total">{{ deposit_balance|floatformat:2|intcomma }}</td>
+	<td></td>
+</tr>
+ <tr>
+	<td><b>{{ end_date|date:"j M Y" }}</b></td>
+	<td><b>{% trans 'Funds available' %}</b></td>
+	<td class="number"></td>
+	<td class="number"></td>
+	<td class="number"></td>
+	<td class="number"></td>
+	<td class="number total">{{ funds_available|floatformat:2|intcomma }}</td>
+	<td></td>
+</tr>
+{% endif %}
+	
 </tbody>
 </table>
 </div>

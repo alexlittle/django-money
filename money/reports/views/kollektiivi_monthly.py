@@ -2,6 +2,7 @@ import calendar
 
 from datetime import datetime, timedelta
 
+from django.conf import settings
 from django.db.models import Sum, F
 from django.shortcuts import render
 
@@ -63,13 +64,18 @@ def kollektiivi_monthly(request, year, month):
                                   total_debit=Sum("debit_percent"),
                                   total_alv_charged=Sum('sales_tax_charged_percent'),
                                   total_alv_paid=Sum('sales_tax_paid_percent'))
+     
+    objects = {'data': data,
+               'opening_balance': opening_balance,
+               'closing_balance': closing_balance,
+               'start_date': datetime(year, month, 1),
+               'end_date': end_date,
+               'totals': totals}
+    print(type(closing_balance))
+    print(type(settings.DEPOSIT_BALANCE))
+    if end_date.month == datetime.now().month and end_date.year == datetime.now().year:
+        objects['deposit_balance'] = settings.DEPOSIT_BALANCE
+        objects['funds_available'] = closing_balance - settings.DEPOSIT_BALANCE
         
-        
-    return render(request, 'money/reports/kollektiivi.html',
-                  {'data': data,
-                   'opening_balance': opening_balance,
-                   'closing_balance': closing_balance,
-                   'start_date': datetime(year, month, 1),
-                   'end_date': end_date,
-                   'totals': totals})
+    return render(request, 'money/reports/kollektiivi.html', objects)
     
