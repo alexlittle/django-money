@@ -29,7 +29,7 @@ def by_year_view(request):
                         date__year=report_year.year,
                         on_statement=True) \
                 .exclude(payment_type='Transfer') \
-                .exclude(account__id=49) \
+                .exclude(account__id__in=settings.EXCLUDE_ACCOUNT_IDS) \
                 .extra(select={'year': "EXTRACT(year FROM date)"}) \
                 .values('year') \
                 .annotate(sum_in=Sum('credit'), sum_out=Sum('debit'))

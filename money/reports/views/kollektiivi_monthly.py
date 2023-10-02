@@ -71,8 +71,7 @@ def kollektiivi_monthly(request, year, month):
                'start_date': datetime(year, month, 1),
                'end_date': end_date,
                'totals': totals}
-    print(type(closing_balance))
-    print(type(settings.DEPOSIT_BALANCE))
+
     if end_date.month == datetime.now().month and end_date.year == datetime.now().year:
         objects['deposit_balance'] = settings.DEPOSIT_BALANCE
         objects['funds_available'] = closing_balance - settings.DEPOSIT_BALANCE

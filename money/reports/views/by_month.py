@@ -32,7 +32,7 @@ def by_month_view(request):
                         date__month=report_month.month,
                         on_statement=True) \
                 .exclude(payment_type='Transfer') \
-                .exclude(account__id=49) \
+                .exclude(account__id__in=settings.EXCLUDE_ACCOUNT_IDS) \
                 .extra(select={'year': "EXTRACT(year FROM date)",
                                'month': "EXTRACT(month FROM date)"}) \
                 .values('year', 'month') \
