@@ -20,7 +20,7 @@
 	<tbody>
 		{% for tag in tags %}
 		 <tr>
-			<td><a href="{% url 'money:tag_detail' tag.id %}">{{ tag.name }}</a></td>
+			<td><a href="{% url 'money:tag_detail' tag.id %}">{{ tag.category }} {{ tag.name }}</a></td>
 			<td class="number">{{ tag.sum_in|floatformat:2|intcomma }}</td>
 			<td class="number">{{ tag.sum_out|floatformat:2|intcomma }}</td>
 		</tr>

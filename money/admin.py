@@ -19,7 +19,7 @@ class RegularPaymentAdmin(admin.ModelAdmin):
 
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')
+    list_display = ('id', 'category', 'name')
 
 
 class TransactionTagAdmin(admin.ModelAdmin):

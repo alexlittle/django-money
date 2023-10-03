@@ -18,6 +18,7 @@ class Command(BaseCommand):
         transactions = Transaction.objects \
             .filter(date__year=year, transactiontag=None) \
             .exclude(payment_type='Transfer') \
+            .exclude(account__id=settings.CONSULTING_EXTRAS_ACCOUNT_ID) \
             .order_by("description")
 
         for t in transactions:

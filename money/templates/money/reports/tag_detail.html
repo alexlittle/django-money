@@ -6,7 +6,7 @@
     
 {% block content %}
 
-<h2>{{ tag.name }}</h2>
+<h2>{{ tag }}</h2>
 
 <table class="table table-striped">
     <thead>
@@ -36,17 +36,19 @@
             <th class="number">{% trans 'Credit' %}</th>
             <th class="number">{% trans 'Debit' %}</th>
             <th class="number">{% trans 'Type' %}</th>
+            <th class="number">{% trans 'Options' %}</th>
         </tr>
     </thead>
     <tbody>
         {% for t in transactions %}
          <tr>
-            <td>{{ t.date }}</td>
+            <td>{{ t.date|naturalday }}</td>
             <td>{{ t.account.name }}</td>
             <td>{{ t.description }}</td>
             <td class="number">{{ t.credit|floatformat:2|intcomma }}</td>
             <td class="number">{{ t.debit|floatformat:2|intcomma }}</td>
             <td class="number">{{ t.payment_type }}</td>
+            <td class="number"><a href="{% url 'admin:money_transaction_change' t.id %}">Edit</a></td>
         </tr>
         {% endfor %}
     </tbody>

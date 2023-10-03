@@ -3,6 +3,8 @@ from django.conf import settings
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
+from money.models import Tag
+
 
 def base_currency(request):
     return {'BASE_CURRENCY': settings.BASE_CURRENCY}
@@ -19,3 +21,11 @@ def kollektiivi_menu(request):
                          year=report_month.year,
                          name=calendar.month_name[report_month.month]))
     return {'KOLLEKTIIVI_MENU': menu}
+
+
+def tags_menu(request):
+    menu = []
+    tags = Tag.objects.all()
+    for t in tags:
+        menu.append(dict(id=t.id, name=t))
+    return {'TAG_MENU': menu}

@@ -16,5 +16,5 @@ class TagDetailView(TemplateView):
         context['totals_by_year'] = Tag.objects.filter(pk=tag_id) \
             .values('name', year=F('transactiontag__transaction__date__year')) \
             .annotate(sum_in=Sum('transactiontag__transaction__credit'), sum_out=Sum('transactiontag__transaction__debit'))
-        context['transactions'] = Transaction.objects.filter(transactiontag__tag__pk=tag_id)
+        context['transactions'] = Transaction.objects.filter(transactiontag__tag__pk=tag_id).order_by("-date")
         return context

@@ -25,14 +25,22 @@ ACCOUNT_TYPES = (
         ('pension', 'Pension')
     )
 
+TAG_CATEGORIES = (
+        ('travel', 'Travel'),
+        ('house', 'House'),
+        ('kollektiivi', 'Kollektiivi'),
+        ('car', 'Car'),
+        ('personal', 'Personal'),
+        ('misc', 'Misc'),
+        ('business', 'Business')
+    )
+
 
 class Account (models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
     active = models.BooleanField(blank=False, default=True)
-    currency = models.CharField(
-        max_length=3, choices=settings.CURRENCIES_AVAILABLE)
-    type = models.CharField(
-        max_length=100, choices=ACCOUNT_TYPES, default='cash')
+    currency = models.CharField(max_length=3, choices=settings.CURRENCIES_AVAILABLE)
+    type = models.CharField(max_length=100, choices=ACCOUNT_TYPES, default='cash')
 
     def __str__(self):
         return self.name
@@ -158,8 +166,7 @@ class Account (models.Model):
 
     @staticmethod
     def get_balance_total(type, currency):
-        accs = Account.objects.filter(
-            active=True, type=type, currency=currency)
+        accs = Account.objects.filter(active=True, type=type, currency=currency)
         total = 0
         for acc in accs:
             if acc.get_balance():
@@ -268,12 +275,16 @@ class RegularPayment(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
+    category = models.CharField(max_length=100, choices=TAG_CATEGORIES, blank=True, null=True)
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["category", "name"]
 
     def __str__(self):
-        return self.name
+        if self.category:
+            return self.category + ": " + self.name
+        else:
+            return self.name
 
 
 class Transaction(models.Model):
