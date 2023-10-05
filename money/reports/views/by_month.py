@@ -2,7 +2,7 @@ import datetime
 import dateutil.relativedelta
 
 from django.conf import settings
-from django.db.models import Sum
+from django.db.models import Sum, F
 from django.shortcuts import render
 from django.utils import timezone
 
@@ -33,12 +33,9 @@ def by_month_view(request):
                         on_statement=True) \
                 .exclude(payment_type='Transfer') \
                 .exclude(account__id__in=settings.EXCLUDE_ACCOUNT_IDS) \
-                .extra(select={'year': "EXTRACT(year FROM date)",
-                               'month': "EXTRACT(month FROM date)"}) \
-                .values('year', 'month') \
+                .values(year=F('date__year'), month=F('date__month')) \
                 .annotate(sum_in=Sum('credit'), sum_out=Sum('debit'))
-            date = datetime.datetime(
-                report_month.year, report_month.month, 1, tzinfo=tz)
+            date = datetime.datetime(report_month.year, report_month.month, 1, tzinfo=tz)
 
             rate = ExchangeRate.at_date(date, settings.BASE_CURRENCY, k)
             for t in transactions:
