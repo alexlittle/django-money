@@ -4,58 +4,15 @@ from django.shortcuts import render
 
 from money.models import Account, Transaction
 
+from money import lib
+
 
 def consulting_quarters(request, quarter):
     CONSULTING_ID = 47
     CONSULTING_EXTRAS_ID = 49
 
-    QUARTERS = {
-                '2019-4': {'start_date': datetime.datetime(2019, 10, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2019, 12, 31, 23, 59, 59)},
-                '2020-1': {'start_date': datetime.datetime(2020, 1, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2020, 3, 31, 23, 59, 59)},
-                '2020-2': {'start_date': datetime.datetime(2020, 4, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2020, 6, 30, 23, 59, 59)},
-                '2020-3': {'start_date': datetime.datetime(2020, 7, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2020, 9, 30, 23, 59, 59)},
-                '2020-4': {'start_date': datetime.datetime(2020, 10, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2020, 12, 31, 23, 59, 59)},
-                '2021-1': {'start_date': datetime.datetime(2021, 1, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2021, 3, 31, 23, 59, 59)},
-                '2021-2': {'start_date': datetime.datetime(2021, 4, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2021, 6, 30, 23, 59, 59)},
-                '2021-3': {'start_date': datetime.datetime(2021, 7, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2021, 9, 30, 23, 59, 59)},
-                '2021-4': {'start_date': datetime.datetime(2021, 10, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2021, 12, 31, 23, 59, 59)},
-                '2022-1': {'start_date': datetime.datetime(2022, 1, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2022, 3, 31, 23, 59, 59)},
-                '2022-2': {'start_date': datetime.datetime(2022, 4, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2022, 6, 30, 23, 59, 59)},
-                '2022-3': {'start_date': datetime.datetime(2022, 7, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2022, 9, 30, 23, 59, 59)},
-                '2022-4': {'start_date': datetime.datetime(2022, 10, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2022, 12, 31, 23, 59, 59)},
-                '2023-1': {'start_date': datetime.datetime(2023, 1, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2023, 3, 31, 23, 59, 59)},
-                '2023-2': {'start_date': datetime.datetime(2023, 4, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2023, 6, 30, 23, 59, 59)},
-                '2023-3': {'start_date': datetime.datetime(2023, 7, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2023, 9, 30, 23, 59, 59)},
-                '2023-4': {'start_date': datetime.datetime(2023, 10, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2023, 12, 31, 23, 59, 59)},
-                '2024-1': {'start_date': datetime.datetime(2024, 1, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2024, 3, 31, 23, 59, 59)},
-                '2024-2': {'start_date': datetime.datetime(2024, 4, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2024, 6, 30, 23, 59, 59)},
-                '2024-3': {'start_date': datetime.datetime(2024, 7, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2024, 9, 30, 23, 59, 59)},
-                '2024-4': {'start_date': datetime.datetime(2024, 10, 1, 0, 0, 0),
-                           'end_date': datetime.datetime(2024, 12, 31, 23, 59, 59)},
-                }
-
-    START_DATE = QUARTERS[quarter]['start_date']
-    END_DATE = QUARTERS[quarter]['end_date']
+    START_DATE = lib.QUARTERS[quarter]['start_date']
+    END_DATE = lib.QUARTERS[quarter]['end_date']
 
     consulting_account = Account.objects.get(pk=CONSULTING_ID)
     consulting = Transaction.objects.filter(
