@@ -18,36 +18,35 @@ def home_view(request):
     for k, v in settings.CURRENCIES_AVAILABLE:
         currency = {}
         currency['currency'] = k
-        currency['account'] = Account.objects.filter(
-            active=True, type='cash', currency=k).order_by('name')
+        currency['account'] = Account.objects.filter(active=True, type='cash', currency=k).order_by('name')
         currency['total_balance'] = Account.get_balance_total('cash', k)
-        currency['total_on_statement'] = Account.get_on_statment_total(
-            'cash', k)
-        currency['total_base_currency'] = Account \
-            .get_balance_base_currency_total('cash', k)
+        currency['total_on_statement'] = Account.get_on_statment_total('cash', k)
+        currency['total_base_currency'] = Account.get_balance_base_currency_total('cash', k)
         cash_accounts.append(currency)
 
     invest_accounts = []
     for k, v in settings.CURRENCIES_AVAILABLE:
         currency = {}
         currency['currency'] = k
-        currency['account'] = Account.objects.filter(
-            active=True, type='invest', currency=k).order_by('name')
+        currency['account'] = Account.objects.filter(active=True, type='invest', currency=k).order_by('name')
         currency['total_valuation'] = Account.get_valuation_total('invest', k)
-        currency['total_base_currency'] = Account \
-            .get_valuation_base_currency_total('invest', k)
+        currency['total_base_currency'] = Account.get_valuation_base_currency_total('invest', k)
         invest_accounts.append(currency)
 
     property = {}
-    property['accounts'] = Account.objects.filter(
-        active=True, type='property').order_by('name')
-    property['total_base_currency'] = Account.get_val_base_currency_total(
-        'property')
+    property['accounts'] = Account.objects.filter(active=True, type='property').order_by('name')
+    property['total_base_currency'] = Account.get_val_base_currency_total('property')
+    
+    pensions = {}
+    pensions['accounts'] = Account.objects.filter(active=True, type='pension').order_by('name')
+    pensions['total_base_currency'] = Account.get_val_base_currency_total('pension')
+    pensions['total_est_monthly'] = Account.get_monthly_val_base_currency_total('pension')
 
     return render(request, 'money/home.html',
                   {'cash_accounts': cash_accounts,
                    'invest_accounts': invest_accounts,
-                   'property': property})
+                   'property': property,
+                   'pensions': pensions})
 
 
 def account_view(request, account_id):

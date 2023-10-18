@@ -110,5 +110,41 @@
 			</tr>
 		</tfoot>
 </table>
+
+
+<h3>Pensions</h3>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Account' %}</th>
+				<th class="number">{% trans 'Valuation' %}</th>
+				<th class="number">{% trans 'Valuation date' %}</th>
+				<th class="number">{% trans 'In Base Currency' %} ({{ BASE_CURRENCY }})</th>
+				<th class="number">{% trans 'Est. Monthly Value' %} ({{ BASE_CURRENCY }})</th>
+			</tr>
+		</thead>
+		<tbody>
+
+{% for pension in pensions.accounts %}
+       <tr>
+		<td>{{ pension.name }}</td>
+		<td class="number">{{ pension.get_valuation.value|intcomma }} ({{ pension.currency }})</td>
+		<td class="number">{{ pension.get_valuation.date|date:"D d M Y" }}</td>
+		<td class="number">{{ pension.get_valuation_base_currency|floatformat:2|intcomma }}</td>
+		<td class="number">{{ pension.get_monthly_valuation_base_currency|floatformat:2|intcomma }}</td>
+	</tr>
+{% endfor %}
+</tbody>
+<tfoot>
+			<tr>
+				<th>Total</th>
+				<td class="number">&nbsp;</td>
+				<th>&nbsp;</th>
+				<th class="number">{{ pensions.total_base_currency|floatformat:2|intcomma }}</th>
+				<th class="number">{{ pensions.total_est_monthly|floatformat:2|intcomma }}</th>
+			</tr>
+		</tfoot>
+</table>
 	
 {% endblock %}

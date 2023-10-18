@@ -88,21 +88,26 @@ class Account (models.Model):
             return trans_cred['credit_sum'] - trans_deb['debit_sum']
 
     def get_valuation(self):
-        v_tmp = Valuation.objects.filter(
-            account=self).aggregate(date=Max('date'))
+        v_tmp = Valuation.objects.filter(account=self, value__gt=0).aggregate(date=Max('date'))
         if v_tmp['date'] is not None:
-            valuation = Valuation.objects.get(account=self, date=v_tmp['date'])
+            valuation = Valuation.objects.get(account=self, value__gt=0, date=v_tmp['date'])
             return valuation
         else:
             return None
 
+    def get_monthly_valuation(self):
+        v_tmp = Valuation.objects.filter(account=self, value_per_month__gt=0).aggregate(date=Max('date'))
+        if v_tmp['date'] is not None:
+            valuation = Valuation.objects.get(account=self, value_per_month__gt=0, date=v_tmp['date'])
+            return valuation
+        else:
+            return None
+        
     @staticmethod
     def get_valuation_at_date(account, date):
-        v_tmp = Valuation.objects.filter(
-            account=account, date__lte=date).aggregate(date=Max('date'))
+        v_tmp = Valuation.objects.filter(account=account, value__gt=0, date__lte=date).aggregate(date=Max('date'))
         if v_tmp['date'] is not None:
-            valuation = Valuation.objects.get(
-                account=account, date=v_tmp['date'])
+            valuation = Valuation.objects.get(account=account, value__gt=0, date=v_tmp['date'])
             return valuation
         else:
             return None
@@ -128,11 +133,30 @@ class Account (models.Model):
 
     def get_valuation_base_currency(self):
         if self.currency == settings.BASE_CURRENCY:
-            return self.get_valuation().value
+            if self.get_valuation():
+                return self.get_valuation().value
+            else:
+                return 0
         else:
-            rate = ExchangeRate.most_recent(settings.BASE_CURRENCY, self.currency)
-            return self.get_valuation().value/rate
+            if self.get_valuation():
+                rate = ExchangeRate.most_recent(settings.BASE_CURRENCY, self.currency)
+                return self.get_valuation().value/rate
+            else:
+                return 0
 
+    def get_monthly_valuation_base_currency(self):
+        if self.currency == settings.BASE_CURRENCY:
+            if self.get_monthly_valuation():
+                return self.get_monthly_valuation().value_per_month
+            else:
+                return 0
+        else:
+            if self.get_monthly_valuation():
+                rate = ExchangeRate.most_recent(settings.BASE_CURRENCY, self.currency)
+                return self.get_monthly_valuation().value_per_month/rate
+            else:
+                return 0
+            
     @staticmethod
     def get_valuation_base_currency_at_date(account, date):
         if account.currency == settings.BASE_CURRENCY:
@@ -205,8 +229,7 @@ class Account (models.Model):
 
     @staticmethod
     def get_valuation_base_currency_total(type, currency):
-        accs = Account.objects.filter(
-            active=True, type=type, currency=currency)
+        accs = Account.objects.filter(active=True, type=type, currency=currency)
         total = 0
         for acc in accs:
             total += acc.get_valuation_base_currency()
@@ -218,6 +241,14 @@ class Account (models.Model):
         total = 0
         for acc in accs:
             total += acc.get_valuation_base_currency()
+        return total
+    
+    @staticmethod
+    def get_monthly_val_base_currency_total(type):
+        accs = Account.objects.filter(active=True, type=type)
+        total = 0
+        for acc in accs:
+            total += acc.get_monthly_valuation_base_currency()
         return total
 
 
@@ -307,6 +338,7 @@ class Valuation(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     date = models.DateField(default=timezone.now)
     value = models.DecimalField(decimal_places=2, max_digits=20)
+    value_per_month = models.DecimalField(decimal_places=2, max_digits=20, default=0)
 
 
 class TransactionTag(models.Model):

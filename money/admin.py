@@ -43,7 +43,7 @@ class TransactionAdmin(admin.ModelAdmin):
 
 
 class ValuationAdmin(admin.ModelAdmin):
-    list_display = ('account', 'date', 'value')
+    list_display = ('account', 'date', 'value', 'value_per_month')
 
 
 admin.site.register(Account, AccountAdmin)
