@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load mathfilters %}
+
+    
+{% block content %}
+
+<h2>{{ category }}</h2>
+
+<h3>By Year</h3>
+<table class="table table-striped" width="30%" id="category_by_year">
+    <thead>
+        <tr>
+            <th>{% trans 'Year' %}</th>
+            <th>{% trans 'Credit' %}</th>
+            <th>{% trans 'Debit' %}</th>
+            <th>{% trans 'Balance' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for years in totals_by_year %}
+         <tr>
+            <td>{{ years.year }}</td>
+            <td class="number">{{ years.sum_in|floatformat:2|intcomma }}</td>
+            <td class="number">{{ years.sum_out|floatformat:2|intcomma }}</td>
+             <td class="number">{{ years.balance|floatformat:2|intcomma }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>By Period</h3>
+<table class="table table-striped" width="50%" id="category_by_period">
+    <thead>
+        <tr>
+            <th>{% trans 'Period' %}</th>
+            <th>{% trans 'Credit' %}</th>
+            <th>{% trans 'Debit' %}</th>
+            <th>{% trans 'Balance' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for period in periods %}
+         <tr>
+            <td>{{ period.title }}</td>
+            <td class="number">{{ period.sum_in|floatformat:2|intcomma }}</td>
+            <td class="number">{{ period.sum_out|floatformat:2|intcomma }}</td>
+             <td class="number">{{ period.balance|floatformat:2|intcomma }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Transactions</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>{% trans 'Date' %}</th>
+            <th>{% trans 'Account' %}</th>
+            <th>{% trans 'Description' %}</th>
+            <th class="number">{% trans 'Credit' %}</th>
+            <th class="number">{% trans 'Debit' %}</th>
+            <th class="number">{% trans 'Type' %}</th>
+            <th class="number">{% trans 'Options' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in transactions %}
+         <tr>
+            <td>{{ t.date|naturalday }}</td>
+            <td>{{ t.account.name }}</td>
+            <td>{{ t.description }}</td>
+            <td class="number">{{ t.credit|floatformat:2|intcomma }}</td>
+            <td class="number">{{ t.debit|floatformat:2|intcomma }}</td>
+            <td class="number">{{ t.payment_type }}</td>
+            <td class="number"><a href="{% url 'admin:money_transaction_change' t.id %}">Edit</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+var cby = new DataTable('#category_by_year', {order: [[0, 'desc']], searching: false, paging: false, info: false});
+cby.page.len(-1).draw();
+
+var cbp = new DataTable('#category_by_period', {order: [[0, 'desc']], searching: false, paging: false, info: false});
+cbp.page.len(-1).draw();
+</script>
+{% endblock %}

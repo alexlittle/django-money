@@ -345,3 +345,10 @@ class TransactionTag(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     percent = models.DecimalField(decimal_places=2, max_digits=20, default=100)
+
+
+class AccountingPeriod(models.Model):
+    start_date = models.DateTimeField(default=timezone.now)
+    end_date = models.DateTimeField(default=timezone.now)
+    active = models.BooleanField(blank=False, default=True)
+    title = models.CharField(max_length=100, blank=False, null=False)

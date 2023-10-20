@@ -2,17 +2,16 @@ import datetime
 
 from django.shortcuts import render
 
-from money.models import Account, Transaction
-
-from money import lib
+from money.models import Account, Transaction, AccountingPeriod
 
 
-def consulting_quarters(request, quarter):
+def consulting_quarters(request, period_id):
     CONSULTING_ID = 47
     CONSULTING_EXTRAS_ID = 49
 
-    START_DATE = lib.QUARTERS[quarter]['start_date']
-    END_DATE = lib.QUARTERS[quarter]['end_date']
+    ap = AccountingPeriod.objects.get(pk=period_id)
+    START_DATE = ap.start_date
+    END_DATE = ap.end_date
 
     consulting_account = Account.objects.get(pk=CONSULTING_ID)
     consulting = Transaction.objects.filter(

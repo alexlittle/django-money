@@ -12,7 +12,7 @@ from money.models import Transaction, ExchangeRate
 def by_month_view(request):
 
     tz = timezone.get_default_timezone()
-    now = datetime.datetime.now()
+    now = timezone.now()
 
     report = []
 

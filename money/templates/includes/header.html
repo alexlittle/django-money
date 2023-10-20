@@ -19,21 +19,10 @@
 							<li><a href="{% url 'money:by_month' %}">{% trans 'Balance by Month' %}</a></li>
 							<li><a href="{% url 'money:by_year' %}">{% trans 'Balance by Year' %}</a></li>
 							<li><a href="{% url 'money:bills' %}">{% trans 'Bills' %}</a></li>
-							
-							<li><a href="{% url 'money:consulting' '2024-4' %}">{% trans 'Consulting 2024 Q4' %}</a></li>
-							<li><a href="{% url 'money:consulting' '2024-3' %}">{% trans 'Consulting 2024 Q3' %}</a></li>
-							<li><a href="{% url 'money:consulting' '2024-2' %}">{% trans 'Consulting 2024 Q2' %}</a></li>
-							<li><a href="{% url 'money:consulting' '2024-1' %}">{% trans 'Consulting 2024 Q1' %}</a></li>
-							
-							<li><a href="{% url 'money:consulting' '2023-4' %}">{% trans 'Consulting 2023 Q4' %}</a></li>
-							<li><a href="{% url 'money:consulting' '2023-3' %}">{% trans 'Consulting 2023 Q3' %}</a></li>
-							<li><a href="{% url 'money:consulting' '2023-2' %}">{% trans 'Consulting 2023 Q2' %}</a></li>
-							<li><a href="{% url 'money:consulting' '2023-1' %}">{% trans 'Consulting 2023 Q1' %}</a></li>
-							
-							<li><a href="{% url 'money:consulting' '2022-4' %}">{% trans 'Consulting 2022 Q4' %}</a></li>
-							<li><a href="{% url 'money:consulting' '2022-3' %}">{% trans 'Consulting 2022 Q3' %}</a></li>
-							<li><a href="{% url 'money:consulting' '2022-2' %}">{% trans 'Consulting 2022 Q2' %}</a></li>
-							<li><a href="{% url 'money:consulting' '2022-1' %}">{% trans 'Consulting 2022 Q1' %}</a></li>
+
+						{% for a in ACCOUNTING_PERIODS %}
+								<li><a href="{% url 'money:consulting' a.id %}">{% trans 'Consulting' %} {{ a.title }}</a></li>
+							{% endfor %}
 							
 					</ul>
 				</li>
@@ -48,8 +37,8 @@
 		    		<ul class="dropdown-menu">
 		    			<li><a href="{% url 'money:tags_all' %}">{% trans 'All tags' %}</a></li>
 						{% for t in TAG_MENU %}
-							<li><a href="{% url 'money:tag_detail' t.id %}">{{ t.name }}</a></li>
-						{% endfor %}							
+							<li><a href="{% url 'money:tags_by_category' t.category %}">{{ t.category }}</a></li>
+						{% endfor %}
 					</ul>
 				</li>
 		        <li><a href="{% url 'admin:money_transaction_add' %}">{% trans 'Add Transaction' %}</a></li>

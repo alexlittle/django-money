@@ -2,8 +2,9 @@ import calendar
 from django.conf import settings
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from django.utils import timezone
 
-from money.models import Tag
+from money.models import Tag, AccountingPeriod
 
 
 def base_currency(request):
@@ -22,10 +23,14 @@ def kollektiivi_menu(request):
                          name=calendar.month_name[report_month.month]))
     return {'KOLLEKTIIVI_MENU': menu}
 
+def get_accounting_periods(request):
+    datetime.today()
+    aps = AccountingPeriod.objects.filter(active=True, start_date__lte=timezone.now()).order_by('-start_date')
+    return {'ACCOUNTING_PERIODS': aps}
 
 def tags_menu(request):
     menu = []
-    tags = Tag.objects.all()
+    tags = Tag.objects.order_by().values('category').distinct()
     for t in tags:
-        menu.append(dict(id=t.id, name=t))
+        menu.append(t)
     return {'TAG_MENU': menu}

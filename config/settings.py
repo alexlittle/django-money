@@ -77,7 +77,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'money.context_processors.base_currency',
                 'money.context_processors.kollektiivi_menu',
-                'money.context_processors.tags_menu'
+                'money.context_processors.tags_menu',
+                'money.context_processors.get_accounting_periods',
             ],
             'debug': DEBUG,
         },

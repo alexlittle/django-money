@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from money.models import Account, ExchangeRate, RegularPayment, \
-    Tag, Transaction, Valuation, TransactionTag
+    Tag, Transaction, Valuation, TransactionTag, AccountingPeriod
 
 
 # Register your models here.
@@ -45,6 +45,8 @@ class TransactionAdmin(admin.ModelAdmin):
 class ValuationAdmin(admin.ModelAdmin):
     list_display = ('account', 'date', 'value', 'value_per_month')
 
+class AccountingPeriodAdmin(admin.ModelAdmin):
+    list_display = ('start_date', 'end_date', 'title', 'active')
 
 admin.site.register(Account, AccountAdmin)
 admin.site.register(ExchangeRate, ExchangeRateAdmin)
@@ -53,3 +55,4 @@ admin.site.register(Tag, TagAdmin)
 admin.site.register(Transaction, TransactionAdmin)
 admin.site.register(Valuation, ValuationAdmin)
 admin.site.register(TransactionTag, TransactionTagAdmin)
+admin.site.register(AccountingPeriod, AccountingPeriodAdmin)

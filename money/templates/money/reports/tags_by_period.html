@@ -12,7 +12,13 @@
 {% endfor %}
 </h2>
 
-<h2>Categories - {{ year }}</h2>
+<ul>
+{% for p in periods %}
+ <li><a href="{% url 'money:tags_by_period' p.id %}">{{ p.title }}</a></li>
+{% endfor %}
+</ul>
+
+<h2>Categories - {% if year %}{{ year }}{% else %}{{ period.title }}{% endif %}</h2>
 
 <div class="table-responsive">
 <table class="table table-striped" id="categorytable" width="50%">
@@ -36,7 +42,7 @@
 </div>
 
 
-<h2>Tags - {{ year }}</h2>
+<h2>Tags - {% if year %}{{ year }}{% else %}{{ period.title }}{% endif %}</h2>
 
 <div class="table-responsive">
 <table class="table table-striped" id="tagtable" width="50%">
