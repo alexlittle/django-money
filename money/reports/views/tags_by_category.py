@@ -30,7 +30,7 @@ class TagsByCategoryView(TemplateView):
         for ap in aps:
             temp = Transaction.objects.filter(transactiontag__tag__in=tags,
                                date__gte=ap.start_date,
-                               date__lte=ap.end_date ) \
+                               date__lte=ap.end_date) \
                 .values(category=F('transactiontag__tag__category')) \
                 .annotate(sum_in=Sum('credit'),
                           sum_out=Sum('debit')).order_by('category').first()

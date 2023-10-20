@@ -23,10 +23,12 @@ def kollektiivi_menu(request):
                          name=calendar.month_name[report_month.month]))
     return {'KOLLEKTIIVI_MENU': menu}
 
+
 def get_accounting_periods(request):
     datetime.today()
     aps = AccountingPeriod.objects.filter(active=True, start_date__lte=timezone.now()).order_by('-start_date')
     return {'ACCOUNTING_PERIODS': aps}
+
 
 def tags_menu(request):
     menu = []

@@ -36,7 +36,7 @@ def home_view(request):
     property = {}
     property['accounts'] = Account.objects.filter(active=True, type='property').order_by('name')
     property['total_base_currency'] = Account.get_val_base_currency_total('property')
-    
+
     pensions = {}
     pensions['accounts'] = Account.objects.filter(active=True, type='pension').order_by('name')
     pensions['total_base_currency'] = Account.get_val_base_currency_total('pension')

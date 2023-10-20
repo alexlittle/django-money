@@ -35,6 +35,7 @@ class TagsByYearView(TemplateView):
             .annotate(sum_in=Sum('transactiontag__transaction__credit'), sum_out=Sum('transactiontag__transaction__debit'))
         return context
 
+
 class TagsByPeriodView(TemplateView):
 
     template_name = 'money/reports/tags_by_period.html'

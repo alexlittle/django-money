@@ -102,7 +102,7 @@ class Account (models.Model):
             return valuation
         else:
             return None
-        
+
     @staticmethod
     def get_valuation_at_date(account, date):
         v_tmp = Valuation.objects.filter(account=account, value__gt=0, date__lte=date).aggregate(date=Max('date'))
@@ -156,7 +156,7 @@ class Account (models.Model):
                 return self.get_monthly_valuation().value_per_month/rate
             else:
                 return 0
-            
+
     @staticmethod
     def get_valuation_base_currency_at_date(account, date):
         if account.currency == settings.BASE_CURRENCY:
@@ -242,7 +242,7 @@ class Account (models.Model):
         for acc in accs:
             total += acc.get_valuation_base_currency()
         return total
-    
+
     @staticmethod
     def get_monthly_val_base_currency_total(type):
         accs = Account.objects.filter(active=True, type=type)

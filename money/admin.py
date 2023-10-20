@@ -45,8 +45,10 @@ class TransactionAdmin(admin.ModelAdmin):
 class ValuationAdmin(admin.ModelAdmin):
     list_display = ('account', 'date', 'value', 'value_per_month')
 
+
 class AccountingPeriodAdmin(admin.ModelAdmin):
     list_display = ('start_date', 'end_date', 'title', 'active')
+
 
 admin.site.register(Account, AccountAdmin)
 admin.site.register(ExchangeRate, ExchangeRateAdmin)

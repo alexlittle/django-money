@@ -46,6 +46,7 @@ QUARTERS = {
 'end_date': datetime.datetime(2024, 12, 31, 23, 59, 59)},
 }
 
+
 def add_quarters(apps, schema_editor):
     AccountingPeriod = apps.get_model("money", "AccountingPeriod")
     for k in QUARTERS.keys():
@@ -54,6 +55,7 @@ def add_quarters(apps, schema_editor):
         ap.end_date = QUARTERS[k]['end_date']
         ap.title = k
         ap.save()
+
 
 class Migration(migrations.Migration):
 
