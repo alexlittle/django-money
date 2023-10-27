@@ -32,7 +32,7 @@
 	<tbody>
 		{% for c in categories %}
 		 <tr>
-			<td>{{ c.category }}</td>
+			 <td><a href="{% url 'money:tags_by_category' c.category %}">{{ c.category }}</a></td>
 			<td class="number">{{ c.sum_in|floatformat:2|intcomma }}</td>
 			<td class="number">{{ c.sum_out|floatformat:2|intcomma }}</td>
 		</tr>

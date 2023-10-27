@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Sum, Max, F
 from django.utils import timezone
 
+
 PAYMENT_TYPES = (
         ('Visa', 'Visa'),
         ('Transfer', 'Transfer'),
@@ -41,6 +42,7 @@ class Account (models.Model):
     active = models.BooleanField(blank=False, default=True)
     currency = models.CharField(max_length=3, choices=settings.CURRENCIES_AVAILABLE)
     type = models.CharField(max_length=100, choices=ACCOUNT_TYPES, default='cash')
+    notes = models.TextField(blank=True, default=None, null=True)
 
     def __str__(self):
         return self.name
@@ -344,7 +346,9 @@ class Valuation(models.Model):
 class TransactionTag(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-    percent = models.DecimalField(decimal_places=2, max_digits=20, default=100)
+    allocation_credit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
+    allocation_debit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
+
 
 
 class AccountingPeriod(models.Model):

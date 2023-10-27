@@ -37,10 +37,10 @@
  <tr>
 	<td>{{ d.transaction.date|date:"j M Y" }}</td>
 	<td><a href="{% url 'admin:money_transaction_change' d.transaction.id %}" target="_blank">{{ d.transaction.description }}</a></td>
-	<td class="number">{% if d.transaction.credit_percent %}{{ d.transaction.credit_percent|floatformat:2|intcomma }}{% endif %}</td>
-	<td class="number">{% if d.transaction.debit_percent %}{{ d.transaction.debit_percent|floatformat:2|intcomma }}{% endif %}</td>
-	<td class="number">{% if d.transaction.sales_tax_charged_percent %}{{ d.transaction.sales_tax_charged_percent|floatformat:2|intcomma }}{% endif %}</td>
-	<td class="number">{% if d.transaction.sales_tax_paid_percent %}{{ d.transaction.sales_tax_paid_percent|floatformat:2|intcomma }}{% endif %}</td>
+	<td class="number">{% if d.transaction.credit %}{{ d.transaction.credit|floatformat:2|intcomma }}{% endif %}</td>
+	<td class="number">{% if d.transaction.debit %}{{ d.transaction.debit|floatformat:2|intcomma }}{% endif %}</td>
+	<td class="number">{% if d.transaction.sales_tax_charged %}{{ d.transaction.sales_tax_charged|floatformat:2|intcomma }}{% endif %}</td>
+	<td class="number">{% if d.transaction.sales_tax_paid %}{{ d.transaction.sales_tax_paid|floatformat:2|intcomma }}{% endif %}</td>
 	<td class="number">{{ d.balance|floatformat:2|intcomma }}</td>
 	<td><a href="{{ MEDIA_URL }}{{ d.transaction.file }}" target="_blank">{{ d.transaction.filename }}</a></td>
 </tr>
@@ -71,7 +71,7 @@
 {% if deposit_balance %}
  <tr>
 	<td><b>{{ end_date|date:"j M Y" }}</b></td>
-	<td><b>{% trans 'Deposit balance' %}</b></td>
+	<td><b>{% trans 'Deposit held' %}</b></td>
 	<td class="number"></td>
 	<td class="number"></td>
 	<td class="number"></td>

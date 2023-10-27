@@ -1,6 +1,7 @@
 import datetime
 
 from django.db.models import Sum, F
+from django.utils import timezone
 from django.views.generic import TemplateView
 
 from money.models import Tag, AccountingPeriod
@@ -22,17 +23,17 @@ class TagsByYearView(TemplateView):
             years.append(i)
 
         periods = AccountingPeriod.objects.filter(active=True,
-                                                  start_date__lte=datetime.datetime.today()).order_by('-start_date')
+                                                  start_date__lte=timezone.now()).order_by('-start_date')
 
         context['year'] = year
         context['years'] = years
         context['periods'] = periods
         context['tags'] = Tag.objects.filter(transactiontag__transaction__date__year=year) \
             .values('id', 'name', 'category', year=F('transactiontag__transaction__date__year')) \
-            .annotate(sum_in=Sum('transactiontag__transaction__credit'), sum_out=Sum('transactiontag__transaction__debit'))
+            .annotate(sum_in=Sum('transactiontag__allocation_credit'), sum_out=Sum('transactiontag__allocation_debit'))
         context['categories'] = Tag.objects.filter(transactiontag__transaction__date__year=year) \
             .values('category', year=F('transactiontag__transaction__date__year')) \
-            .annotate(sum_in=Sum('transactiontag__transaction__credit'), sum_out=Sum('transactiontag__transaction__debit'))
+            .annotate(sum_in=Sum('transactiontag__allocation_credit'), sum_out=Sum('transactiontag__allocation_debit'))
         return context
 
 
@@ -51,7 +52,7 @@ class TagsByPeriodView(TemplateView):
             years.append(i)
 
         periods = AccountingPeriod.objects.filter(active=True,
-                                                  start_date__lte=datetime.datetime.today()).order_by('-start_date')
+                                                  start_date__lte=timezone.now()).order_by('-start_date')
         context['period'] = period
         context['years'] = years
         context['periods'] = periods

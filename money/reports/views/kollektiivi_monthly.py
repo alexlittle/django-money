@@ -18,14 +18,12 @@ def kollektiivi_balance_at_date(date):
         .filter(account_id__in=(CONSULTING_ID, KOLLEKTIIVI_EXTRAS_ID),
                 date__lte=date,
                 transactiontag__tag__name=KOLLEKTIIVI_TAG) \
-        .annotate(credit_percent=F("credit")*F("transactiontag__percent")/100) \
-        .aggregate(credit_sum=Sum("credit_percent"))
+        .aggregate(credit_sum=Sum("transactiontag__allocation_credit"))
     trans_deb = Transaction.objects \
         .filter(account_id__in=(CONSULTING_ID, KOLLEKTIIVI_EXTRAS_ID),
                 date__lte=date,
                 transactiontag__tag__name=KOLLEKTIIVI_TAG) \
-        .annotate(debit_percent=F("debit")*F("transactiontag__percent")/100) \
-        .aggregate(debit_sum=Sum("debit_percent"))
+        .aggregate(debit_sum=Sum("transactiontag__allocation_debit"))
 
     if trans_deb['debit_sum'] is None and trans_cred['credit_sum'] is None:
         return 0
@@ -43,12 +41,7 @@ def kollektiivi_monthly(request, year, month):
         account_id__in=(CONSULTING_ID, KOLLEKTIIVI_EXTRAS_ID),
         date__month=month,
         date__year=year,
-        transactiontag__tag__name=KOLLEKTIIVI_TAG).annotate(
-            debit_percent=F("debit")*F("transactiontag__percent")/100,
-            credit_percent=F("credit")*F("transactiontag__percent")/100,
-            sales_tax_charged_percent=F("sales_tax_charged")*F("transactiontag__percent")/100,
-            sales_tax_paid_percent=F("sales_tax_paid")*F("transactiontag__percent")/100,
-            ).order_by('date')
+        transactiontag__tag__name=KOLLEKTIIVI_TAG).order_by('date')
 
     data = []
 
@@ -62,10 +55,10 @@ def kollektiivi_monthly(request, year, month):
     opening_balance = kollektiivi_balance_at_date(start_date)
     closing_balance = kollektiivi_balance_at_date(end_date)
 
-    totals = consulting.aggregate(total_credit=Sum("credit_percent"),
-                                  total_debit=Sum("debit_percent"),
-                                  total_alv_charged=Sum('sales_tax_charged_percent'),
-                                  total_alv_paid=Sum('sales_tax_paid_percent'))
+    totals = consulting.aggregate(total_credit=Sum("credit"),
+                                  total_debit=Sum("debit"),
+                                  total_alv_charged=Sum('sales_tax_charged'),
+                                  total_alv_paid=Sum('sales_tax_paid'))
 
     objects = {'data': data,
                'opening_balance': opening_balance,

@@ -128,11 +128,16 @@
 
 {% for pension in pensions.accounts %}
        <tr>
-		<td>{{ pension.name }}</td>
-		<td class="number">{{ pension.get_valuation.value|intcomma }} ({{ pension.currency }})</td>
-		<td class="number">{{ pension.get_valuation.date|date:"D d M Y" }}</td>
-		<td class="number">{{ pension.get_valuation_base_currency|floatformat:2|intcomma }}</td>
-		<td class="number">{{ pension.get_monthly_valuation_base_currency|floatformat:2|intcomma }}</td>
+		<td>{{ pension.name }} ({{ pension.currency }})</td>
+		<td class="number">{% if pension.get_valuation.value %}{{ pension.get_valuation.value|intcomma }} {% endif %}</td>
+		<td class="number">{% if pension.get_valuation.date %}
+								{{ pension.get_valuation.date|date:"D d M Y" }}
+							{% else %}
+								{{ pension.get_monthly_valuation.date|date:"D d M Y" }}
+							{% endif %}
+		</td>
+		<td class="number">{% if pension.get_valuation_base_currency %}{{ pension.get_valuation_base_currency|floatformat:2|intcomma }}{% endif %}</td>
+		<td class="number">{% if pension.get_monthly_valuation_base_currency %}{{ pension.get_monthly_valuation_base_currency|floatformat:2|intcomma }}{% endif %}</td>
 	</tr>
 {% endfor %}
 </tbody>
