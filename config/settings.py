@@ -176,6 +176,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 #####################################################################
 
+SESSION_COOKIE_NAME = "money"
+
 try:
     from config.local_settings import *  # noqa
 except ImportError:
