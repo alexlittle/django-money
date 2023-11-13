@@ -10,3 +10,4 @@ from money.reports.views.kollektiivi_monthly import *
 from money.reports.views.tags_by_period import *
 from money.reports.views.tag_detail import *
 from money.reports.views.tags_by_category import *
+from money.reports.views.monthly_invoices import *

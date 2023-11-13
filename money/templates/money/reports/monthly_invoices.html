@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% block content %}
+
+<h2>Invoices/Receipts for {{ month|date:'F Y' }}</h2>
+
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Date' %}</th>
+				<th>{% trans 'Description' %}</th>
+				<th class="number">{% trans 'Excluding ALV' %}</th>
+				<th class="number">{% trans 'ALV rate' %}</th>
+				<th class="number">{% trans 'ALV' %}</th>
+				<th class="number">{% trans 'Total' %}</th>
+				<th>{% trans 'File' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+{% for t in object_list %}
+ <tr>
+	<td>{{ t.date }}</td>
+	<td>{{ t.description }}</td>
+	 <td class="number">{{ t.get_excl_sales_tax|floatformat:2|intcomma }}</td>
+	 <td class="number">{{ t.sales_tax_rate|floatformat:0|intcomma }}%</td>
+	 <td class="number">{{ t.sales_tax_charged|floatformat:2|intcomma }}</td>
+	<td class="number">{{ t.credit|floatformat:2|intcomma }}</td>
+	 <td><a href="{{ MEDIA_URL }}{{ t.file }}" target="_blank">{{ t.filename }}</a></td>
+{% endfor %}
+
+<tr>
+	<td>{{ t.date }}</td>
+	<td><b>{% trans 'Totals' %}</b></td>
+	<td class="number"><b>{{ total_excl_sales_tax|floatformat:2|intcomma }}</b></td>
+	<td class="number"></td>
+	<td class="number"><b>{{ totals.total_sales_tax|floatformat:2|intcomma }}</b></td>
+	<td class="number"><b>{{ totals.total_incl_sales_tax|floatformat:2|intcomma }}</b></td>
+	<td class="number"><b>{{ cross_check|floatformat:2|intcomma }}</b></td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+{% endblock %}

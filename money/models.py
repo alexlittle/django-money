@@ -330,11 +330,14 @@ class Transaction(models.Model):
     description = models.CharField(max_length=100, blank=False, null=False)
     sales_tax_charged = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     sales_tax_paid = models.DecimalField(decimal_places=2, max_digits=20, default=0)
+    sales_tax_rate = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     file = models.FileField(upload_to="transaction", blank=True, default=None)
 
     def filename(self):
         return os.path.basename(self.file.name)
 
+    def get_excl_sales_tax(self):
+        return self.credit - self.sales_tax_charged
 
 class Valuation(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
