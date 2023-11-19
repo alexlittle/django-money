@@ -8,20 +8,16 @@ from django.shortcuts import render
 
 from money.models import Account, Transaction
 
-CONSULTING_ID = 47
 KOLLEKTIIVI_TAG = "kollektiivi"
-KOLLEKTIIVI_EXTRAS_ID = 53
 
 
 def kollektiivi_balance_at_date(date):
     trans_cred = Transaction.objects \
-        .filter(account_id__in=(CONSULTING_ID, KOLLEKTIIVI_EXTRAS_ID),
-                date__lte=date,
+        .filter(date__lte=date,
                 transactiontag__tag__name=KOLLEKTIIVI_TAG) \
         .aggregate(credit_sum=Sum("transactiontag__allocation_credit"))
     trans_deb = Transaction.objects \
-        .filter(account_id__in=(CONSULTING_ID, KOLLEKTIIVI_EXTRAS_ID),
-                date__lte=date,
+        .filter(date__lte=date,
                 transactiontag__tag__name=KOLLEKTIIVI_TAG) \
         .aggregate(debit_sum=Sum("transactiontag__allocation_debit"))
 
@@ -38,7 +34,6 @@ def kollektiivi_balance_at_date(date):
 def kollektiivi_monthly(request, year, month):
 
     consulting = Transaction.objects.filter(
-        account_id__in=(CONSULTING_ID, KOLLEKTIIVI_EXTRAS_ID),
         date__month=month,
         date__year=year,
         transactiontag__tag__name=KOLLEKTIIVI_TAG).order_by('date')
