@@ -15,18 +15,49 @@
 		</thead>
 		<tbody>
 			 <tr>
-				<td><b>{% trans 'Income' %}</b></td>
-				<td><b>{{ income }}</b></td>
+				<td><b>{% trans 'Pre-tax Income' %}</b></td>
+				<td><b>{{ totals.total_credit }}</b></td>
 			</tr>
 			 <tr>
 				<td><b>{% trans 'Core expenses' %}</b></td>
-				<td><b>{{ core_expenses }}</b></td>
+				<td><b>{{ totals.total_debit }}</b></td>
 			</tr>
-			<tr>
-				<td><b>{% trans 'Extra expenses' %}</b></td>
-				<td><b>{{ extra_expenses }}</b></td>
+		<tr>
+				<td><b>{% trans 'Tax balance' %}</b></td>
+				<td><b>{{ tax.total_debit }}</b></td>
+			</tr>
+		<tr>
+				<td><b>{% trans 'Varma' %}</b></td>
+				<td><b>{{ varma.total_debit }}</b></td>
 			</tr>
 		</tbody>
 	</table>
+</div>
+
+
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Date' %}</th>
+				<th>{% trans 'Description' %}</th>
+				<th class="number">{% trans 'Credit' %}</th>
+				<th class="number">{% trans 'Debit' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+
+{% for t in transactions %}
+ <tr>
+	<td>{{ t.date|date:"j M Y" }}</td>
+	<td><a href="{% url 'admin:money_transaction_change' t.id %}" target="_blank">{{ t.description }}</a></td>
+	<td class="number">{% if t.credit %}{{ t.credit|floatformat:2|intcomma }}{% endif %}</td>
+	<td class="number">{% if t.debit %}{{ t.debit|floatformat:2|intcomma }}{% endif %}</td>
+
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
 </div>
 {% endblock %}

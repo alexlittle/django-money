@@ -9,34 +9,28 @@ def consulting_annual(request, year):
     CONSULTING_ID = 47
     CONSULTING_EXTRAS_ID = 49
 
-    # get income
-    income = Transaction.objects \
-        .filter(account_id=CONSULTING_ID, date__year=year) \
+    transactions = Transaction.objects \
+        .filter(account_id__in=(CONSULTING_ID, CONSULTING_EXTRAS_ID), date__year=year) \
         .exclude(payment_type='Transfer') \
-        .aggregate(total=Sum('credit'))
+        .exclude(transactiontag__tag__name="kollektiivi") \
 
-    print(income)
+    print(transactions)
+    # all transactions
+    # excluding kollektiivi
+    tax = transactions.filter(description__startswith="Tax") \
+        .aggregate(total_credit=Sum('credit'), total_debit=Sum('debit'))
+    varma = transactions.filter(description__startswith="Varma") \
+        .aggregate(total_credit=Sum('credit'), total_debit=Sum('debit'))
 
-    # get expenses (core)
-    core_expenses = Transaction.objects \
-        .filter(account_id=CONSULTING_ID, date__year=year) \
-        .exclude(payment_type='Transfer') \
-        .aggregate(total=Sum('debit'))
+    # totals
+    totals = transactions.exclude(description__startswith="Tax") \
+                        .exclude(description__startswith="Varma") \
+                        .aggregate(total_credit=Sum('credit'), total_debit=Sum('debit'))
 
-    print(core_expenses)
-
-    # get expenses (extras)
-    extra_expenses = Transaction.objects \
-        .filter(account_id=CONSULTING_EXTRAS_ID, date__year=year) \
-        .exclude(payment_type='Transfer') \
-        .aggregate(total=Sum('debit'))
-
-    print(extra_expenses)
-
-    # total
-
+    transactions = transactions.order_by("date")
     return render(request, 'money/reports/consulting_annual.html',
                   {'year': year,
-                   'income': income['total'],
-                   'core_expenses': core_expenses['total'],
-                   'extra_expenses': extra_expenses['total']})
+                   'transactions': transactions,
+                   'totals': totals,
+                   'tax': tax,
+                   'varma': varma })
