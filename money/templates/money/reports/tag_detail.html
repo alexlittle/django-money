@@ -40,15 +40,15 @@
         </tr>
     </thead>
     <tbody>
-        {% for t in transactions %}
+        {% for t in transactiontags %}
          <tr>
-            <td>{{ t.date|naturalday }}</td>
-            <td>{{ t.account.name }}</td>
-            <td>{{ t.description }}</td>
-            <td class="number">{{ t.credit|floatformat:2|intcomma }}</td>
-            <td class="number">{{ t.debit|floatformat:2|intcomma }}</td>
-            <td class="number">{{ t.payment_type }}</td>
-            <td class="number"><a href="{% url 'admin:money_transaction_change' t.id %}">Edit</a></td>
+            <td>{{ t.transaction.date|naturalday }}</td>
+            <td>{{ t.transaction.account.name }}</td>
+            <td>{{ t.transaction.description }} - {{ t.description }}</td>
+            <td class="number">{{ t.allocation_credit|floatformat:2|intcomma }}</td>
+            <td class="number">{{ t.allocation_debit|floatformat:2|intcomma }}</td>
+            <td class="number">{{ t.transaction.payment_type }}</td>
+            <td class="number"><a href="{% url 'admin:money_transaction_change' t.transaction.id %}">Edit</a></td>
         </tr>
         {% endfor %}
     </tbody>

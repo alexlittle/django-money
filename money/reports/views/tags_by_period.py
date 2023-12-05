@@ -59,9 +59,9 @@ class TagsByPeriodView(TemplateView):
         context['tags'] = Tag.objects.filter(transactiontag__transaction__date__gte=period.start_date,
                                              transactiontag__transaction__date__lte=period.end_date) \
             .values('id', 'name', 'category') \
-            .annotate(sum_in=Sum('transactiontag__transaction__credit'), sum_out=Sum('transactiontag__transaction__debit'))
+            .annotate(sum_in=Sum('transactiontag__allocation_credit'), sum_out=Sum('transactiontag__allocation_debit'))
         context['categories'] = Tag.objects.filter(transactiontag__transaction__date__gte=period.start_date,
                                                     transactiontag__transaction__date__lte=period.end_date) \
             .values('category') \
-            .annotate(sum_in=Sum('transactiontag__transaction__credit'), sum_out=Sum('transactiontag__transaction__debit'))
+            .annotate(sum_in=Sum('transactiontag__allocation_credit'), sum_out=Sum('transactiontag__allocation_debit'))
         return context
