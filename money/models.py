@@ -349,6 +349,7 @@ class Valuation(models.Model):
 class TransactionTag(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0)
     allocation_credit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     allocation_debit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     description = models.CharField(max_length=200, blank=True, null=True, default=None)

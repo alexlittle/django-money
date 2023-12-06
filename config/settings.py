@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'money',
-    'mathfilters'
+    'mathfilters',
+    'wkhtmltopdf'
 ]
 
 

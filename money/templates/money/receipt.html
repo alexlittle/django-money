@@ -1,0 +1,115 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% trans 'Receipt' %}</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'money/bootstrap-5.3.2-dist/css/bootstrap.min.css' %}"/>
+    <link href="{% static 'money/style.css' %}" rel="stylesheet"/>
+    <style>
+        body {
+            margin: 20px;
+        }
+
+        .container {
+            width: 800px;
+        }
+        .column {
+          float: left;
+        }
+        .tax {
+
+            width: 25%;
+        }
+
+        .left {
+            width: 75%;
+        }
+
+        .right {
+            text-align: right;
+            width: 25%;
+        }
+
+        h1 {
+        font-size: 140%;
+        }
+
+        h2 {
+        font-size: 120%;
+        padding: 50px 0;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+  <div class="column left">
+      <img src="{% static 'money/7hex.svg.png' %}" style="float:left; margin-right:20px"> <h1>Alex Little Consulting Services</h1>
+
+  </div>
+  <div class="column right">
+      <p>Mustikkapuistikko 8<br/>
+        80230 Joensuu<br/>
+        Finland</p>
+
+      <p>
+          design@alexlittle.net<br/>
+        +358 45 640 2013</p>
+
+      <p>Y-tunnus: 2808270-6</p>
+
+  </div>
+</div>
+
+
+<h2>Receipt / Kuitti</h2>
+{% for tt in transaction.transactiontag_set.all %}
+    <div class="row">
+        <div class="column left">
+            {{ tt.tag.name }} - {{ tt.quantity }}
+            {% if tt.description %}
+                {{ tt.description }}
+            {% endif %}
+        </div>
+        <div class="column right">
+            {{ tt.allocation_credit }}
+        </div>
+    </div>
+{% endfor %}
+<hr/>
+     <div class="row" >
+        <div class="column left">
+            Total / Yhteensä
+        </div>
+        <div class="column right">
+            {{ transaction.credit }}
+        </div>
+    </div>
+
+<div class="row" style="padding-top:100px">
+    <div class="column tax">ALV</div>
+    <div class="column tax">Veroton</div>
+    <div class="column tax">Vero</div>
+    <div class="column tax">Verollinen</div>
+</div>
+<div class="row" style="padding-bottom:50px">
+    <div class="column tax">{{ transaction.sales_tax_rate }} %</div>
+    <div class="column tax">{{ transaction.get_excl_sales_tax }}</div>
+    <div class="column tax">{{ transaction.sales_tax_charged }}</div>
+    <div class="column tax">{{ transaction.credit }}</div>
+</div>
+
+
+<hr/>
+    <div style="text-align:center">
+        {{ transaction.date|date:'d.m.Y H:i' }}<br/>
+        <a href="https://design.alexlittle.net">https://design.alexlittle.net</a>
+
+    </div>
+    </div>
+</body>
+</html>

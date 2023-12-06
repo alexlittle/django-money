@@ -5,8 +5,11 @@ from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.template import RequestContext
 from django.urls import reverse
 from django.utils import timezone
+
+from wkhtmltopdf.views import PDFTemplateResponse
 
 from money.models import Account, Transaction, RegularPayment
 
@@ -96,3 +99,23 @@ def update_regular_payments():
         next_date = rp.next_date + datetime.timedelta(days=31)
         rp.next_date = next_date
         rp.save()
+
+def transaction_receipt_view(request, transaction_id):
+    transaction = Transaction.objects.get(pk=transaction_id)
+    return render(request, 'money/receipt.html',
+                  {'transaction': transaction})
+
+
+def transaction_receipt_view(request, transaction_id):
+    context = RequestContext(request)
+    transaction = Transaction.objects.get(pk=transaction_id)
+    template = 'money/receipt.html'
+
+    context = {
+        'transaction': transaction,
+    }
+    return PDFTemplateResponse(request=request,
+                               show_content_in_browser=False,
+                               filename="%s-receipt-%d.pdf" % (transaction.date.strftime("%Y-%m-%d"), transaction_id),
+                               template=template,
+                               context=context)

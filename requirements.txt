@@ -3,3 +3,4 @@ pytz==2023.3.post1
 django-mathfilters==1.0.0
 mysqlclient==2.2.0
 python-dateutil==2.8.2
+django-wkhtmltopdf==3.4.0
