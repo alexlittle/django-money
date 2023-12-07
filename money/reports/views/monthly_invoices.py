@@ -30,6 +30,6 @@ class MonthlyInvoicesView(ListView):
 
         result_list = Transaction.objects.filter(date__month=month, date__year=year, credit__gt=0, on_statement=True) \
             .filter(Q(account__id=47) | Q(sales_tax_charged__gt=0)) \
-            .exclude(Q(file='')|Q(file=None))
+            .exclude(Q(file='')|Q(file=None)).order_by("date")
 
         return result_list
