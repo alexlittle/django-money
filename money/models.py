@@ -1,4 +1,8 @@
+import datetime
 import os
+
+from dateutil.relativedelta import relativedelta
+
 from django.conf import settings
 from django.db import models
 from django.db.models import Sum, Max, F
@@ -253,6 +257,17 @@ class Account (models.Model):
             total += acc.get_monthly_valuation_base_currency()
         return total
 
+    def get_compound_interest(self, years):
+        start_date = datetime.datetime.now() - relativedelta(years=years)
+        start_acc_value = Account.get_valuation_at_date(self, start_date)
+        end_acc_value = Account.get_valuation_at_date(self, datetime.datetime.now())
+        if not start_acc_value or not end_acc_value:
+            return 0
+        start_valuation = start_acc_value.value
+        end_valuation = end_acc_value.value
+
+        rate = ((float(end_valuation)/float(start_valuation))**(1/float(years)) - 1)*100
+        return rate
 
 class ExchangeRate (models.Model):
     from_cur = models.CharField(
@@ -338,6 +353,7 @@ class Transaction(models.Model):
 
     def get_excl_sales_tax(self):
         return self.credit - self.sales_tax_charged
+
 
 class Valuation(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)

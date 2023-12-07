@@ -14,7 +14,7 @@ def graph_investment_view(request):
     now = datetime.datetime.now()
     tz = timezone.get_default_timezone()
 
-    accs = Account.objects.filter(type='invest')
+    accs = Account.objects.filter(type='invest', active=True)
 
     for account in accs:
         resp_account = {}
@@ -39,6 +39,12 @@ def graph_investment_view(request):
 
         resp_account['valuations'] = valuations
 
+        resp_account['rate_10_year'] =  account.get_compound_interest(10)
+        resp_account['rate_7_year'] = account.get_compound_interest(7)
+        resp_account['rate_5_year'] = account.get_compound_interest(5)
+        resp_account['rate_3_year'] = account.get_compound_interest(3)
+        resp_account['rate_2_year'] = account.get_compound_interest(2)
+        resp_account['rate_1_year'] = account.get_compound_interest(1)
         accounts.append(resp_account)
 
     return render(request, 'money/reports/investment-graph.html', {'accounts': accounts})

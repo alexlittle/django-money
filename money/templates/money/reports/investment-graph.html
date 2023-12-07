@@ -51,6 +51,41 @@
 {% for a in accounts %}
 	<h3>{{ a.account.name }}</h3>
 	<div id="{{ a.account.id }}_graph_div" class="graph">{% trans 'graph_generating'%}</div>
+
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'years' %}</th>
+				<th>{% trans 'rate' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>{{ a.rate_1_year }}</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>{{ a.rate_2_year }}</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>{{ a.rate_3_year }}</td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td>{{ a.rate_5_year }}</td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td>{{ a.rate_7_year }}</td>
+			</tr>
+			<tr>
+				<td>10</td>
+				<td>{{ a.rate_10_year }}</td>
+			</tr>
+		</tbody>
+	</table>
 {% endfor %}
 
 {% endblock %}
