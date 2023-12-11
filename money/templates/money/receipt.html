@@ -66,11 +66,11 @@
 </div>
 
 
-<h2>Receipt / Kuitti</h2>
+<h2>Receipt / Kuitti - #{{ transaction.id }}</h2>
 {% for tt in transaction.transactiontag_set.all %}
     <div class="row">
         <div class="column left">
-            {{ tt.tag.name }} - {{ tt.quantity }}
+            {{ tt.tag.name }} {% if tt.quantity %}- {{ tt.quantity }}{% endif %}
             {% if tt.description %}
                 {{ tt.description }}
             {% endif %}

@@ -4,9 +4,9 @@ from django.views.generic import ListView
 from django.db.models import Q, Sum, F
 from money.models import Transaction
 
+
 class MonthlyInvoicesView(ListView):
     template_name = 'money/reports/monthly_invoices.html'
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -18,7 +18,7 @@ class MonthlyInvoicesView(ListView):
 
         context["total_excl_sales_tax"] = total_excl_sales_tax
         context["cross_check"] = context["totals"]["total_incl_sales_tax"] \
-                                 - (context["totals"]["total_sales_tax"] + total_excl_sales_tax)
+            - (context["totals"]["total_sales_tax"] + total_excl_sales_tax)
         year = self.kwargs["year"]
         month = self.kwargs["month"]
         context["month"] = datetime.datetime(year, month, 1)
@@ -30,6 +30,6 @@ class MonthlyInvoicesView(ListView):
 
         result_list = Transaction.objects.filter(date__month=month, date__year=year, credit__gt=0, on_statement=True) \
             .filter(Q(account__id=47) | Q(sales_tax_charged__gt=0)) \
-            .exclude(Q(file='')|Q(file=None)).order_by("date")
+            .exclude(Q(file='') | Q(file=None)).order_by("date")
 
         return result_list
