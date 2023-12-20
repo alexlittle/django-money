@@ -62,16 +62,17 @@
 </table>
 </div>
 
-<h3>{% trans 'From personal account' %}</h3>
+<h3>{% trans 'Personal account & Cash' %}</h3>
 <div class="table-responsive">
 	<table class="table table-striped">
 		<thead>
 			<tr>
 				<th>{% trans 'Date' %}</th>
 				<th>{% trans 'Description' %}</th>
+				<th class="number">{% trans 'Credit' %}</th>
 				<th class="number">{% trans 'Debit' %}</th>
+				<th class="number">{% trans 'ALV Charged' %}</th>
 				<th class="number">{% trans 'ALV Paid' %}</th>
-				<th class="number">{% trans 'Excl. ALV' %}</th>
 				<th>{% trans 'File' %}</th>
 			</tr>
 		</thead>
@@ -80,9 +81,10 @@
  <tr>
 	<td>{{ ce.date|date:"j M Y" }}</td>
 	<td><a href="{% url 'admin:money_transaction_change' ce.id %}" target="_blank">{{ ce.description }}</a></td>
+	 <td class="number">{% if ce.credit %}{{ ce.credit|floatformat:2|intcomma }}{% endif %}</td>
 	<td class="number">{% if ce.debit %}{{ ce.debit|floatformat:2|intcomma }}{% endif %}</td>
-	<td class="number">{% if ce.sales_tax_paid %}{{ ce.sales_tax_paid|floatformat:2|intcomma }}{% endif %}</td>
-	<td class="number">{{ ce.debit|sub:ce.sales_tax_paid }}</td>
+	<td class="number">{% if ce.sales_tax_charged %}{{ ce.sales_tax_charged|floatformat:2|intcomma }}{% endif %}</td>
+	 <td class="number">{% if ce.sales_tax_paid %}{{ ce.sales_tax_paid|floatformat:2|intcomma }}{% endif %}</td>
 	<td><a href="{{ MEDIA_URL }}{{ ce.file }}" target="_blank">{{ ce.filename }}</a></td>
 </tr>
 {% endfor %}

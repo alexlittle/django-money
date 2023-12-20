@@ -44,7 +44,7 @@
          <tr>
             <td>{{ t.transaction.date|naturalday }}</td>
             <td>{{ t.transaction.account.name }}</td>
-            <td>{{ t.transaction.description }} - {{ t.description }}</td>
+            <td>{{ t.transaction.description }}{% if t.description %} - {{ t.description }}{% endif %} </td>
             <td class="number">{{ t.allocation_credit|floatformat:2|intcomma }}</td>
             <td class="number">{{ t.allocation_debit|floatformat:2|intcomma }}</td>
             <td class="number">{{ t.transaction.payment_type }}</td>
