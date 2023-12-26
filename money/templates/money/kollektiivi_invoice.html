@@ -1,0 +1,145 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% trans 'Receipt' %}</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'money/bootstrap-5.3.2-dist/css/bootstrap.min.css' %}"/>
+    <link href="{% static 'money/style.css' %}" rel="stylesheet"/>
+    <style>
+        body {
+            margin: 20px;
+            color: #000;
+        }
+
+        .container {
+            width: 800px;
+        }
+        .th {
+        font-weight:bold;
+        }
+        .right {
+            text-align: right;
+           }
+
+        .centre{
+            text-align: center;
+           }
+        h1 {
+        font-size: 140%;
+        }
+
+        h2 {
+        font-size: 120%;
+        padding: 50px 0 20px 0;
+        }
+
+        .col-2 {
+            padding:5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+      <div class="col-8">
+          <img src="{% static 'money/7hex.svg.png' %}" style="float:left; margin-right:20px"> <h1>Alex Little Consulting Services</h1>
+
+      </div>
+      <div class="col right">
+          <p>Mustikkapuistikko 8<br/>
+            80230 Joensuu<br/>
+            Finland</p>
+
+          <p>
+              consult@alexlittle.net<br/>
+            +358 45 640 2013</p>
+
+          <p>Y-tunnus: 2808270-6</p>
+
+      </div>
+    </div>
+
+
+<h1 style="text-align:center; margin-bottom:50px;">Lasku</h1>
+<div class="row">
+    <div class="col-4">
+        {{ invoice_info.description|safe }}
+    </div>
+    <div class="col-4">
+        <strong>Laskun päiväys</strong><br/>
+        {{ invoice_date }}
+    </div>
+    <div class="col-4">
+        <strong>Eräpäivä</strong><br/>
+        {{ due_date }}<br/>
+        <br/>
+        <strong>Viite #</strong><br/>
+        {{ ref }}
+    </div>
+</div>
+
+<h2>{{ title }}</h2>
+
+<div class="row">
+    <div class="col-2 th centre">Tuote</div>
+    <div class="col-2 th centre">Hinta</div>
+    <div class="col-2 th centre">ALV %</div>
+    <div class="col-3 th centre">Hinta sis. ALV</div>
+    <div class="col-3 th centre">Yhteensä</div>
+</div>
+
+<div class="row">
+    <div class="col-2">Kuukausmaksu</div>
+    <div class="col-2 right">{{ invoice_info.debit_ex_alv }} &euro;</div>
+    <div class="col-2 centre">24%</div>
+    <div class="col-3 right">{{ invoice_info.debit_total }} &euro;</div>
+    <div class="col-2 right">{{ invoice_info.debit_total }} &euro;</div>
+</div>
+
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-2"></div>
+    <div class="col-2"></div>
+    <div class="col-3 right">Yhteensä veroton</div>
+    <div class="col-2 right">{{ invoice_info.debit_ex_alv }} &euro;</div>
+</div>
+
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-2"></div>
+    <div class="col-2"></div>
+    <div class="col-3 right">ALV 24%</div>
+    <div class="col-2 right">{{ invoice_info.debit_alv }} &euro;</div>
+</div>
+
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-2"></div>
+    <div class="col-2"></div>
+    <div class="col-3 right th">Yhteensä</div>
+    <div class="col-2 right th">{{ invoice_info.debit_total }} &euro;</div>
+</div>
+
+
+<h2>Maksutiedot</h2>
+
+<div class="row">
+    <div class="col-4 th">Vastaanottajan nimi</div>
+    <div class="col-4 th">IBAN/BIC</div>
+    <div class="col-4 th">Viite #</div>
+</div>
+<div class="row">
+    <div class="col-4">{{ acc_name }}</div>
+    <div class="col-4">{{ acc_iban }}<br/>{{ acc_bic }}</div>
+    <div class="col-4">{{ ref }}</div>
+</div>
+
+    <div style="text-align:center; margin-top:100px;">
+        Y-tunnus (Business ID & ALV no) - 2808270-6
+    </div>
+</div>
+</body>
+</html>

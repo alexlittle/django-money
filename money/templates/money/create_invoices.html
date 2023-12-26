@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+
+{% block content %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_div }}
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}

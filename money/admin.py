@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 
 from money.models import Account, ExchangeRate, RegularPayment, \
-    Tag, Transaction, Valuation, TransactionTag, AccountingPeriod
+    Tag, Transaction, Valuation, TransactionTag, AccountingPeriod, InvoiceTemplate
 
 
 # Register your models here.
@@ -23,6 +23,8 @@ class RegularPaymentAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
     list_display = ('id', 'category', 'name')
 
+class InvoiceTemplateAdmin(admin.ModelAdmin):
+    list_display = ( 'name', 'description', 'active', 'debit_ex_alv', 'debit_alv', 'debit_total')
 
 class TransactionTagAdmin(admin.ModelAdmin):
     list_display = ('transaction', 'tag')
@@ -61,6 +63,7 @@ admin.site.register(Account, AccountAdmin)
 admin.site.register(ExchangeRate, ExchangeRateAdmin)
 admin.site.register(RegularPayment, RegularPaymentAdmin)
 admin.site.register(Tag, TagAdmin)
+admin.site.register(InvoiceTemplate, InvoiceTemplateAdmin)
 admin.site.register(Transaction, TransactionAdmin)
 admin.site.register(Valuation, ValuationAdmin)
 admin.site.register(TransactionTag, TransactionTagAdmin)

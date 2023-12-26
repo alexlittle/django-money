@@ -1,18 +1,19 @@
 
 import datetime
+import os
 
 from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.template import RequestContext
 from django.urls import reverse
 from django.utils import timezone
+from django.views.generic.edit import FormView
 
 from wkhtmltopdf.views import PDFTemplateResponse
 
 from money.models import Account, Transaction, RegularPayment
-
+from money.forms import InvoicesForm
 
 def home_view(request):
     update_regular_payments()
@@ -100,6 +101,7 @@ def update_regular_payments():
         rp.next_date = next_date
         rp.save()
 
+
 def transaction_receipt_view(request, transaction_id):
     transaction = Transaction.objects.get(pk=transaction_id)
     return render(request, 'money/receipt.html',
@@ -107,7 +109,6 @@ def transaction_receipt_view(request, transaction_id):
 
 
 def transaction_receipt_view(request, transaction_id):
-    context = RequestContext(request)
     transaction = Transaction.objects.get(pk=transaction_id)
     template = 'money/receipt.html'
 
@@ -119,3 +120,49 @@ def transaction_receipt_view(request, transaction_id):
                                filename="%s-receipt-%d.pdf" % (transaction.date.strftime("%Y-%m-%d"), transaction_id),
                                template=template,
                                context=context)
+
+
+class CreateInvoicesView(FormView):
+
+    template_name = 'money/create_invoices.html'
+    form_class = InvoicesForm
+    success_url = "/invoices/create/done/"
+
+    def form_valid(self, form):
+        invoice_date = form.cleaned_data['issue_date']
+        due_date = form.cleaned_data['due_date']
+        title = form.cleaned_data['title']
+        send_to_ids = form.cleaned_data['send_to']
+        ref_nos = form.cleaned_data['ref_nos'].split(',')
+        template = 'money/kollektiivi_invoice.html'
+
+        tempdate = datetime.datetime.strptime(due_date, "%d.%m.%Y").date()
+        year = tempdate.year
+        month = '{:02d}'.format(tempdate.month)
+        for idx, invoice in enumerate(send_to_ids):
+
+            context = {
+                'invoice_date': invoice_date,
+                'due_date': due_date,
+                'title': title,
+                'ref': ref_nos[idx],
+                'invoice_info': invoice,
+                'acc_name': settings.INVOICE_ACCOUNT_NAME,
+                'acc_iban': settings.INVOICE_ACCOUNT_IBAN,
+                'acc_bic': settings.INVOICE_ACCOUNT_BIC
+            }
+            response = PDFTemplateResponse(request=self.request,
+                                           filename="invoice.pdf",
+                                           template=template,
+                                           context=context)
+
+            filename = "invoice-{year}-{month}-{name}-{ref}.pdf".format(year=year,
+                                                                        month=month,
+                                                                        name=invoice.name.lower(),
+                                                                        ref=ref_nos[idx])
+            output_path = os.path.join(settings.INVOICE_OUTPUT_DIR, filename)
+            with open(output_path, "wb") as f:
+                f.write(response.rendered_content)
+
+            #return render(self.request, template, context)
+        return super().form_valid(form)
