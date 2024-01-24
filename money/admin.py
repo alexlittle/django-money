@@ -24,7 +24,7 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ('id', 'category', 'name')
 
 class InvoiceTemplateAdmin(admin.ModelAdmin):
-    list_display = ( 'name', 'description', 'active', 'debit_ex_alv', 'debit_alv', 'debit_total')
+    list_display = ( 'name', 'description', 'active', 'debit_ex_alv', 'debit_alv', 'debit_total', 'deposit_held')
 
 class TransactionTagAdmin(admin.ModelAdmin):
     list_display = ('transaction', 'tag')

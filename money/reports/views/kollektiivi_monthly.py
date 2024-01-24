@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db.models import Sum, F
 from django.shortcuts import render
 
+from money.util import utils
 from money.models import Account, Transaction
 
 KOLLEKTIIVI_TAG = "kollektiivi"
@@ -63,7 +64,7 @@ def kollektiivi_monthly(request, year, month):
                'totals': totals}
 
     if end_date.month == datetime.now().month and end_date.year == datetime.now().year:
-        objects['deposit_balance'] = settings.DEPOSIT_BALANCE
-        objects['funds_available'] = closing_balance - settings.DEPOSIT_BALANCE
+        objects['deposit_balance'] = utils.get_deposit_balance()
+        objects['funds_available'] = closing_balance - utils.get_deposit_balance()
 
     return render(request, 'money/reports/kollektiivi.html', objects)

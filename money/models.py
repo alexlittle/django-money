@@ -385,6 +385,7 @@ class InvoiceTemplate(models.Model):
     debit_ex_alv = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     debit_alv = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     debit_total = models.DecimalField(decimal_places=2, max_digits=20, default=0)
+    deposit_held = models.DecimalField(decimal_places=2, max_digits=20, default=0)
 
     def __str__(self):
         return "{name} - {ex_alv} + {alv} = {total}".format(name=self.name, ex_alv=self.debit_ex_alv, alv=self.debit_alv, total=self.debit_total)
