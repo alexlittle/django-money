@@ -18,8 +18,8 @@
 	<td>{{ o.year }}</td>
 	<td class="number">{{ o.total }}</td>
 	<td class="number">{{ o.no_payments }}</td>
-	<td class="number"> {{ o.payment_avg|floatformat:2|intcomma }}</td>
-	<td class="number"> {{ o.monthly_avg|floatformat:2|intcomma }}</td>
+	<td class="number"> {{ o.payment_avg|floatformat:"2g" }}</td>
+	<td class="number"> {{ o.monthly_avg|floatformat:"2g" }}</td>
 </tr>
 {% endfor %}	
 </tbody>

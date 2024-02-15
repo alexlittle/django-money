@@ -22,9 +22,9 @@
         {% for years in totals_by_year %}
          <tr>
             <td>{{ years.year }}</td>
-            <td class="number">{{ years.sum_in|floatformat:2|intcomma }}</td>
-            <td class="number">{{ years.sum_out|floatformat:2|intcomma }}</td>
-             <td class="number">{{ years.balance|floatformat:2|intcomma }}</td>
+            <td class="number">{{ years.sum_in|floatformat:"2g" }}</td>
+            <td class="number">{{ years.sum_out|floatformat:"2g" }}</td>
+             <td class="number">{{ years.balance|floatformat:"2g" }}</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -44,9 +44,9 @@
         {% for period in periods %}
          <tr>
             <td>{{ period.title }}</td>
-            <td class="number">{{ period.sum_in|floatformat:2|intcomma }}</td>
-            <td class="number">{{ period.sum_out|floatformat:2|intcomma }}</td>
-             <td class="number">{{ period.balance|floatformat:2|intcomma }}</td>
+            <td class="number">{{ period.sum_in|floatformat:"2g" }}</td>
+            <td class="number">{{ period.sum_out|floatformat:"2g" }}</td>
+             <td class="number">{{ period.balance|floatformat:"2g" }}</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -71,8 +71,8 @@
             <td>{{ t.date|naturalday }}</td>
             <td>{{ t.account.name }}</td>
             <td>{{ t.description }}</td>
-            <td class="number">{{ t.credit|floatformat:2|intcomma }}</td>
-            <td class="number">{{ t.debit|floatformat:2|intcomma }}</td>
+            <td class="number">{{ t.credit|floatformat:"2g" }}</td>
+            <td class="number">{{ t.debit|floatformat:"2g" }}</td>
             <td class="number">{{ t.payment_type }}</td>
             <td class="number"><a href="{% url 'admin:money_transaction_change' t.id %}">Edit</a></td>
         </tr>

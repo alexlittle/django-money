@@ -26,7 +26,7 @@
 	<td><b>{% trans 'Opening Balance' %}</b></td>
 	<td class="number"></td>
 	<td class="number"></td>
-	<td class="number"><b>{{ opening_balance|floatformat:2|intcomma }}</b></td>
+	<td class="number"><b>{{ opening_balance|floatformat:"2g" }}</b></td>
 	<td class="number"></td>
 	<td class="number"></td>
 	<td class="number"></td>
@@ -37,12 +37,12 @@
  <tr>
 	<td>{{ d.transaction.date|date:"j M Y" }}</td>
 	<td><a href="{% url 'admin:money_transaction_change' d.transaction.id %}" target="_blank">{{ d.transaction.description }}</a></td>
-	<td class="number">{% if d.transaction.credit %}{{ d.transaction.credit|floatformat:2|intcomma }}{% endif %}</td>
-	<td class="number">{% if d.transaction.debit %}{{ d.transaction.debit|floatformat:2|intcomma }}{% endif %}</td>
-	<td class="number">{{ d.balance|floatformat:2|intcomma }}</td>
-	<td class="number">{% if d.ex_sales_tax %}{{ d.ex_sales_tax|floatformat:2|intcomma }}{% endif %}</td>
-	<td class="number">{% if d.transaction.sales_tax_charged %}{{ d.transaction.sales_tax_charged|floatformat:2|intcomma }}{% endif %}</td>
-	<td class="number">{% if d.transaction.sales_tax_paid %}{{ d.transaction.sales_tax_paid|floatformat:2|intcomma }}{% endif %}</td>
+	<td class="number">{% if d.transaction.credit %}{{ d.transaction.credit|floatformat:"2g" }}{% endif %}</td>
+	<td class="number">{% if d.transaction.debit %}{{ d.transaction.debit|floatformat:"2g" }}{% endif %}</td>
+	<td class="number">{{ d.balance|floatformat:"2g" }}</td>
+	<td class="number">{% if d.ex_sales_tax %}{{ d.ex_sales_tax|floatformat:"2g" }}{% endif %}</td>
+	<td class="number">{% if d.transaction.sales_tax_charged %}{{ d.transaction.sales_tax_charged|floatformat:"2g" }}{% endif %}</td>
+	<td class="number">{% if d.transaction.sales_tax_paid %}{{ d.transaction.sales_tax_paid|floatformat:"2g" }}{% endif %}</td>
 	<td><a href="{{ MEDIA_URL }}{{ d.transaction.file }}" target="_blank">{{ d.transaction.filename }}</a></td>
 </tr>
 {% endfor %}
@@ -52,7 +52,7 @@
 	<td><b>{% trans 'Closing Balance' %}</b></td>
 	<td class="number"></td>
 	<td class="number"></td>
-	<td class="number"><b>{{ closing_balance|floatformat:2|intcomma }}</b></td>
+	<td class="number"><b>{{ closing_balance|floatformat:"2g" }}</b></td>
 	<td class="number"></td>
 	<td class="number"></td>
 	<td class="number"></td>
@@ -81,10 +81,10 @@
  <tr>
 	<td>{{ ce.date|date:"j M Y" }}</td>
 	<td><a href="{% url 'admin:money_transaction_change' ce.id %}" target="_blank">{{ ce.description }}</a></td>
-	 <td class="number">{% if ce.credit %}{{ ce.credit|floatformat:2|intcomma }}{% endif %}</td>
-	<td class="number">{% if ce.debit %}{{ ce.debit|floatformat:2|intcomma }}{% endif %}</td>
-	<td class="number">{% if ce.sales_tax_charged %}{{ ce.sales_tax_charged|floatformat:2|intcomma }}{% endif %}</td>
-	 <td class="number">{% if ce.sales_tax_paid %}{{ ce.sales_tax_paid|floatformat:2|intcomma }}{% endif %}</td>
+	 <td class="number">{% if ce.credit %}{{ ce.credit|floatformat:"2g" }}{% endif %}</td>
+	<td class="number">{% if ce.debit %}{{ ce.debit|floatformat:"2g" }}{% endif %}</td>
+	<td class="number">{% if ce.sales_tax_charged %}{{ ce.sales_tax_charged|floatformat:"2g" }}{% endif %}</td>
+	 <td class="number">{% if ce.sales_tax_paid %}{{ ce.sales_tax_paid|floatformat:"2g" }}{% endif %}</td>
 	<td><a href="{{ MEDIA_URL }}{{ ce.file }}" target="_blank">{{ ce.filename }}</a></td>
 </tr>
 {% endfor %}

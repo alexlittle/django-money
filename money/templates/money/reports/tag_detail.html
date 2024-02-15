@@ -20,8 +20,8 @@
         {% for years in totals_by_year %}
          <tr>
             <td>{{ years.year }}</td>
-            <td class="number">{{ years.sum_in|floatformat:2|intcomma }}</td>
-            <td class="number">{{ years.sum_out|floatformat:2|intcomma }}</td>
+            <td class="number">{{ years.sum_in|floatformat:"2g" }}</td>
+            <td class="number">{{ years.sum_out|floatformat:"2g" }}</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -45,8 +45,8 @@
             <td>{{ t.transaction.date|naturalday }}</td>
             <td>{{ t.transaction.account.name }}</td>
             <td>{{ t.transaction.description }}{% if t.description %} - {{ t.description }}{% endif %} </td>
-            <td class="number">{{ t.allocation_credit|floatformat:2|intcomma }}</td>
-            <td class="number">{{ t.allocation_debit|floatformat:2|intcomma }}</td>
+            <td class="number">{{ t.allocation_credit|floatformat:"2g" }}</td>
+            <td class="number">{{ t.allocation_debit|floatformat:"2g" }}</td>
             <td class="number">{{ t.transaction.payment_type }}</td>
             <td class="number"><a href="{% url 'admin:money_transaction_change' t.transaction.id %}">Edit</a></td>
         </tr>

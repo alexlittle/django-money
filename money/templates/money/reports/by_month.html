@@ -20,9 +20,9 @@
 {% for r in  report %}
  <tr>
 	<td>{{ r.month  }} {{ r.year  }}</td>
-	<td class="number {% if r.sum_in < 0 %}negative{% endif %}">{{ r.sum_in|floatformat:2|intcomma   }}</td>
-	<td class="number {% if r.sum_out < 0 %}negative{% endif %}">{{ r.sum_out|floatformat:2|intcomma   }}</td>
-	<td class="number {% if r.balance < 0 %}negative{% endif %}">{{ r.balance|floatformat:2|intcomma   }}</td>
+	<td class="number {% if r.sum_in < 0 %}negative{% endif %}">{{ r.sum_in|floatformat:"2g"   }}</td>
+	<td class="number {% if r.sum_out < 0 %}negative{% endif %}">{{ r.sum_out|floatformat:"2g"   }}</td>
+	<td class="number {% if r.balance < 0 %}negative{% endif %}">{{ r.balance|floatformat:"2g"   }}</td>
 	<td><a href="{% url 'money:monthly_transactions' r.year r.month%}">[{% trans 'transactions' %}]</a></td>
 </tr>
 {% endfor %}	

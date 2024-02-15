@@ -23,21 +23,21 @@
  <tr>
 	<td>{{ t.date }}</td>
 	<td>{{ t.description }}</td>
-	 <td class="number">{{ t.get_excl_sales_tax|floatformat:2|intcomma }}</td>
+	 <td class="number">{{ t.get_excl_sales_tax|floatformat:"2g" }}</td>
 	 <td class="number">{{ t.sales_tax_rate|floatformat:0|intcomma }}%</td>
-	 <td class="number">{{ t.sales_tax_charged|floatformat:2|intcomma }}</td>
-	<td class="number">{{ t.credit|floatformat:2|intcomma }}</td>
+	 <td class="number">{{ t.sales_tax_charged|floatformat:"2g" }}</td>
+	<td class="number">{{ t.credit|floatformat:"2g" }}</td>
 	 <td><a href="{{ MEDIA_URL }}{{ t.file }}" target="_blank">{{ t.filename }}</a></td>
 {% endfor %}
 
 <tr>
 	<td>{{ t.date }}</td>
 	<td><b>{% trans 'Totals' %}</b></td>
-	<td class="number"><b>{{ total_excl_sales_tax|floatformat:2|intcomma }}</b></td>
+	<td class="number"><b>{{ total_excl_sales_tax|floatformat:"2g" }}</b></td>
 	<td class="number"></td>
-	<td class="number"><b>{{ totals.total_sales_tax|floatformat:2|intcomma }}</b></td>
-	<td class="number"><b>{{ totals.total_incl_sales_tax|floatformat:2|intcomma }}</b></td>
-	<td class="number"><b>{{ cross_check|floatformat:2|intcomma }}</b></td>
+	<td class="number"><b>{{ totals.total_sales_tax|floatformat:"2g" }}</b></td>
+	<td class="number"><b>{{ totals.total_incl_sales_tax|floatformat:"2g" }}</b></td>
+	<td class="number"><b>{{ cross_check|floatformat:"2g" }}</b></td>
 	<td></td>
 </tr>
 </tbody>

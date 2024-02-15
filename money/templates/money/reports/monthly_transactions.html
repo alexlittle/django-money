@@ -24,8 +24,8 @@
 	<td>{{ t.date }}</td>
 	<td>{{ t.account.name }}</td>
 	<td>{{ t.description }}</td>
-	<td class="number">{{ t.credit|floatformat:2|intcomma }}</td>
-	<td class="number">{{ t.debit|floatformat:2|intcomma }}</td>
+	<td class="number">{{ t.credit|floatformat:"2g" }}</td>
+	<td class="number">{{ t.debit|floatformat:"2g" }}</td>
 	<td class="number">{{ t.payment_type }}</td>
 	<td><a href="{% url 'admin:money_transaction_change' t.id %}" target="_blank">{% trans 'Edit' %}</a></td>
 {% endfor %}	

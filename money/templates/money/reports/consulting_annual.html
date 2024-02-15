@@ -51,8 +51,8 @@
  <tr>
 	<td>{{ t.date|date:"j M Y" }}</td>
 	<td><a href="{% url 'admin:money_transaction_change' t.id %}" target="_blank">{{ t.description }}</a></td>
-	<td class="number">{% if t.credit %}{{ t.credit|floatformat:2|intcomma }}{% endif %}</td>
-	<td class="number">{% if t.debit %}{{ t.debit|floatformat:2|intcomma }}{% endif %}</td>
+	<td class="number">{% if t.credit %}{{ t.credit|floatformat:"2g" }}{% endif %}</td>
+	<td class="number">{% if t.debit %}{{ t.debit|floatformat:"2g" }}{% endif %}</td>
 
 </tr>
 {% endfor %}
