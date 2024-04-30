@@ -67,5 +67,65 @@
 </div>
 
 <h2>Budget - Business</h2>
+<div class="table-responsive">
+	<table class="table table-striped">
+        <thead>
+			<tr>
+				<th>{% trans 'Budget Line' %}</th>
+				<th>{% trans 'Value' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+        {% for key, value in business_income.items %}
+         <tr>
+             <td>{{ key }}</td>
+             <td>{{ value|floatformat:"2g" }}</td>
+        </tr>
+        {% endfor %}
+         <tr>
+             <td class="total sum-column">Total</td>
+             <td class="total sum-column">{{ business_income_total|floatformat:"2g" }}</td>
+        </tr>
+         <tr>
+             <td class="total sum-column">Total income items</td>
+             <td class="total sum-column">{{ b_income_total|floatformat:"2g" }}</td>
+        </tr>
+        <tr>
+             <td class="total sum-column">Difference</td>
+             <td class="total sum-column">{{ b_income_difference|floatformat:"2g" }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
+<div class="table-responsive">
+	<table class="table table-striped">
+        <thead>
+			<tr>
+				<th>{% trans 'Budget Line' %}</th>
+				<th>{% trans 'Value' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+        {% for key, value in business_expenses.items %}
+         <tr>
+             <td>{{ key }}</td>
+             <td>{{ value|floatformat:"2g" }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+             <td class="total sum-column">Total</td>
+             <td class="total sum-column">{{ business_expenses_total|floatformat:"2g" }}</td>
+        </tr>
+         <tr>
+             <td class="total sum-column">Total expense items</td>
+             <td class="total sum-column">{{ b_expense_total|floatformat:"2g" }}</td>
+        </tr>
+        <tr>
+             <td class="total sum-column">Difference</td>
+             <td class="total sum-column">{{ b_expense_difference|floatformat:"2g" }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 {% endblock %}

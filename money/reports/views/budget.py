@@ -6,11 +6,19 @@ from money.models import AccountingPeriod, Transaction, TransactionTag
 
 class BudgetView(ListView):
     template_name = 'money/reports/budget.html'
-    model = AccountingPeriod
+
+    def get_queryset(self):
+        return AccountingPeriod.objects.filter(active=True).order_by('-start_date')
 
 
 class BudgetByPeriodView(TemplateView):
     template_name = 'money/reports/budget_by_period.html'
+
+    def get_expenses(self, query, tag):
+         transactions = query.filter(transactiontag__tag__name=tag)
+         trans_ids = list(transactions.values_list('id', flat=True))
+         total = transactions.aggregate(total=Sum("debit"))['total'] if transactions.aggregate(total=Sum("debit"))['total'] else 0
+         return total, trans_ids
 
 
     def get_context_data(self, **kwargs):
@@ -30,7 +38,7 @@ class BudgetByPeriodView(TemplateView):
                                                date__lte=accounting_period.end_date).aggregate(total=Sum("credit"))
         personal_income['DC-Income'] = dc_income['total'] if dc_income['total'] else 0
 
-        design_shop = TransactionTag.objects.filter(tag__name__in=('bookmarks', 'kitchen', 'pens', 'rings'),
+        design_shop = TransactionTag.objects.filter(tag__name__in=('bookmarks', 'kitchen', 'pens', 'rings', 'brooches'),
                                                transaction__date__gte=accounting_period.start_date,
                                                transaction__date__lte=accounting_period.end_date).aggregate(total=Sum("allocation_credit"))
         personal_income['DesignShop'] = design_shop['total'] if design_shop['total'] else 0
@@ -201,9 +209,67 @@ class BudgetByPeriodView(TemplateView):
 
 
         # Business - Income
+        business_ids_used = []
+        business_income = {'DC-Income': 0,
+                           'DesignShop': 0,
+                           'ALV': 0 }
+
+        dc_income = Transaction.objects.filter(transactiontag__tag__name='dc-income',
+                                         date__gte=accounting_period.start_date,
+                                         date__lte=accounting_period.end_date)
+        business_ids_used = business_ids_used + list(dc_income.values_list('id', flat=True))
+        business_income['DC-Income'] = dc_income.aggregate(total=Sum("credit") - Sum("debit"))['total'] if dc_income.aggregate(total=Sum("credit") - Sum("debit"))['total'] else 0
+
+        alv = Transaction.objects.filter(transactiontag__tag__name='alv',
+                                        date__gte=accounting_period.start_date,
+                                        date__lte=accounting_period.end_date)
+        business_ids_used = business_ids_used + list(alv.values_list('id', flat=True))
+        business_income['ALV'] = alv.aggregate(total=Sum("credit")-Sum("debit"))['total'] if alv.aggregate(total=Sum("credit")-Sum("debit"))['total'] else 0
+
 
         # Business - Expenses
+        business_expenses = {}
 
+        business_expenses_transactions = Transaction.objects.filter(account__id=47,
+                                                date__gte=accounting_period.start_date,
+                                                date__lte=accounting_period.end_date) \
+            .exclude(payment_type="Transfer") \
+            .exclude(transactiontag__tag__name="kollektiivi")
+        print(business_expenses_transactions.query)
+        tag_list = ('accounting-fees',
+                    'bank-fees',
+                    'consumables',
+                    'hardware',
+                    'marketing',
+                    'misc expenses',
+                    'pen kits',
+                    'postage',
+                    'rent',
+                    'ring-kits',
+                    'tax',
+                    'tools',
+                    'varma',
+                    'veneer',
+                    'web-services',
+                    'wood')
+        for tl in tag_list:
+            total, ids = self.get_expenses(business_expenses_transactions, tl)
+            business_ids_used = business_ids_used + ids
+            business_expenses[tl] = total
+
+        business_expenses_total = 0
+        for key, value in business_expenses.items():
+            business_expenses_total = business_expenses_total + value
+
+        expense_transactions = business_expenses_transactions.exclude(id__in=business_ids_used) \
+            .exclude(payment_type="Transfer") \
+            .exclude(transactiontag__tag__name="kollektiivi")
+
+        print(expense_transactions)
+
+        b_expense_total = business_expenses_transactions.exclude(payment_type="Transfer") \
+            .exclude(transactiontag__tag__name="kollektiivi") \
+            .aggregate(total=Sum('debit'))['total']
 
         context['period'] = accounting_period
 
@@ -216,5 +282,10 @@ class BudgetByPeriodView(TemplateView):
         context['personal_expenses'] = personal_expenses
         context['expense_total'] = expense_total
         context['expense_difference'] = personal_expenses_total - expense_total
+
+        context['business_expenses_total'] = business_expenses_total
+        context['business_expenses'] = business_expenses
+        context['b_expense_total'] = b_expense_total
+        context['b_expense_difference'] = business_expenses_total - b_expense_total
 
         return context
