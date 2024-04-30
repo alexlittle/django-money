@@ -205,8 +205,7 @@ class Account (models.Model):
 
     @staticmethod
     def get_on_statment_total(type, currency):
-        accs = Account.objects.filter(
-            active=True, type=type, currency=currency)
+        accs = Account.objects.filter(active=True, type=type, currency=currency)
         total = 0
         for acc in accs:
             if acc.on_statement() is not None:
@@ -215,8 +214,7 @@ class Account (models.Model):
 
     @staticmethod
     def get_balance_base_currency_total(type, currency):
-        accs = Account.objects.filter(
-            active=True, type=type, currency=currency)
+        accs = Account.objects.filter(active=True, type=type, currency=currency)
         total = 0
         for acc in accs:
             if acc.get_balance_base_currency():
@@ -225,8 +223,7 @@ class Account (models.Model):
 
     @staticmethod
     def get_valuation_total(type, currency):
-        accs = Account.objects.filter(
-            active=True, type=type, currency=currency)
+        accs = Account.objects.filter(active=True, type=type, currency=currency)
         total = 0
         for acc in accs:
             if acc.get_valuation() != 0:
@@ -354,6 +351,19 @@ class Transaction(models.Model):
     def get_excl_sales_tax(self):
         return self.credit - self.sales_tax_charged
 
+    def get_credit_in_base_currency(self):
+        if settings.BASE_CURRENCY == self.account.currency:
+            return self.credit
+        else:
+            ex_rate = ExchangeRate.at_date(self.date, self.account.currency, settings.BASE_CURRENCY)
+            return self.credit/(1/ex_rate)
+
+    def get_debit_in_base_currency(self):
+        if settings.BASE_CURRENCY == self.account.currency:
+            return self.debit
+        else:
+            ex_rate = ExchangeRate.at_date(self.date, self.account.currency, settings.BASE_CURRENCY)
+            return self.debit/(1/ex_rate)
 
 class Valuation(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)

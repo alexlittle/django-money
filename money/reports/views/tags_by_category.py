@@ -18,7 +18,7 @@ class TagsByCategoryView(TemplateView):
         context['category'] = category
 
         context['totals_by_year'] = Transaction.objects.filter(transactiontag__tag__in=tags) \
-            .values(year=F('date__year')) \
+            .values(year=F('date__year')).distinct() \
             .annotate(sum_in=Sum('credit'),
                       sum_out=Sum('debit'),
                       balance=Sum('credit')-Sum('debit'))
@@ -30,7 +30,7 @@ class TagsByCategoryView(TemplateView):
             temp = Transaction.objects.filter(transactiontag__tag__in=tags,
                                date__gte=ap.start_date,
                                date__lte=ap.end_date) \
-                .values(category=F('transactiontag__tag__category')) \
+                .values(category=F('transactiontag__tag__category')).distinct()  \
                 .annotate(sum_in=Sum('credit'),
                           sum_out=Sum('debit')).order_by('category').first()
             p = {
@@ -43,5 +43,5 @@ class TagsByCategoryView(TemplateView):
 
         context['periods'] = periods
 
-        context['transactions'] = Transaction.objects.filter(transactiontag__tag__in=tags).order_by("-date")
+        context['transactions'] = Transaction.objects.filter(transactiontag__tag__in=tags).distinct() .order_by("-date")
         return context

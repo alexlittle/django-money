@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% block content %}
+
+<h2>Budget</h2>
+<ul>
+{% for period in object_list %}
+    <li><a href="{% url 'money:budget_by_period' period.id %}">{{ period.title }}</a></li>
+{% endfor %}
+</ul>
+
+{% endblock %}

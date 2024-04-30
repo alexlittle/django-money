@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% block content %}
+
+<h2>Budget - Personal - {{ period.title }}</h2>
+<div class="table-responsive">
+	<table class="table table-striped">
+        <thead>
+			<tr>
+				<th>{% trans 'Budget Line' %}</th>
+				<th>{% trans 'Value' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+        {% for key, value in personal_income.items %}
+         <tr>
+             <td>{{ key }}</td>
+             <td>{{ value|floatformat:"2g" }}</td>
+        </tr>
+        {% endfor %}
+         <tr>
+             <td class="total sum-column">Total</td>
+             <td class="total sum-column">{{ personal_income_total|floatformat:"2g" }}</td>
+        </tr>
+         <tr>
+             <td class="total sum-column">Total income items</td>
+             <td class="total sum-column">{{ income_total|floatformat:"2g" }}</td>
+        </tr>
+        <tr>
+             <td class="total sum-column">Difference</td>
+             <td class="total sum-column">{{ income_difference|floatformat:"2g" }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="table-responsive">
+	<table class="table table-striped">
+        <thead>
+			<tr>
+				<th>{% trans 'Budget Line' %}</th>
+				<th>{% trans 'Value' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+        {% for key, value in personal_expenses.items %}
+         <tr>
+             <td>{{ key }}</td>
+             <td>{{ value|floatformat:"2g" }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+             <td class="total sum-column">Total</td>
+             <td class="total sum-column">{{ personal_expenses_total|floatformat:"2g" }}</td>
+        </tr>
+         <tr>
+             <td class="total sum-column">Total expense items</td>
+             <td class="total sum-column">{{ expense_total|floatformat:"2g" }}</td>
+        </tr>
+        <tr>
+             <td class="total sum-column">Difference</td>
+             <td class="total sum-column">{{ expense_difference|floatformat:"2g" }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h2>Budget - Business</h2>
+
+{% endblock %}

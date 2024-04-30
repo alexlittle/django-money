@@ -22,5 +22,8 @@ urlpatterns = [
     path('tag/<int:tag_id>/', report_views.TagDetailView.as_view(), name="tag_detail"),
     path('tags/category/<str:category>/', report_views.TagsByCategoryView.as_view(), name="tags_by_category"),
 
+    path('budget/', report_views.BudgetView.as_view(), name="budget_all"),
+    path('budget/<int:period_id>/', report_views.BudgetByPeriodView.as_view(), name="budget_by_period"),
+
     path('invoices/<int:year>/<int:month>/', report_views.MonthlyInvoicesView.as_view(), name="monthly_invoices"),
 ]
