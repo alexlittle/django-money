@@ -50,25 +50,29 @@ class BudgetByPeriodView(TemplateView):
             .exclude(transaction__payment_type__in=("Transfer", "Cashpoint")) \
             .exclude(tag__name="kollektiivi")
         # Personal Expenses
-        personal_expenses = {}
+        personal_expenses = []
         personal_expenses_total = 0
         # House & personal
         personal_transactions = expense_transactions.filter(tag__category__in=("house","personal"))
-        personal_expenses_tags = personal_transactions.values("tag__name").distinct().order_by('tag__name')
+        personal_expenses_tags = personal_transactions.values("tag__name", "tag__id").distinct().order_by('tag__name')
         for pet in personal_expenses_tags:
+            p_expense = {}
             tag_expense_total = 0
             group_transactions = personal_transactions.filter(tag__name=pet['tag__name'])
             for gt in group_transactions:
                 tag_expense_total = tag_expense_total + gt.get_debit_in_base_currency()
             personal_expenses_total = personal_expenses_total + tag_expense_total
-            personal_expenses[pet['tag__name']] = tag_expense_total
+            p_expense['name'] = pet['tag__name']
+            p_expense['total'] = tag_expense_total
+            p_expense['id'] = pet['tag__id']
+            personal_expenses.append(p_expense)
 
         # Car
         car_transactions = expense_transactions.filter(tag__category="car")
         car_total = 0
         for ct in car_transactions:
             car_total = car_total + ct.get_debit_in_base_currency()
-        personal_expenses["Car"] = car_total
+        personal_expenses.append({'name': "car", 'total': car_total})
         personal_expenses_total = personal_expenses_total + car_total
 
         # Travel
@@ -76,7 +80,7 @@ class BudgetByPeriodView(TemplateView):
         travel_total = 0
         for tt in travel_transactions:
             travel_total = travel_total + tt.get_debit_in_base_currency()
-        personal_expenses["Travel"] = travel_total
+        personal_expenses.append({'name': "travel", 'total': travel_total})
         personal_expenses_total = personal_expenses_total + travel_total
 
         # Misc
@@ -84,21 +88,25 @@ class BudgetByPeriodView(TemplateView):
         misc_total = 0
         for mt in misc_transactions:
             misc_total = misc_total + mt.get_debit_in_base_currency()
-        personal_expenses["Misc"] = misc_total
+        personal_expenses.append({'name': "misc", 'total': misc_total})
         personal_expenses_total = personal_expenses_total + misc_total
 
         # Business Expenses
-        business_expenses = {}
+        business_expenses = []
         business_expenses_total = 0
         business_transactions = expense_transactions.filter(tag__category__in=("business", "design", "rental"))
-        business_expenses_tags = business_transactions.values("tag__name").distinct().order_by('tag__name')
+        business_expenses_tags = business_transactions.values("tag__name", "tag__id").distinct().order_by('tag__name')
         for bet in business_expenses_tags:
+            b_expense = {}
             tag_expense_total = 0
             group_transactions = business_transactions.filter(tag__name=bet['tag__name'])
             for gt in group_transactions:
                 tag_expense_total = tag_expense_total + gt.get_debit_in_base_currency()
             business_expenses_total = business_expenses_total + tag_expense_total
-            business_expenses[bet['tag__name']] = tag_expense_total
+            b_expense['name'] = bet['tag__name']
+            b_expense['total'] = tag_expense_total
+            b_expense['id'] = bet['tag__id']
+            business_expenses.append(b_expense)
 
         context['period'] = accounting_period
         context['income'] = income

@@ -15,7 +15,7 @@
 		<tbody>
         {% for key, value in income.items %}
          <tr>
-             <td>{{ key }}</td>
+             <td><a href="{% url 'money:tags_by_category' key period.id %}">{{ key }}</a></td>
              <td>{{ value|floatformat:"2g" }}</td>
         </tr>
         {% endfor %}
@@ -38,10 +38,15 @@
 			</tr>
 		</thead>
 		<tbody>
-        {% for key, value in personal_expenses.items %}
+        {% for pe in personal_expenses %}
          <tr>
-             <td>{{ key }}</td>
-             <td>{{ value|floatformat:"2g" }}</td>
+             {% if pe.id %}
+                <td><a href="{% url 'money:tag_detail' pe.id period.id %}">{{ pe.name }}</a></td>
+            {% else %}
+                <td><a href="{% url 'money:tags_by_category' pe.name period.id %}">{{ pe.name }}</a></td>
+            {% endif %}
+
+             <td>{{ pe.total|floatformat:"2g" }}</td>
         </tr>
         {% endfor %}
          <tr>
@@ -63,10 +68,10 @@
 			</tr>
 		</thead>
 		<tbody>
-        {% for key, value in business_expenses.items %}
+        {% for be in business_expenses %}
          <tr>
-             <td>{{ key }}</td>
-             <td>{{ value|floatformat:"2g" }}</td>
+             <td><a href="{% url 'money:tag_detail' be.id period.id %}">{{ be.name }}</a></td>
+             <td>{{ be.total|floatformat:"2g" }}</td>
         </tr>
         {% endfor %}
          <tr>

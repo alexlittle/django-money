@@ -43,7 +43,7 @@
     <tbody>
         {% for period in periods %}
          <tr>
-            <td>{{ period.title }}</td>
+             <td><a href="{% url 'money:tags_by_category' category period.id %}">{{ period.title }}</a></td>
             <td class="number">{{ period.sum_in|floatformat:"2g" }}</td>
             <td class="number">{{ period.sum_out|floatformat:"2g" }}</td>
              <td class="number">{{ period.balance|floatformat:"2g" }}</td>
@@ -52,7 +52,13 @@
     </tbody>
 </table>
 
-<h3>Transactions</h3>
+<h2>
+{% if period %}
+    {{ period.title }}
+{% else %}
+    {% trans 'All Dates' %}
+{% endif %}
+</h2>
 <table class="table table-striped">
     <thead>
         <tr>

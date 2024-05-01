@@ -20,7 +20,9 @@ urlpatterns = [
     path('tags/year/<int:year>/', report_views.TagsByYearView.as_view(), name="tags_by_year"),
     path('tags/period/<int:period_id>/', report_views.TagsByPeriodView.as_view(), name="tags_by_period"),
     path('tag/<int:tag_id>/', report_views.TagDetailView.as_view(), name="tag_detail"),
+    path('tag/<int:tag_id>/<int:period_id>/', report_views.TagDetailView.as_view(), name="tag_detail"),
     path('tags/category/<str:category>/', report_views.TagsByCategoryView.as_view(), name="tags_by_category"),
+    path('tags/category/<str:category>/<int:period_id>/', report_views.TagsByCategoryView.as_view(), name="tags_by_category"),
 
     path('budget/', report_views.BudgetView.as_view(), name="budget_all"),
     path('budget/<int:period_id>/', report_views.BudgetByPeriodView.as_view(), name="budget_by_period"),

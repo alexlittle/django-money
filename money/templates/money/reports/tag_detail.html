@@ -27,6 +27,13 @@
     </tbody>
 </table>
 
+<h2>
+{% if period %}
+    {{ period.title }}
+{% else %}
+    {% trans 'All Dates' %}
+{% endif %}
+</h2>
 <table class="table table-striped">
     <thead>
         <tr>

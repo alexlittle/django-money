@@ -14,6 +14,8 @@ class TagsByCategoryView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         category = kwargs['category']
+        period_id = kwargs.get('period_id')
+
         tags = Tag.objects.filter(category=category)
         context['category'] = category
 
@@ -34,6 +36,7 @@ class TagsByCategoryView(TemplateView):
                 .annotate(sum_in=Sum('credit'),
                           sum_out=Sum('debit')).order_by('category').first()
             p = {
+                'id': ap.id,
                 'title': ap.title,
                 'sum_in': temp['sum_in'],
                 'sum_out': temp['sum_out'],
@@ -43,5 +46,13 @@ class TagsByCategoryView(TemplateView):
 
         context['periods'] = periods
 
-        context['transactions'] = Transaction.objects.filter(transactiontag__tag__in=tags).distinct() .order_by("-date")
+        transactions = Transaction.objects.filter(transactiontag__tag__in=tags)
+        if period_id:
+            accounting_period = AccountingPeriod.objects.get(pk=period_id)
+            context['period'] = accounting_period
+            context['transactions'] = transactions.filter(date__gte=accounting_period.start_date,
+                                                            date__lte=accounting_period.end_date).distinct().order_by('-date')
+        else:
+            context['transactions'] = transactions.distinct().order_by("-date")
+
         return context
