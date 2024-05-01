@@ -26,266 +26,87 @@ class BudgetByPeriodView(TemplateView):
         period_id = kwargs['period_id']
         accounting_period = AccountingPeriod.objects.get(pk=period_id)
 
-        # Personal - Income
-        personal_income = {'DC-Income': 0,
-                           'DesignShop': 0,
-                           'MiscIncome': 0,
-                           'HouseRental': 0,
-                           'RoomRental': 0 }
+        # Income
+        income_transactions = TransactionTag.objects.filter(transaction__date__gte=accounting_period.start_date,
+                                                         transaction__date__lte=accounting_period.end_date,
+                                                            allocation_credit__gt=0) \
+                                    .exclude(transaction__payment_type="Transfer") \
+                                    .exclude(tag__name="kollektiivi")
 
-        dc_income = Transaction.objects.filter(transactiontag__tag__name='dc-income',
-                                               date__gte=accounting_period.start_date,
-                                               date__lte=accounting_period.end_date).aggregate(total=Sum("credit"))
-        personal_income['DC-Income'] = dc_income['total'] if dc_income['total'] else 0
-
-        design_shop = TransactionTag.objects.filter(tag__name__in=('bookmarks', 'kitchen', 'pens', 'rings', 'brooches'),
-                                               transaction__date__gte=accounting_period.start_date,
-                                               transaction__date__lte=accounting_period.end_date).aggregate(total=Sum("allocation_credit"))
-        personal_income['DesignShop'] = design_shop['total'] if design_shop['total'] else 0
-
-        misc_income = Transaction.objects.filter(transactiontag__tag__name__in=('misc income', 'coins', 'misc'),
-                                               date__gte=accounting_period.start_date,
-                                               date__lte=accounting_period.end_date)
-        total = 0
-        for mi in misc_income:
-            total = total + mi.get_credit_in_base_currency()
-        personal_income['MiscIncome'] = total
-
-        house_rental = Transaction.objects.filter(transactiontag__tag__name='northampton house',
-                                                 date__gte=accounting_period.start_date,
-                                                 date__lte=accounting_period.end_date)
-        total = 0
-        for mi in house_rental:
-            total = total + mi.get_credit_in_base_currency()
-        personal_income['HouseRental'] = total
-
-        room_rental = Transaction.objects.filter(transactiontag__tag__name='room-rental',
-                                                 date__gte=accounting_period.start_date,
-                                                 date__lte=accounting_period.end_date).aggregate(total=Sum("credit"))
-        personal_income['RoomRental'] = room_rental['total'] if room_rental['total'] else 0
-
-        personal_income_total = 0
-        for key, value in personal_income.items():
-            personal_income_total = personal_income_total + value
-
-        income_transactions = Transaction.objects.filter(account__active=True,
-                                                 account__type="Cash",
-                                                 date__gte=accounting_period.start_date,
-                                                 date__lte=accounting_period.end_date,
-                                                credit__gt=0) \
-                        .exclude(payment_type="Transfer") \
-                        .exclude(transactiontag__tag__name="kollektiivi")
-
+        income_groups = income_transactions.values("tag__category").distinct()
+        income = {}
         income_total = 0
-        for i in income_transactions:
-            income_total = income_total + i.get_credit_in_base_currency()
+        for ig in income_groups:
+            group_income_total = 0
+            group_transactions = income_transactions.filter(tag__category=ig['tag__category'])
+            for gt in group_transactions:
+                group_income_total = group_income_total + gt.get_credit_in_base_currency()
+            income_total = income_total + group_income_total
+            income[ig['tag__category']] = group_income_total
 
-        # Personal - Expenses
-        personal_expenses = {'Insurance': 0,
-                             'Car': 0,
-                             'Rubbish': 0,
-                             'Water': 0,
-                             'Electric': 0,
-                             'PhoneInternet': 0,
-                             'Renovations': 0,
-                             'Entertainment': 0,
-                             'HouseTaxRent': 0,
-                             'Travel': 0,
-                             'Food': 0,
-                             'Gear': 0,
-                             'Boat': 0,
-                             'GiftTax': 0,
-                             'SafetyDepositBox': 0}
-
-        ins = Transaction.objects.filter(transactiontag__tag__name='insurance',
-                                                 date__gte=accounting_period.start_date,
-                                                 date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['Insurance'] = ins['total'] if ins['total'] else 0
-
-        car = Transaction.objects.filter(transactiontag__tag__category='car',
-                                         date__gte=accounting_period.start_date,
-                                         date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['Car'] = car['total'] if car['total'] else 0
-
-        rubbish = Transaction.objects.filter(transactiontag__tag__name='rubbish',
-                                         date__gte=accounting_period.start_date,
-                                         date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['Rubbish'] = rubbish['total'] if rubbish['total'] else 0
-
-        water = Transaction.objects.filter(transactiontag__tag__name='water',
-                                             date__gte=accounting_period.start_date,
-                                             date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['Water'] = water['total'] if water['total'] else 0
-
-        electric = Transaction.objects.filter(transactiontag__tag__name='electric',
-                                           date__gte=accounting_period.start_date,
-                                           date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['Electric'] = electric['total'] if electric['total'] else 0
-
-        internet = Transaction.objects.filter(transactiontag__tag__name='phone/internet',
-                                              date__gte=accounting_period.start_date,
-                                              date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['PhoneInternet'] = internet['total'] if internet['total'] else 0
-
-        renov = Transaction.objects.filter(transactiontag__tag__name='renovations',
-                                                   date__gte=accounting_period.start_date,
-                                                   date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['Renovations'] = renov['total'] if renov['total'] else 0
-
-        entertainment = Transaction.objects.filter(transactiontag__tag__name__in=('entertainment','restaurant'),
-                                              date__gte=accounting_period.start_date,
-                                              date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['Entertainment'] = entertainment['total'] if entertainment['total'] else 0
-
-        housetax = Transaction.objects.filter(transactiontag__tag__name='tax & rent',
-                                                   date__gte=accounting_period.start_date,
-                                                   date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['HouseTaxRent'] = housetax['total'] if housetax['total'] else 0
-
-        travel = Transaction.objects.filter(transactiontag__tag__category='travel',
-                                         date__gte=accounting_period.start_date,
-                                         date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['Travel'] = travel['total'] if travel['total'] else 0
-
-        food = Transaction.objects.filter(transactiontag__tag__name='food',
-                                              date__gte=accounting_period.start_date,
-                                              date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['Food'] = food['total'] if food['total'] else 0
-
-        gear = Transaction.objects.filter(transactiontag__tag__name='gear',
-                                          date__gte=accounting_period.start_date,
-                                          date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['Gear'] = gear['total'] if gear['total'] else 0
-
-        boat = Transaction.objects.filter(transactiontag__tag__name='boat',
-                                          date__gte=accounting_period.start_date,
-                                          date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['Boat'] = boat['total'] if boat['total'] else 0
-
-        gifttax = Transaction.objects.filter(transactiontag__tag__name='gift-tax',
-                                          date__gte=accounting_period.start_date,
-                                          date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['GiftTax'] = gifttax['total'] if gifttax['total'] else 0
-
-        safety_deposit = Transaction.objects.filter(transactiontag__tag__name='safety-deposit',
-                                             date__gte=accounting_period.start_date,
-                                             date__lte=accounting_period.end_date).aggregate(total=Sum("debit"))
-        personal_expenses['SafetyDepositBox'] = safety_deposit['total'] if safety_deposit['total'] else 0
-
+        expense_transactions = TransactionTag.objects.filter(transaction__date__gte=accounting_period.start_date,
+                                                             transaction__date__lte=accounting_period.end_date,
+                                                             allocation_debit__gt=0) \
+            .exclude(transaction__payment_type__in=("Transfer", "Cashpoint")) \
+            .exclude(tag__name="kollektiivi")
+        # Personal Expenses
+        personal_expenses = {}
         personal_expenses_total = 0
-        for key, value in personal_expenses.items():
-            personal_expenses_total = personal_expenses_total + value
+        # House & personal
+        personal_transactions = expense_transactions.filter(tag__category__in=("house","personal"))
+        personal_expenses_tags = personal_transactions.values("tag__name").distinct().order_by('tag__name')
+        for pet in personal_expenses_tags:
+            tag_expense_total = 0
+            group_transactions = personal_transactions.filter(tag__name=pet['tag__name'])
+            for gt in group_transactions:
+                tag_expense_total = tag_expense_total + gt.get_debit_in_base_currency()
+            personal_expenses_total = personal_expenses_total + tag_expense_total
+            personal_expenses[pet['tag__name']] = tag_expense_total
 
-        expense_transactions = Transaction.objects.filter(account__id__in=(48, 19, 39),
-                                                         date__gte=accounting_period.start_date,
-                                                         date__lte=accounting_period.end_date,
-                                                         debit__gt=0) \
-                            .exclude(payment_type="Transfer")
+        # Car
+        car_transactions = expense_transactions.filter(tag__category="car")
+        car_total = 0
+        for ct in car_transactions:
+            car_total = car_total + ct.get_debit_in_base_currency()
+        personal_expenses["Car"] = car_total
+        personal_expenses_total = personal_expenses_total + car_total
 
-        expense_total = 0
-        for i in expense_transactions:
-            expense_total = expense_total + i.get_debit_in_base_currency()
+        # Travel
+        travel_transactions = expense_transactions.filter(tag__category="travel")
+        travel_total = 0
+        for tt in travel_transactions:
+            travel_total = travel_total + tt.get_debit_in_base_currency()
+        personal_expenses["Travel"] = travel_total
+        personal_expenses_total = personal_expenses_total + travel_total
 
-        missing_expenses = expense_transactions.exclude(transactiontag__tag__name__in=('food',
-                                                                                       'tax & rent',
-                                                                                       'entertainment',
-                                                                                       'restaurant',
-                                                                                       'renovations',
-                                                                                       'phone/internet',
-                                                                                       'insurance',
-                                                                                       'rubbish',
-                                                                                       'water',
-                                                                                       'electric',
-                                                                                       'gear',
-                                                                                       'boat',
-                                                                                       'gift-tax',
-                                                                                       'safety-deposit')) \
-                                     .exclude(transactiontag__tag__category__in=('car','travel'))
+        # Misc
+        misc_transactions = expense_transactions.filter(tag__category="misc")
+        misc_total = 0
+        for mt in misc_transactions:
+            misc_total = misc_total + mt.get_debit_in_base_currency()
+        personal_expenses["Misc"] = misc_total
+        personal_expenses_total = personal_expenses_total + misc_total
 
-        for et in missing_expenses:
-            print(et.description)
-            print(et.debit)
-            print(et.id)
-
-
-        # Business - Income
-        business_ids_used = []
-        business_income = {'DC-Income': 0,
-                           'DesignShop': 0,
-                           'ALV': 0 }
-
-        dc_income = Transaction.objects.filter(transactiontag__tag__name='dc-income',
-                                         date__gte=accounting_period.start_date,
-                                         date__lte=accounting_period.end_date)
-        business_ids_used = business_ids_used + list(dc_income.values_list('id', flat=True))
-        business_income['DC-Income'] = dc_income.aggregate(total=Sum("credit") - Sum("debit"))['total'] if dc_income.aggregate(total=Sum("credit") - Sum("debit"))['total'] else 0
-
-        alv = Transaction.objects.filter(transactiontag__tag__name='alv',
-                                        date__gte=accounting_period.start_date,
-                                        date__lte=accounting_period.end_date)
-        business_ids_used = business_ids_used + list(alv.values_list('id', flat=True))
-        business_income['ALV'] = alv.aggregate(total=Sum("credit")-Sum("debit"))['total'] if alv.aggregate(total=Sum("credit")-Sum("debit"))['total'] else 0
-
-
-        # Business - Expenses
+        # Business Expenses
         business_expenses = {}
-
-        business_expenses_transactions = Transaction.objects.filter(account__id=47,
-                                                date__gte=accounting_period.start_date,
-                                                date__lte=accounting_period.end_date) \
-            .exclude(payment_type="Transfer") \
-            .exclude(transactiontag__tag__name="kollektiivi")
-        print(business_expenses_transactions.query)
-        tag_list = ('accounting-fees',
-                    'bank-fees',
-                    'consumables',
-                    'hardware',
-                    'marketing',
-                    'misc expenses',
-                    'pen kits',
-                    'postage',
-                    'rent',
-                    'ring-kits',
-                    'tax',
-                    'tools',
-                    'varma',
-                    'veneer',
-                    'web-services',
-                    'wood')
-        for tl in tag_list:
-            total, ids = self.get_expenses(business_expenses_transactions, tl)
-            business_ids_used = business_ids_used + ids
-            business_expenses[tl] = total
-
         business_expenses_total = 0
-        for key, value in business_expenses.items():
-            business_expenses_total = business_expenses_total + value
-
-        expense_transactions = business_expenses_transactions.exclude(id__in=business_ids_used) \
-            .exclude(payment_type="Transfer") \
-            .exclude(transactiontag__tag__name="kollektiivi")
-
-        print(expense_transactions)
-
-        b_expense_total = business_expenses_transactions.exclude(payment_type="Transfer") \
-            .exclude(transactiontag__tag__name="kollektiivi") \
-            .aggregate(total=Sum('debit'))['total']
+        business_transactions = expense_transactions.filter(tag__category__in=("business", "design", "rental"))
+        business_expenses_tags = business_transactions.values("tag__name").distinct().order_by('tag__name')
+        for bet in business_expenses_tags:
+            tag_expense_total = 0
+            group_transactions = business_transactions.filter(tag__name=bet['tag__name'])
+            for gt in group_transactions:
+                tag_expense_total = tag_expense_total + gt.get_debit_in_base_currency()
+            business_expenses_total = business_expenses_total + tag_expense_total
+            business_expenses[bet['tag__name']] = tag_expense_total
 
         context['period'] = accounting_period
-
-        context['personal_income'] = personal_income
-        context['personal_income_total'] = personal_income_total
+        context['income'] = income
         context['income_total'] = income_total
-        context['income_difference'] = personal_income_total - income_total
 
-        context['personal_expenses_total'] = personal_expenses_total
         context['personal_expenses'] = personal_expenses
-        context['expense_total'] = expense_total
-        context['expense_difference'] = personal_expenses_total - expense_total
+        context['personal_expenses_total'] = personal_expenses_total
 
-        context['business_expenses_total'] = business_expenses_total
         context['business_expenses'] = business_expenses
-        context['b_expense_total'] = b_expense_total
-        context['b_expense_difference'] = business_expenses_total - b_expense_total
-
+        context['business_expenses_total'] = business_expenses_total
         return context

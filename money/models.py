@@ -37,7 +37,9 @@ TAG_CATEGORIES = (
         ('car', 'Car'),
         ('personal', 'Personal'),
         ('misc', 'Misc'),
-        ('business', 'Business')
+        ('business', 'Business'),
+        ('design', 'DesignShop'),
+        ('rental', 'Rental'),
     )
 
 
@@ -380,6 +382,19 @@ class TransactionTag(models.Model):
     allocation_debit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     description = models.CharField(max_length=200, blank=True, null=True, default=None)
 
+    def get_credit_in_base_currency(self):
+        if settings.BASE_CURRENCY == self.transaction.account.currency:
+            return self.allocation_credit
+        else:
+            ex_rate = ExchangeRate.at_date(self.transaction.date, self.transaction.account.currency, settings.BASE_CURRENCY)
+            return self.allocation_credit/(1/ex_rate)
+
+    def get_debit_in_base_currency(self):
+        if settings.BASE_CURRENCY == self.transaction.account.currency:
+            return self.allocation_debit
+        else:
+            ex_rate = ExchangeRate.at_date(self.transaction.date, self.transaction.account.currency, settings.BASE_CURRENCY)
+            return self.allocation_debit/(1/ex_rate)
 
 class AccountingPeriod(models.Model):
     start_date = models.DateTimeField(default=timezone.now)
