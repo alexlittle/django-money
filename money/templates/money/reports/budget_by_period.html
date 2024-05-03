@@ -5,7 +5,7 @@
 
 <h2>Budget - Income - {{ period.title }}</h2>
 <div class="table-responsive">
-	<table class="table table-striped">
+	<table class="table table-striped" id="budget-income">
         <thead>
 			<tr>
 				<th>{% trans 'Group' %}</th>
@@ -16,12 +16,12 @@
         {% for key, value in income.items %}
          <tr>
              <td><a href="{% url 'money:tags_by_category' key period.id %}">{{ key }}</a></td>
-             <td>{{ value|floatformat:"2g" }}</td>
+             <td class="number">{{ value|floatformat:"2g" }}</td>
         </tr>
         {% endfor %}
          <tr>
              <td class="total sum-column">Total</td>
-             <td class="total sum-column">{{ income_total|floatformat:"2g" }}</td>
+             <td class="total sum-column number">{{ income_total|floatformat:"2g" }}</td>
         </tr>
         </tbody>
     </table>
@@ -30,7 +30,7 @@
 
 <h2>Personal Expenses - {{ period.title }}</h2>
 <div class="table-responsive">
-	<table class="table table-striped">
+	<table class="table table-striped" id="budget-personal">
         <thead>
 			<tr>
 				<th>{% trans 'Group' %}</th>
@@ -60,7 +60,7 @@
 
 <h2>Business Expenses - {{ period.title }}</h2>
 <div class="table-responsive">
-	<table class="table table-striped">
+	<table class="table table-striped" id="budget-business">
         <thead>
 			<tr>
 				<th>{% trans 'Group' %}</th>
@@ -81,4 +81,11 @@
         </tbody>
     </table>
 </div>
+
+<h2>Missing Transactions - {{ period.title }}</h2>
+<ul>
+{% for mt in missing_transactions %}
+    <li>{{ mt.description }} - {{ mt.debit }}</li>
+{% endfor %}
+</ul>
 {% endblock %}
