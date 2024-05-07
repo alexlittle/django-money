@@ -39,17 +39,55 @@
         .col-2 {
             padding:5px;
         }
+        td.invoice-align-top {
+    vertical-align: top;
+}
+td.invoice-table-header-right {
+    text-align: right;
+    font-weight:bold;
+}
+td.invoice-table-header-left {
+    text-align: left;
+    font-weight: bold;
+}
+td.invoice-align-right {
+    text-align: right;
+}
+td.invoice-table-header {
+    text-align: center;
+    font-weight:bold;
+}
+
+th.number, td.number {
+	text-align:right;
+}
+
+td.total {
+	font-weight:bold;
+}
+
+.table>tbody>tr>td.sum-column {
+	border-top: 2px solid;
+}
+
+.table>tbody>tr>td.head-column {
+	border-bottom: 2px solid;
+}
+
+th.negative, td.negative {
+	color:#ff0000;
+}
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="row">
-      <div class="col-8">
-          <img src="{% static 'money/7hex.svg.png' %}" style="float:left; margin-right:20px"> <h1>Alex Little Consulting Services</h1>
-
-      </div>
-      <div class="col right">
-          <p>Mustikkapuistikko 8<br/>
+    <table width="100%">
+        <tr>
+            <td width="60%" class="invoice-align-top">
+               <img src="{% static 'money/7hex.svg.png' %}" style="float:left; margin-right:20px"> <h1>Alex Little Consulting Services</h1>
+            </td>
+            <td width="40%" align="right">
+                   <p>Mustikkapuistikko 8<br/>
             80230 Joensuu<br/>
             Finland</p>
 
@@ -58,84 +96,84 @@
             +358 45 640 2013</p>
 
           <p>Y-tunnus: 2808270-6</p>
+            </td>
 
-      </div>
-    </div>
-
+        </tr>
+    </table>
 
 <h1 style="text-align:center; margin-bottom:50px;">Lasku</h1>
-<div class="row">
-    <div class="col-4">
-        {{ invoice_info.description|safe }}
-    </div>
-    <div class="col-4">
-        <strong>Laskun päiväys</strong><br/>
-        {{ invoice_date }}
-    </div>
-    <div class="col-4">
-        <strong>Eräpäivä</strong><br/>
-        {{ due_date }}<br/>
-        <br/>
-        <strong>Viite #</strong><br/>
-        {{ ref }}
-    </div>
-</div>
+<table width="100%">
+    <tr>
+        <td class="invoice-align-top">
+            {{ invoice_info.description|safe }}
+        </td>
+        <td class="invoice-align-top">
+            <strong>Laskun päiväys</strong><br/>
+            {{ invoice_date }}
+        </td>
+        <td class="invoice-align-top">
+            <strong>Eräpäivä</strong><br/>
+            {{ due_date }}<br/>
+            <br/>
+            <strong>Viite #</strong><br/>
+            {{ ref }}
+        </td>
+    </tr>
+
+</table>
+
+
 
 <h2>{{ title }}</h2>
+    <table width="100%">
+    <tr>
+        <td class="invoice-table-header">Tuote</td>
+        <td class="invoice-table-header-right">Hinta</td>
+        <td class="invoice-table-header-right">ALV %</td>
+        <td class="invoice-table-header-right">Hinta sis. ALV</td>
+        <td class="invoice-table-header-right">Yhteensä</td>
+    </tr>
 
-<div class="row">
-    <div class="col-2 th centre">Tuote</div>
-    <div class="col-2 th centre">Hinta</div>
-    <div class="col-2 th centre">ALV %</div>
-    <div class="col-3 th centre">Hinta sis. ALV</div>
-    <div class="col-3 th centre">Yhteensä</div>
-</div>
+    <tr>
+        <td class="">Kuukausmaksu</td>
+        <td class="invoice-align-right">{{ invoice_info.debit_ex_alv }} &euro;</td>
+        <td class="invoice-align-right">24%</td>
+        <td class="invoice-align-right">{{ invoice_info.debit_total }} &euro;</td>
+        <td class="invoice-align-right">{{ invoice_info.debit_total }} &euro;</td>
+    </tr>
 
-<div class="row">
-    <div class="col-2">Kuukausmaksu</div>
-    <div class="col-2 right">{{ invoice_info.debit_ex_alv }} &euro;</div>
-    <div class="col-2 centre">24%</div>
-    <div class="col-3 right">{{ invoice_info.debit_total }} &euro;</div>
-    <div class="col-2 right">{{ invoice_info.debit_total }} &euro;</div>
-</div>
+    <tr>
+        <td colspan="4" class="invoice-table-header-right">Yhteensä veroton</td>
+        <td class="invoice-align-right">{{ invoice_info.debit_ex_alv }} &euro;</td>
+    </tr>
 
-<div class="row">
-    <div class="col-2"></div>
-    <div class="col-2"></div>
-    <div class="col-2"></div>
-    <div class="col-3 right">Yhteensä veroton</div>
-    <div class="col-2 right">{{ invoice_info.debit_ex_alv }} &euro;</div>
-</div>
+    <tr>
+        <td colspan="4" class="invoice-table-header-right">ALV 24%</td>
+        <td class="invoice-align-right">{{ invoice_info.debit_alv  }} &euro;</td>
+    </tr>
 
-<div class="row">
-    <div class="col-2"></div>
-    <div class="col-2"></div>
-    <div class="col-2"></div>
-    <div class="col-3 right">ALV 24%</div>
-    <div class="col-2 right">{{ invoice_info.debit_alv }} &euro;</div>
-</div>
-
-<div class="row">
-    <div class="col-2"></div>
-    <div class="col-2"></div>
-    <div class="col-2"></div>
-    <div class="col-3 right th">Yhteensä</div>
-    <div class="col-2 right th">{{ invoice_info.debit_total }} &euro;</div>
-</div>
+    <tr>
+        <td colspan="4" class="invoice-table-header-right">Yhteensä</td>
+        <td class="invoice-table-header-right">{{  invoice_info.debit_total }} &euro;</td>
+    </tr>
+</table>
 
 
 <h2>Maksutiedot</h2>
 
-<div class="row">
-    <div class="col-4 th">Vastaanottajan nimi</div>
-    <div class="col-4 th">IBAN/BIC</div>
-    <div class="col-4 th">Viite #</div>
-</div>
-<div class="row">
-    <div class="col-4">{{ acc_name }}</div>
-    <div class="col-4">{{ acc_iban }}<br/>{{ acc_bic }}</div>
-    <div class="col-4">{{ ref }}</div>
-</div>
+<table width="100%">
+    <tr>
+        <td class="invoice-table-header-left">Vastaanottajan nimi</td>
+        <td class="invoice-table-header-left">IBAN/BIC</td>
+        <td class="invoice-table-header-left">Viite #</td>
+    </tr>
+    <tr >
+        <td class="invoice-align-top">{{ acc_name }}</td>
+        <td class="invoice-align-top">{{ acc_iban }}<br/>{{ acc_bic }}</td>
+        <td class="invoice-align-top">{{ ref }}</td>
+    </tr>
+</table>
+
 
     <div style="text-align:center; margin-top:100px;">
         Y-tunnus (Business ID & ALV no) - 2808270-6
