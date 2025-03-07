@@ -12,3 +12,4 @@ from money.reports.views.tag_detail import *
 from money.reports.views.tags_by_category import *
 from money.reports.views.monthly_invoices import *
 from money.reports.views.budget import *
+from money.reports.views.annual_graphs import *

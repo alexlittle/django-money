@@ -85,7 +85,7 @@
 <h2>Missing Transactions - {{ period.title }}</h2>
 <ul>
 {% for mt in missing_transactions %}
-    <li>{{ mt.description }} - {{ mt.debit }}</li>
+    <li><a href="{% url 'admin:money_transaction_change' mt.id %}">{{ mt.description }} - {{ mt.debit }} - {{ mt.credit }}</a></li>
 {% endfor %}
 </ul>
 {% endblock %}

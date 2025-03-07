@@ -34,15 +34,6 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">{% trans 'Kollektiivi' %}</a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        {% for i in KOLLEKTIIVI_MENU %}
-                        <li><a class="dropdown-item" href="{% url 'money:kollektiivi_monthly' i.year i.month %}">{{ i.name }} {{ i.year }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">{% trans 'Tags' %} </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="{% url 'money:tags_all' %}">{% trans 'All tags' %}</a></li>

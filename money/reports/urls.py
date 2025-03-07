@@ -5,7 +5,8 @@ from money.reports import views as report_views
 
 
 urlpatterns = [
-    path('graph/', report_views.graph_view, name="graph"),
+    path('graph/', report_views.SummaryGraph.as_view(), name="graph"),
+    path('graph/annual/<int:year>/', report_views.AnnualGraphsView.as_view(), name="graphs_annual"),
     path('investment-graph/', report_views.graph_investment_view, name="investment_graph"),
     path('bymonth/', report_views.by_month_view, name="by_month"),
     path('monthly-transactions/', report_views.monthly_transactions_view, name="monthly_transactions"),

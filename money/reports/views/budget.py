@@ -33,7 +33,6 @@ class BudgetByPeriodView(TemplateView):
             group_income_total = 0
             group_transactions = income_transactions.filter(tag__category=ig['category'])
             for gt in group_transactions:
-                print(gt.get_credit_in_base_currency())
                 group_income_total = group_income_total + gt.get_credit_in_base_currency()
             income_total = income_total + group_income_total
             income[ig['category']] = group_income_total
@@ -104,17 +103,18 @@ class BudgetByPeriodView(TemplateView):
             business_expenses.append(b_expense)
 
         # Missing?
+        income_ids = income_transactions.values('transaction__id')
         personal_ids = personal_transactions.values('transaction__id')
         car_ids = car_transactions.values('transaction__id')
         travel_ids = travel_transactions.values('transaction__id')
         misc_ids = misc_transactions.values('transaction__id')
         bus_ids = business_transactions.values('transaction__id')
         missing_transactions = Transaction.objects.filter(date__gte=accounting_period.start_date,
-                                                          date__lte=accounting_period.end_date,
-                                                          debit__gt=0) \
+                                                          date__lte=accounting_period.end_date) \
             .exclude(transactiontag__tag__name="kollektiivi") \
             .exclude(account_id=49) \
             .exclude(payment_type="Transfer") \
+            .exclude(id__in=income_ids) \
             .exclude(id__in=personal_ids) \
             .exclude(id__in=car_ids) \
             .exclude(id__in=travel_ids) \
