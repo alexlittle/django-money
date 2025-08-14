@@ -84,12 +84,13 @@ class Account (models.Model):
                 transactiontag__tag__name=tag).annotate(
                     debit_percent=F("debit")*F("transactiontag__percent")/100
                     ).aggregate(debit_sum=Sum("debit_percent"))
+
         else:
             trans_cred = Transaction.objects.filter(account=account, date__lte=date).aggregate(credit_sum=Sum("credit"))
             trans_deb = Transaction.objects.filter(account=account, date__lte=date).aggregate(debit_sum=Sum("debit"))
 
-        debit_sum = trans_deb['debit__sum'] if trans_deb['debit__sum'] else 0
-        credit_sum = trans_cred['credit__sum'] if trans_cred['credit__sum'] else 0
+        debit_sum = trans_deb['debit_sum'] if trans_deb['debit_sum'] else 0
+        credit_sum = trans_cred['credit_sum'] if trans_cred['credit_sum']  else 0
 
         return credit_sum - debit_sum
 
