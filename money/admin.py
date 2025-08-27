@@ -8,7 +8,7 @@ from money.models import Account, ExchangeRate, RegularPayment, \
 
 # Register your models here.
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ('name', 'active', 'currency', 'type')
+    list_display = ('name', 'active', 'currency', 'type', 'order')
 
 
 class ExchangeRateAdmin(admin.ModelAdmin):

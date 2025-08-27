@@ -10,17 +10,10 @@ from django.utils import timezone
 
 
 PAYMENT_TYPES = (
-        ('Visa', 'Visa'),
+        ('Card', 'Card'),
         ('Transfer', 'Transfer'),
         ('Paid in', 'Paid in'),
-        ('Pay', 'Pay'),
-        ('Standing Order', 'Standing Order'),
-        ('Cheque', 'Cheque'),
-        ('Interest', 'Interest'),
-        ('Switch', 'Switch'),
-        ('Cashpoint', 'Cashpoint'),
-        ('Direct Debit', 'Direct Debit'),
-        ('Mastercard', 'Mastercard'),
+        ('Cashpoint', 'Cashpoint')
     )
 
 ACCOUNT_TYPES = (
@@ -49,6 +42,10 @@ class Account (models.Model):
     currency = models.CharField(max_length=3, choices=settings.CURRENCIES_AVAILABLE)
     type = models.CharField(max_length=100, choices=ACCOUNT_TYPES, default='cash')
     notes = models.TextField(blank=True, default=None, null=True)
+    order = models.IntegerField(default=1000)
+
+    class Meta:
+        ordering = ["order", "name"]
 
     def __str__(self):
         return self.name
@@ -218,7 +215,6 @@ class Account (models.Model):
         accs = Account.objects.filter(active=True, type=type, currency=currency)
         total = 0
         for acc in accs:
-            print(acc)
             if acc.get_balance_base_currency():
                 total += acc.get_balance_base_currency()
         return total
