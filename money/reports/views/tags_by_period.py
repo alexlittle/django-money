@@ -4,7 +4,7 @@ from django.db.models import Sum, F
 from django.utils import timezone
 from django.views.generic import TemplateView
 
-from money.models import Tag, AccountingPeriod
+from money.models import Tag, AccountingPeriod, Transaction, TransactionTag
 
 
 class TagsByYearView(TemplateView):
@@ -28,12 +28,48 @@ class TagsByYearView(TemplateView):
         context['year'] = year
         context['years'] = years
         context['periods'] = periods
-        context['tags'] = Tag.objects.filter(transactiontag__transaction__date__year=year) \
-            .values('id', 'name', 'category', year=F('transactiontag__transaction__date__year')) \
-            .annotate(sum_in=Sum('transactiontag__allocation_credit'), sum_out=Sum('transactiontag__allocation_debit'))
-        context['categories'] = Tag.objects.filter(transactiontag__transaction__date__year=year) \
-            .values('category', year=F('transactiontag__transaction__date__year')) \
-            .annotate(sum_in=Sum('transactiontag__allocation_credit'), sum_out=Sum('transactiontag__allocation_debit'))
+
+        categories = Tag.objects.filter(transactiontag__transaction__date__year=year).values_list('category', flat=True)
+        categories = set(categories)
+
+        print(categories)
+        context['categories'] = []
+
+        for category in categories:
+            category_year = {
+                'category': category,
+                'sum_in': 0,
+                'sum_out': 0
+            }
+            transaction_tags = TransactionTag.objects.filter(tag__category=category, transaction__date__year=year)
+            for transaction_tag in transaction_tags:
+                category_year['sum_in'] += transaction_tag.get_credit_in_base_currency()
+                category_year['sum_out'] += transaction_tag.get_debit_in_base_currency()
+            context['categories'].append(category_year)
+
+        context['tags'] = []
+        tags = Tag.objects.filter(transactiontag__transaction__date__year=year).distinct()
+
+        print(tags)
+        for tag in tags:
+            tag_year = {
+                'tag': tag,
+                'sum_in': 0,
+                'sum_out': 0
+            }
+            print(tag_year)
+            transaction_tags = TransactionTag.objects.filter(tag__id=tag.id, transaction__date__year=year)
+            for transaction_tag in transaction_tags:
+                tag_year['sum_in'] += transaction_tag.get_credit_in_base_currency()
+                tag_year['sum_out'] += transaction_tag.get_debit_in_base_currency()
+            context['tags'].append(tag_year)
+
+        #context['tags'] = Tag.objects.filter(transactiontag__transaction__date__year=year) \
+        #    .values('id', 'name', 'category', year=F('transactiontag__transaction__date__year')) \
+        #   .annotate(sum_in=Sum('transactiontag__allocation_credit'), sum_out=Sum('transactiontag__allocation_debit'))
+
+
+
         return context
 
 

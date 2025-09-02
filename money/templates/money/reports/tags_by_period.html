@@ -25,8 +25,8 @@
 	<thead>
 		<tr>
 			<th>{% trans 'Category' %}</th>
-			<th>{% trans 'Credit' %}</th>
-			<th>{% trans 'Debit' %}</th>
+			<th>{% trans 'Credit' %} {{ BASE_CURRENCY }}</th>
+			<th>{% trans 'Debit' %} {{ BASE_CURRENCY }}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -56,7 +56,7 @@
 	<tbody>
 		{% for tag in tags %}
 		 <tr>
-			<td><a href="{% url 'money:tag_detail' tag.id %}">{{ tag.category }} {{ tag.name }}</a></td>
+			<td><a href="{% url 'money:tag_detail' tag.tag.id %}">{{ tag.tag.category }}: {{ tag.tag.name }}</a></td>
 			<td class="number">{{ tag.sum_in|floatformat:"2g" }}</td>
 			<td class="number">{{ tag.sum_out|floatformat:"2g" }}</td>
 		</tr>
