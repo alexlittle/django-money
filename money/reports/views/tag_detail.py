@@ -2,7 +2,7 @@
 from django.db.models import Sum, F
 from django.views.generic import TemplateView
 
-from money.models import Tag, TransactionTag, AccountingPeriod
+from money.models import Tag, Transaction, TransactionTag, AccountingPeriod
 
 
 class TagDetailView(TemplateView):
@@ -15,10 +15,21 @@ class TagDetailView(TemplateView):
         period_id = kwargs.get('period_id')
 
         context['tag'] = Tag.objects.get(pk=tag_id)
-        context['totals_by_year'] = Tag.objects.filter(pk=tag_id) \
-            .values('name', year=F('transactiontag__transaction__date__year')) \
-            .annotate(sum_in=Sum('transactiontag__allocation_credit'), sum_out=Sum('transactiontag__allocation_debit'))
         transaction_tags = TransactionTag.objects.filter(tag__pk=tag_id)
+
+        context['totals_by_year'] = []
+        for year in transaction_tags.values(year=F('transaction__date__year')).distinct().order_by('-year'):
+            trans_year = {
+                'year': year['year'],
+                'sum_in': 0,
+                'sum_out': 0
+            }
+            for transaction_tag in transaction_tags.filter(transaction__date__year=year['year']):
+                trans_year['sum_in'] += transaction_tag.get_credit_in_base_currency()
+                trans_year['sum_out'] += transaction_tag.get_debit_in_base_currency()
+            context['totals_by_year'].append(trans_year)
+
+
         if period_id:
             accounting_period = AccountingPeriod.objects.get(pk=period_id)
             context['period'] = accounting_period

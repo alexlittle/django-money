@@ -13,7 +13,8 @@ PAYMENT_TYPES = (
         ('Card', 'Card'),
         ('Transfer', 'Transfer'),
         ('Paid in', 'Paid in'),
-        ('Cashpoint', 'Cashpoint')
+        ('Cashpoint', 'Cashpoint'),
+        ('Cash', 'Cash')
     )
 
 ACCOUNT_TYPES = (
