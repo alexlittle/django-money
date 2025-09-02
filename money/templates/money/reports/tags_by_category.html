@@ -13,9 +13,9 @@
     <thead>
         <tr>
             <th>{% trans 'Year' %}</th>
-            <th>{% trans 'Credit' %}</th>
-            <th>{% trans 'Debit' %}</th>
-            <th>{% trans 'Balance' %}</th>
+            <th>{% trans 'Credit' %} {{ BASE_CURRENCY }}</th>
+            <th>{% trans 'Debit' %} {{ BASE_CURRENCY }}</th>
+            <th>{% trans 'Balance' %} {{ BASE_CURRENCY }}</th>
         </tr>
     </thead>
     <tbody>
@@ -35,9 +35,9 @@
     <thead>
         <tr>
             <th>{% trans 'Period' %}</th>
-            <th>{% trans 'Credit' %}</th>
-            <th>{% trans 'Debit' %}</th>
-            <th>{% trans 'Balance' %}</th>
+            <th>{% trans 'Credit' %} {{ BASE_CURRENCY }}</th>
+            <th>{% trans 'Debit' %} {{ BASE_CURRENCY }}</th>
+            <th>{% trans 'Balance' %} {{ BASE_CURRENCY }}</th>
         </tr>
     </thead>
     <tbody>
@@ -65,22 +65,28 @@
             <th>{% trans 'Date' %}</th>
             <th>{% trans 'Account' %}</th>
             <th>{% trans 'Description' %}</th>
+            <th class="number">{% trans 'Type' %}</th>
+            <th class="number">{% trans 'Currency' %}</th>
             <th class="number">{% trans 'Credit' %}</th>
             <th class="number">{% trans 'Debit' %}</th>
-            <th class="number">{% trans 'Type' %}</th>
+            <th class="number">{% trans 'Credit' %} {{ BASE_CURRENCY }} </th>
+            <th class="number">{% trans 'Debit' %} {{ BASE_CURRENCY }}</th>
             <th class="number">{% trans 'Options' %}</th>
         </tr>
     </thead>
     <tbody>
         {% for t in transactions %}
          <tr>
-            <td>{{ t.date|naturalday }}</td>
-            <td>{{ t.account.name }}</td>
-            <td>{{ t.description }}</td>
-            <td class="number">{{ t.credit|floatformat:"2g" }}</td>
-            <td class="number">{{ t.debit|floatformat:"2g" }}</td>
-            <td class="number">{{ t.payment_type }}</td>
-            <td class="number"><a href="{% url 'admin:money_transaction_change' t.id %}">Edit</a></td>
+             <td>{{ t.date|naturalday }}</td>
+             <td>{{ t.account.name }}</td>
+             <td>{{ t.description }}</td>
+             <td class="number">{{ t.payment_type }}</td>
+             <td class="number">{{ t.account.currency }}</td>
+             <td class="number">{% if t.credit != 0 %} {{ t.credit|floatformat:"2g" }} {% endif %}</td>
+             <td class="number">{% if t.debit != 0 %} {{ t.debit|floatformat:"2g" }} {% endif %}</td>
+             <td class="number">{% if t.get_credit_in_base_currency != 0 %} {{ t.get_credit_in_base_currency|floatformat:"2g" }} {% endif %}</td>
+             <td class="number">{% if t.get_debit_in_base_currency != 0 %} {{ t.get_debit_in_base_currency|floatformat:"2g" }} {% endif %}</td>
+             <td class="number"><a href="{% url 'admin:money_transaction_change' t.id %}">Edit</a></td>
         </tr>
         {% endfor %}
     </tbody>

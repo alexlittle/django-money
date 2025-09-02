@@ -19,32 +19,47 @@ class TagsByCategoryView(TemplateView):
         tags = Tag.objects.filter(category=category)
         context['category'] = category
 
-        context['totals_by_year'] = Transaction.objects.filter(transactiontag__tag__in=tags) \
-            .values(year=F('date__year')).distinct() \
-            .annotate(sum_in=Sum('credit'),
-                      sum_out=Sum('debit'),
-                      balance=Sum('credit')-Sum('debit'))
+        context['totals_by_year'] = []
 
+        years = Transaction.objects.filter(transactiontag__tag__in=tags).values_list('date__year', flat=True)
+        years = set(years)
+
+        for year in years:
+            year_totals = {
+                'year': year,
+                'sum_in': 0,
+                'sum_out': 0,
+                'balance': 0
+            }
+            transactions = Transaction.objects.filter(transactiontag__tag__in=tags, date__year=year)
+            for transaction in transactions:
+                year_totals['sum_in'] += transaction.get_credit_in_base_currency()
+                year_totals['sum_out'] += transaction.get_debit_in_base_currency()
+
+            year_totals['balance'] = year_totals['sum_in'] - year_totals['sum_out']
+            context['totals_by_year'].append(year_totals)
+
+        context['periods'] = []
         aps = AccountingPeriod.objects.filter(active=True,
                                               start_date__lte=timezone.now()).order_by('-start_date')
-        periods = []
+
         for ap in aps:
-            temp = Transaction.objects.filter(transactiontag__tag__in=tags,
-                               date__gte=ap.start_date,
-                               date__lte=ap.end_date) \
-                .values(category=F('transactiontag__tag__category')).distinct()  \
-                .annotate(sum_in=Sum('credit'),
-                          sum_out=Sum('debit')).order_by('category').first()
             p = {
                 'id': ap.id,
                 'title': ap.title,
-                'sum_in': temp['sum_in'],
-                'sum_out': temp['sum_out'],
-                'balance': temp['sum_in'] - temp['sum_out']
+                'sum_in': 0,
+                'sum_out': 0,
+                'balance': 0
             }
-            periods.append(p)
+            transactions = Transaction.objects.filter(transactiontag__tag__in=tags,
+                               date__gte=ap.start_date,
+                               date__lte=ap.end_date)
+            for transaction in transactions:
+                p['sum_in'] += transaction.get_credit_in_base_currency()
+                p['sum_out'] += transaction.get_debit_in_base_currency()
+            p['balance'] = p['sum_in'] - p['sum_out']
+            context['periods'].append(p)
 
-        context['periods'] = periods
 
         transactions = Transaction.objects.filter(transactiontag__tag__in=tags)
         if period_id:
