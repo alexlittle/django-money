@@ -29,21 +29,21 @@ class SummaryGraph(TemplateView):
                 + dateutil.relativedelta.relativedelta(day=1, months=+1, days=-1)
 
             cash_total = 0
-            accs = Account.objects.filter(type='cash', active=True).exclude(pk=CONSULTING_EXTRAS_ID)
+            accs = Account.objects.filter(type='cash').exclude(pk=CONSULTING_EXTRAS_ID)
             for acc in accs:
                 acc_balance = Account.get_balance_base_currency_at_date(acc, last_day)
                 if acc_balance:
                     cash_total += acc_balance
 
             invest_total = 0
-            accs = Account.objects.filter(type='invest', active=True)
+            accs = Account.objects.filter(type='invest')
             for acc in accs:
                 acc_balance = Account.get_valuation_base_currency_at_date(acc, last_day)
                 if acc_balance:
                     invest_total += acc_balance
 
             property_total = 0
-            accs = Account.objects.filter(type='property', active=True)
+            accs = Account.objects.filter(type='property')
             for acc in accs:
                 acc_balance = Account.get_valuation_base_currency_at_date(acc, last_day)
                 if acc_balance:

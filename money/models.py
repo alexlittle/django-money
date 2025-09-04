@@ -110,9 +110,9 @@ class Account (models.Model):
 
     @staticmethod
     def get_valuation_at_date(account, date):
-        v_tmp = Valuation.objects.filter(account=account, value__gt=0, date__lte=date).aggregate(date=Max('date'))
+        v_tmp = Valuation.objects.filter(account=account, date__lte=date).aggregate(date=Max('date'))
         if v_tmp['date'] is not None:
-            valuation = Valuation.objects.get(account=account, value__gt=0, date=v_tmp['date'])
+            valuation = Valuation.objects.get(account=account, date=v_tmp['date'])
             return valuation
         else:
             return None
