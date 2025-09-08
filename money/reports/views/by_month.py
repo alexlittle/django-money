@@ -1,17 +1,16 @@
-import datetime
+
 import dateutil.relativedelta
 
 from django.conf import settings
-from django.db.models import Sum, F
+
 from django.shortcuts import render
 from django.utils import timezone
 
-from money.models import Transaction, ExchangeRate
+from money.models import Transaction
 
 
 def by_month_view(request):
 
-    tz = timezone.get_default_timezone()
     now = timezone.now()
 
     report = []
@@ -19,11 +18,12 @@ def by_month_view(request):
     for i in range(96, -1, -1):
         report_month = now - dateutil.relativedelta.relativedelta(months=i)
 
-        report_row = {}
-        report_row['month'] = report_month.month
-        report_row['year'] = report_month.year
-        report_row['sum_in'] = 0
-        report_row['sum_out'] = 0
+        report_row = {
+            'month': report_month.month,
+            'year': report_month.year,
+            'sum_in': 0,
+            'sum_out': 0
+        }
 
         for k, v in settings.CURRENCIES_AVAILABLE:
             transactions = Transaction.objects \
@@ -32,15 +32,12 @@ def by_month_view(request):
                         date__month=report_month.month,
                         on_statement=True) \
                 .exclude(payment_type='Transfer') \
-                .exclude(account__id__in=settings.EXCLUDE_ACCOUNT_IDS) \
-                .values(year=F('date__year'), month=F('date__month')) \
-                .annotate(sum_in=Sum('credit'), sum_out=Sum('debit'))
-            date = datetime.datetime(report_month.year, report_month.month, 1, tzinfo=tz)
+                .exclude(account__id__in=settings.EXCLUDE_ACCOUNT_IDS)
 
-            rate = ExchangeRate.at_date(date, settings.BASE_CURRENCY, k)
             for t in transactions:
-                report_row['sum_in'] += t['sum_in']/rate
-                report_row['sum_out'] += t['sum_out']/rate
+                report_row['sum_in'] += t.get_credit_in_base_currency()
+                report_row['sum_out'] += t.get_debit_in_base_currency()
+
         report_row['balance'] = report_row['sum_in'] - report_row['sum_out']
 
         report.append(report_row)
