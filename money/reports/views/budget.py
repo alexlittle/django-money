@@ -89,7 +89,9 @@ class BudgetByPeriodView(TemplateView):
         business_expenses = []
         business_expenses_total = 0
         business_transactions = expense_transactions.filter(tag__category__in=("business", "design", "rental"))
-        business_expenses_tags = Tag.objects.filter(category__in=("business", "design", "rental")).values("name", "id").distinct().order_by('name')
+        business_expenses_tags = Tag.objects.filter(category__in=("business", "design", "rental")) \
+            .exclude(active=False) \
+            .values("name", "id").distinct().order_by('name')
         for bet in business_expenses_tags:
             b_expense = {}
             tag_expense_total = 0

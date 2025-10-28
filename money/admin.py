@@ -21,7 +21,7 @@ class RegularPaymentAdmin(admin.ModelAdmin):
 
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('id', 'category', 'name')
+    list_display = ('id', 'category', 'name', 'active')
 
 class InvoiceTemplateAdmin(admin.ModelAdmin):
     list_display = ( 'name', 'description', 'active', 'debit_ex_alv', 'debit_alv', 'debit_total', 'deposit_held')
@@ -32,6 +32,11 @@ class TransactionTagAdmin(admin.ModelAdmin):
 
 class TransactionTagsInline(admin.TabularInline):
     model = TransactionTag
+
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        if db_field.name == "tag":
+            kwargs["queryset"] = Tag.objects.filter(active=True)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class TransactionAdmin(admin.ModelAdmin):

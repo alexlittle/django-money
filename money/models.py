@@ -320,6 +320,7 @@ class RegularPayment(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
     category = models.CharField(max_length=100, choices=TAG_CATEGORIES, blank=True, null=True)
+    active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["category", "name"]
