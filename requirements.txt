@@ -6,4 +6,4 @@ python-dateutil==2.9.0.post0
 django-wkhtmltopdf==3.4.0
 mod_wsgi==5.0.2
 pip-check-updates==0.28.0
-setuptools==80.9.0
+setuptools
