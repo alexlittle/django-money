@@ -1,4 +1,4 @@
-django==6.0.3
+django==6.0.4
 pytz==2026.1.post1
 django-mathfilters==1.0.0
 mysqlclient==2.2.7
