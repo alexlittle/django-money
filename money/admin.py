@@ -40,8 +40,7 @@ class TransactionTagsInline(admin.TabularInline):
 
 
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('account', 'payment_type', 'date', 'credit', 'debit', 'on_statement', 'description', 'tags',
-                    'pdf_receipt')
+    list_display = ('account', 'payment_type', 'date', 'credit', 'debit', 'on_statement', 'description', 'tags')
     search_fields = ['description']
 
     inlines = [
@@ -50,10 +49,6 @@ class TransactionAdmin(admin.ModelAdmin):
 
     def tags(self, obj):
         return list(Tag.objects.filter(transactiontag__transaction=obj).values_list("name", flat=True))
-
-    def pdf_receipt(self, obj):
-        if not obj.file.name and obj.credit > 0 and obj.sales_tax_rate > 0:
-            return format_html("<a href='%s'>Receipt</a>" % reverse('money:transaction_receipt', args=(obj.id, )))
 
 
 class ValuationAdmin(admin.ModelAdmin):
