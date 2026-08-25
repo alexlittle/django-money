@@ -1,0 +1,77 @@
+[project]
+name = "django-money"
+version = "0.1.0"
+requires-python = ">=3.12"
+authors = [
+    { name = "Alex Little", email = "alex@alexlittle.net" }
+]
+
+dependencies = [
+    "django==6.0.7",
+    "django-mathfilters==1.0.0",
+    "django-wkhtmltopdf==3.4.0",
+    "mysqlclient==2.2.8",
+    "python-dateutil==2.9.0.post0",
+    "pytz==2026.2",
+]
+
+
+
+# Interrogate settings for checking existence of doc strings
+[tool.interrogate]
+ignore-init-method = true
+ignore-init-module = true
+ignore-magic = true
+ignore-semiprivate = false
+ignore-private = false
+ignore-property-decorators = false
+ignore-module = false
+fail-under = 0
+verbose = 2
+exclude = ["tests", "docs", "build"]
+
+# pydoclint settings for checking correctness and consistency of docstrings
+[tool.pydoclint]
+style = "google"
+exclude = "tests|docs"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["test_*.py"]
+
+[tool.coverage.run]
+relative_files = true
+source = ["."]
+omit = ["*/migrations/*", "*/tests/*", "*/settings*.py", "manage.py", "env/*", "docs/*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"config/settings.py" = ["F403", "F405"]
+"config/settings_ci.py" = ["F403", "F405"]
+
+[dependency-groups]
+dev = [
+    "pytest-cov==7.1.0",
+    "interrogate==1.7.0",
+    "pydoclint==0.9.1",
+    "setuptools==84.0.0",
+    "pytest>=9.1.1",
+    "ruff>=0.16.4",
+    "pytest-django==4.14.0",
+]
+local = [
+    "django-extensions==4.1"
+]
+deploy = [
+    "mod-wsgi==6.0.6"
+]
+
+[tool.uv]
+package = false
+default-groups = ["local"]

@@ -12,4 +12,3 @@
 /static/
 /uwsgi.sock
 /env/
-/scratch.py

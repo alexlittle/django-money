@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost.money', 'localhost']
 
@@ -102,20 +102,16 @@ USE_TZ = True
 
 #####################################################################
 # Static assets & media uploads
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "notes", "static")
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 #####################################################################
 
 
 #####################################################################
-# Email
-SERVER_EMAIL = 'Alex Little <consult@alexlittle.net>'
-EMAIL_SUBJECT_PREFIX = '[Alex Little]: '
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_FILE_PATH = '/tmp/'
+# Email not configured
 #####################################################################
 
 
@@ -180,9 +176,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 SESSION_COOKIE_NAME = "money"
 
 try:
-    from config.local_settings import *  # noqa
+    from config.local_settings import *  # noqa: F403
 except ImportError:
     import warnings
+
     warnings.warn(
-        "Using default settings."
-        "Add `config.local_settings.py` for custom settings.")
+        "Using default settings. Add `config/local_settings.py` for custom settings.",
+        stacklevel=2,
+    )
