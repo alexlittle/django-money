@@ -161,6 +161,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 SESSION_COOKIE_NAME = "money"
 
+BASE_CURRENCY = "GBP"
+CURRENCIES_AVAILABLE = (("GBP", "GBP"), ("EUR", "EUR"))
+
+
 try:
     from config.local_settings import *  # noqa: F403
 except ImportError:
