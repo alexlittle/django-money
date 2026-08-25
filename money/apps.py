@@ -1,7 +1,8 @@
 from django.apps import AppConfig
 
+
 class MoneyAppConfig(AppConfig):
-    name = 'money'
+    name = "money"
 
     def ready(self):
-        import money.signals
+        pass

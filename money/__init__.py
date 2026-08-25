@@ -1,1 +1,1 @@
-default_app_config = 'money.apps.MoneyAppConfig'
+default_app_config = "money.apps.MoneyAppConfig"

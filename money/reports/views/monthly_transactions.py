@@ -13,5 +13,6 @@ def monthly_transactions_view(request, year=0, month=0):
 
     transactions = Transaction.objects.filter(date__year=year, date__month=month).order_by("date")
 
-    return render(request, 'money/reports/monthly_transactions.html',
-                  {'transactions': transactions})
+    return render(
+        request, "money/reports/monthly_transactions.html", {"transactions": transactions}
+    )

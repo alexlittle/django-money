@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('money', '0025_alter_regularpayment_payment_type_and_more'),
+        ("money", "0025_alter_regularpayment_payment_type_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='tag',
-            name='active',
+            model_name="tag",
+            name="active",
             field=models.BooleanField(default=True),
         ),
     ]

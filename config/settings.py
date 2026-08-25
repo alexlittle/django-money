@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 Django settings for django-bookmark project.
 
@@ -21,42 +19,40 @@ if BASE_DIR not in sys.path:
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost.money', 'localhost']
+ALLOWED_HOSTS = ["localhost.money", "localhost"]
 
-ADMINS = (
-    ('Alex Little', 'consult@alexlittle.net'),
-)
+ADMINS = (("Alex Little", "consult@alexlittle.net"),)
 
 SITE_ID = 1
 
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = "config.urls"
 
-WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = "config.wsgi.application"
 
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.humanize',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.sites',
-    'money',
-    'mathfilters',
-    'wkhtmltopdf'
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.humanize",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "money",
+    "mathfilters",
+    "wkhtmltopdf",
 ]
 
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 
@@ -65,23 +61,23 @@ MIDDLEWARE = [
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.contrib.auth.context_processors.auth',
-                'django.template.context_processors.debug',
-                'django.template.context_processors.i18n',
-                'django.template.context_processors.media',
-                'django.template.context_processors.static',
-                'django.template.context_processors.request',
-                'django.contrib.messages.context_processors.messages',
-                'money.context_processors.base_currency',
-                'money.context_processors.kollektiivi_menu',
-                'money.context_processors.tags_menu',
-                'money.context_processors.get_accounting_periods',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.contrib.auth.context_processors.auth",
+                "django.template.context_processors.debug",
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.media",
+                "django.template.context_processors.static",
+                "django.template.context_processors.request",
+                "django.contrib.messages.context_processors.messages",
+                "money.context_processors.base_currency",
+                "money.context_processors.kollektiivi_menu",
+                "money.context_processors.tags_menu",
+                "money.context_processors.get_accounting_periods",
             ],
-            'debug': DEBUG,
+            "debug": DEBUG,
         },
     },
 ]
@@ -91,8 +87,8 @@ TEMPLATES = [
 
 #####################################################################
 # Internationalization
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -117,59 +113,49 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 #####################################################################
 # Authentication
-LOGIN_URL = urls.reverse_lazy('profile_login')
-AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
+LOGIN_URL = urls.reverse_lazy("profile_login")
+AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 #####################################################################
 
 
 #####################################################################
 # Logging
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'root': {
-        'level': 'WARNING',
-        'handlers': ['console'],
+    "version": 1,
+    "disable_existing_loggers": True,
+    "root": {
+        "level": "WARNING",
+        "handlers": ["console"],
     },
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s '
-                      '%(process)d %(thread)d %(message)s',
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s",
         },
-        'simple': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(message)s',
-        }
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple'
-        }
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
+        "simple": {
+            "format": "%(levelname)s %(asctime)s %(module)s %(message)s",
         },
-        'money': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
+    },
+    "handlers": {
+        "console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "simple"}
+    },
+    "loggers": {
+        "django.db.backends": {
+            "level": "ERROR",
+            "handlers": ["console"],
+            "propagate": False,
+        },
+        "money": {
+            "level": "DEBUG",
+            "handlers": ["console"],
+            "propagate": False,
         },
     },
 }
 #####################################################################
 
 
-DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': ''
-        }
-    }
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+DATABASES = {"default": {"ENGINE": "django.db.backends.mysql", "NAME": ""}}
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 #####################################################################
 

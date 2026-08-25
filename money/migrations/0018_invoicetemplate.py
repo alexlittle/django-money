@@ -4,21 +4,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('money', '0017_transactiontag_quantity'),
+        ("money", "0017_transactiontag_quantity"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='InvoiceTemplate',
+            name="InvoiceTemplate",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('description', models.TextField(blank=True, default=None, null=True)),
-                ('active', models.BooleanField(default=True)),
-                ('debit_ex_alv', models.DecimalField(decimal_places=2, default=0, max_digits=20)),
-                ('debit_alv', models.DecimalField(decimal_places=2, default=0, max_digits=20)),
-                ('debit_total', models.DecimalField(decimal_places=2, default=0, max_digits=20)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("description", models.TextField(blank=True, default=None, null=True)),
+                ("active", models.BooleanField(default=True)),
+                ("debit_ex_alv", models.DecimalField(decimal_places=2, default=0, max_digits=20)),
+                ("debit_alv", models.DecimalField(decimal_places=2, default=0, max_digits=20)),
+                ("debit_total", models.DecimalField(decimal_places=2, default=0, max_digits=20)),
             ],
         ),
     ]

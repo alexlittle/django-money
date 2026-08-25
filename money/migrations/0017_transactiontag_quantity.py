@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('money', '0016_alter_transaction_sales_tax_rate'),
+        ("money", "0016_alter_transaction_sales_tax_rate"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='transactiontag',
-            name='quantity',
+            model_name="transactiontag",
+            name="quantity",
             field=models.IntegerField(default=0),
         ),
     ]

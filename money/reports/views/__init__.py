@@ -1,15 +1,15 @@
-from money.reports.views.by_month import *
-from money.reports.views.by_year import *
-from money.reports.views.consulting_quarters import *
-from money.reports.views.consulting_annual import *
-from money.reports.views.graph import *
-from money.reports.views.bills import *
-from money.reports.views.graph_investment import *
-from money.reports.views.monthly_transactions import *
-from money.reports.views.kollektiivi_monthly import *
-from money.reports.views.tags_by_period import *
-from money.reports.views.tag_detail import *
-from money.reports.views.tags_by_category import *
-from money.reports.views.monthly_invoices import *
-from money.reports.views.budget import *
-from money.reports.views.annual_graphs import *
+from money.reports.views.annual_graphs import *  # noqa: F403
+from money.reports.views.bills import *  # noqa: F403
+from money.reports.views.budget import *  # noqa: F403
+from money.reports.views.by_month import *  # noqa: F403
+from money.reports.views.by_year import *  # noqa: F403
+from money.reports.views.consulting_annual import *  # noqa: F403
+from money.reports.views.consulting_quarters import *  # noqa: F403
+from money.reports.views.graph import *  # noqa: F403
+from money.reports.views.graph_investment import *  # noqa: F403
+from money.reports.views.kollektiivi_monthly import *  # noqa: F403
+from money.reports.views.monthly_invoices import *  # noqa: F403
+from money.reports.views.monthly_transactions import *  # noqa: F403
+from money.reports.views.tag_detail import *  # noqa: F403
+from money.reports.views.tags_by_category import *  # noqa: F403
+from money.reports.views.tags_by_period import *  # noqa: F403

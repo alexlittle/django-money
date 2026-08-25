@@ -4,19 +4,31 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('money', '0005_transactiontag_percent'),
+        ("money", "0005_transactiontag_percent"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='tag',
-            options={'ordering': ['category', 'name']},
+            name="tag",
+            options={"ordering": ["category", "name"]},
         ),
         migrations.AddField(
-            model_name='tag',
-            name='category',
-            field=models.CharField(blank=True, choices=[('travel', 'Travel'), ('house', 'House'), ('kollektiivi', 'Kollektiivi'), ('car', 'Car'), ('personal', 'Personal'), ('misc', 'Misc'), ('business', 'Business')], max_length=100, null=True),
+            model_name="tag",
+            name="category",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("travel", "Travel"),
+                    ("house", "House"),
+                    ("kollektiivi", "Kollektiivi"),
+                    ("car", "Car"),
+                    ("personal", "Personal"),
+                    ("misc", "Misc"),
+                    ("business", "Business"),
+                ],
+                max_length=100,
+                null=True,
+            ),
         ),
     ]

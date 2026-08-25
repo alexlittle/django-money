@@ -4,20 +4,37 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('money', '0024_alter_account_options_and_more'),
+        ("money", "0024_alter_account_options_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='regularpayment',
-            name='payment_type',
-            field=models.CharField(choices=[('Card', 'Card'), ('Transfer', 'Transfer'), ('Paid in', 'Paid in'), ('Cashpoint', 'Cashpoint'), ('Cash', 'Cash')], max_length=15),
+            model_name="regularpayment",
+            name="payment_type",
+            field=models.CharField(
+                choices=[
+                    ("Card", "Card"),
+                    ("Transfer", "Transfer"),
+                    ("Paid in", "Paid in"),
+                    ("Cashpoint", "Cashpoint"),
+                    ("Cash", "Cash"),
+                ],
+                max_length=15,
+            ),
         ),
         migrations.AlterField(
-            model_name='transaction',
-            name='payment_type',
-            field=models.CharField(choices=[('Card', 'Card'), ('Transfer', 'Transfer'), ('Paid in', 'Paid in'), ('Cashpoint', 'Cashpoint'), ('Cash', 'Cash')], max_length=15),
+            model_name="transaction",
+            name="payment_type",
+            field=models.CharField(
+                choices=[
+                    ("Card", "Card"),
+                    ("Transfer", "Transfer"),
+                    ("Paid in", "Paid in"),
+                    ("Cashpoint", "Cashpoint"),
+                    ("Cash", "Cash"),
+                ],
+                max_length=15,
+            ),
         ),
     ]

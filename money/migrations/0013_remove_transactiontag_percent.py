@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('money', '0012_rename_allocation_transactiontag_allocation_credit_and_more'),
+        ("money", "0012_rename_allocation_transactiontag_allocation_credit_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='transactiontag',
-            name='percent',
+            model_name="transactiontag",
+            name="percent",
         ),
     ]

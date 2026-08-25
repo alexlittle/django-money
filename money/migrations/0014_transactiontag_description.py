@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('money', '0013_remove_transactiontag_percent'),
+        ("money", "0013_remove_transactiontag_percent"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='transactiontag',
-            name='description',
+            model_name="transactiontag",
+            name="description",
             field=models.CharField(blank=True, default=None, max_length=200, null=True),
         ),
     ]

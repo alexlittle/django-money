@@ -4,28 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('money', '0001_initial'),
+        ("money", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='transaction',
-            name='file',
-            field=models.FileField(
-                blank=True, default=None, upload_to='transaction'),
+            model_name="transaction",
+            name="file",
+            field=models.FileField(blank=True, default=None, upload_to="transaction"),
         ),
         migrations.AddField(
-            model_name='transaction',
-            name='sales_tax_charged',
-            field=models.DecimalField(
-                decimal_places=2, default=0, max_digits=20),
+            model_name="transaction",
+            name="sales_tax_charged",
+            field=models.DecimalField(decimal_places=2, default=0, max_digits=20),
         ),
         migrations.AddField(
-            model_name='transaction',
-            name='sales_tax_paid',
-            field=models.DecimalField(
-                decimal_places=2, default=0, max_digits=20),
+            model_name="transaction",
+            name="sales_tax_paid",
+            field=models.DecimalField(decimal_places=2, default=0, max_digits=20),
         ),
     ]

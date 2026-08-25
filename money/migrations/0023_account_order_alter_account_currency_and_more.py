@@ -4,30 +4,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('money', '0022_alter_tag_category'),
+        ("money", "0022_alter_tag_category"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='account',
-            name='order',
+            model_name="account",
+            name="order",
             field=models.IntegerField(default=1000),
         ),
         migrations.AlterField(
-            model_name='account',
-            name='currency',
-            field=models.CharField(choices=[('GBP', 'GBP'), ('EUR', 'EUR')], max_length=3),
+            model_name="account",
+            name="currency",
+            field=models.CharField(choices=[("GBP", "GBP"), ("EUR", "EUR")], max_length=3),
         ),
         migrations.AlterField(
-            model_name='exchangerate',
-            name='from_cur',
-            field=models.CharField(choices=[('GBP', 'GBP'), ('EUR', 'EUR')], max_length=3),
+            model_name="exchangerate",
+            name="from_cur",
+            field=models.CharField(choices=[("GBP", "GBP"), ("EUR", "EUR")], max_length=3),
         ),
         migrations.AlterField(
-            model_name='exchangerate',
-            name='to_cur',
-            field=models.CharField(choices=[('GBP', 'GBP'), ('EUR', 'EUR')], max_length=3),
+            model_name="exchangerate",
+            name="to_cur",
+            field=models.CharField(choices=[("GBP", "GBP"), ("EUR", "EUR")], max_length=3),
         ),
     ]

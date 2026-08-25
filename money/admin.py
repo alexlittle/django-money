@@ -1,33 +1,57 @@
 from django.contrib import admin
-from django.urls import reverse
-from django.utils.html import format_html
 
-from money.models import Account, ExchangeRate, RegularPayment, \
-    Tag, Transaction, Valuation, TransactionTag, AccountingPeriod, InvoiceTemplate
+from money.models import (
+    Account,
+    AccountingPeriod,
+    ExchangeRate,
+    InvoiceTemplate,
+    RegularPayment,
+    Tag,
+    Transaction,
+    TransactionTag,
+    Valuation,
+)
 
 
 # Register your models here.
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ('name', 'active', 'currency', 'type', 'order')
+    list_display = ("name", "active", "currency", "type", "order")
 
 
 class ExchangeRateAdmin(admin.ModelAdmin):
-    list_display = ('from_cur', 'to_cur', 'date', 'rate')
+    list_display = ("from_cur", "to_cur", "date", "rate")
 
 
 class RegularPaymentAdmin(admin.ModelAdmin):
-    list_display = ('account', 'description', 'credit', 'debit',
-                    'next_date', 'end_date', 'payment_type')
+    list_display = (
+        "account",
+        "description",
+        "credit",
+        "debit",
+        "next_date",
+        "end_date",
+        "payment_type",
+    )
 
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('id', 'category', 'name', 'active')
+    list_display = ("id", "category", "name", "active")
+
 
 class InvoiceTemplateAdmin(admin.ModelAdmin):
-    list_display = ( 'name', 'description', 'active', 'debit_ex_alv', 'debit_alv', 'debit_total', 'deposit_held')
+    list_display = (
+        "name",
+        "description",
+        "active",
+        "debit_ex_alv",
+        "debit_alv",
+        "debit_total",
+        "deposit_held",
+    )
+
 
 class TransactionTagAdmin(admin.ModelAdmin):
-    list_display = ('transaction', 'tag')
+    list_display = ("transaction", "tag")
 
 
 class TransactionTagsInline(admin.TabularInline):
@@ -40,23 +64,34 @@ class TransactionTagsInline(admin.TabularInline):
 
 
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('account', 'payment_type', 'date', 'credit', 'debit', 'on_statement', 'description', 'tags')
-    search_fields = ['description']
+    list_display = (
+        "account",
+        "payment_type",
+        "date",
+        "credit",
+        "debit",
+        "on_statement",
+        "description",
+        "tags",
+    )
+    search_fields = ["description"]
 
     inlines = [
         TransactionTagsInline,
     ]
 
     def tags(self, obj):
-        return list(Tag.objects.filter(transactiontag__transaction=obj).values_list("name", flat=True))
+        return list(
+            Tag.objects.filter(transactiontag__transaction=obj).values_list("name", flat=True)
+        )
 
 
 class ValuationAdmin(admin.ModelAdmin):
-    list_display = ('account', 'date', 'value', 'value_per_month')
+    list_display = ("account", "date", "value", "value_per_month")
 
 
 class AccountingPeriodAdmin(admin.ModelAdmin):
-    list_display = ('start_date', 'end_date', 'title', 'active')
+    list_display = ("start_date", "end_date", "title", "active")
 
 
 admin.site.register(Account, AccountAdmin)
