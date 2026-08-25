@@ -7,7 +7,6 @@ from money.reports.views.consulting_annual import *  # noqa: F403
 from money.reports.views.consulting_quarters import *  # noqa: F403
 from money.reports.views.graph import *  # noqa: F403
 from money.reports.views.graph_investment import *  # noqa: F403
-from money.reports.views.kollektiivi_monthly import *  # noqa: F403
 from money.reports.views.monthly_invoices import *  # noqa: F403
 from money.reports.views.monthly_transactions import *  # noqa: F403
 from money.reports.views.tag_detail import *  # noqa: F403
