@@ -36,9 +36,9 @@ class HomeView(TemplateView):
             currency["total_base_currency"] = Account.get_valuation_base_currency_total("invest", k)
             invest_accounts.append(currency)
 
-        property = {}
-        property["accounts"] = Account.objects.filter(active=True, type="property")
-        property["total_base_currency"] = Account.get_val_base_currency_total("property")
+        property_house = {}
+        property_house["accounts"] = Account.objects.filter(active=True, type="property")
+        property_house["total_base_currency"] = Account.get_val_base_currency_total("property")
 
         pensions = {}
         pensions["accounts"] = Account.objects.filter(active=True, type="pension")
@@ -47,7 +47,7 @@ class HomeView(TemplateView):
 
         context["cash_accounts"] = cash_accounts
         context["invest_accounts"] = invest_accounts
-        context["property"] = property
+        context["property"] = property_house
         context["pensions"] = pensions
         return context
 
@@ -78,7 +78,7 @@ class AccountView(TemplateView):
 
 
 class TransactionToggleView(View):
-    def get(self, request, transaction_id):
+    def get(self, _request, transaction_id):
         transaction = Transaction.objects.get(pk=transaction_id)
         if transaction.on_statement:
             transaction.on_statement = False

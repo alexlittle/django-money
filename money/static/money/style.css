@@ -83,6 +83,10 @@ th.number, td.number {
 	text-align:right;
 }
 
+.table-w30 {
+	width: 30%;
+}
+
 td.total {
 	font-weight:bold;
 }
