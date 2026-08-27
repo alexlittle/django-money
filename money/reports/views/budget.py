@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from django.views.generic.list import ListView
 
@@ -17,7 +18,7 @@ class BudgetByPeriodView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         period_id = kwargs["period_id"]
-        accounting_period = AccountingPeriod.objects.get(pk=period_id)
+        accounting_period = get_object_or_404(AccountingPeriod, pk=period_id)
 
         # Income
         income_transactions = (

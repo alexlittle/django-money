@@ -1,4 +1,5 @@
 from django.db.models import F
+from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 
 from money.models import AccountingPeriod, Tag, TransactionTag
@@ -12,7 +13,7 @@ class TagDetailView(TemplateView):
         tag_id = kwargs["tag_id"]
         period_id = kwargs.get("period_id")
 
-        context["tag"] = Tag.objects.get(pk=tag_id)
+        context["tag"] = get_object_or_404(Tag, pk=tag_id)
         transaction_tags = TransactionTag.objects.filter(tag__pk=tag_id)
 
         context["totals_by_year"] = []
@@ -26,7 +27,7 @@ class TagDetailView(TemplateView):
             context["totals_by_year"].append(trans_year)
 
         if period_id:
-            accounting_period = AccountingPeriod.objects.get(pk=period_id)
+            accounting_period = get_object_or_404(AccountingPeriod, pk=period_id)
             context["period"] = accounting_period
             context["transactiontags"] = transaction_tags.filter(
                 transaction__date__gte=accounting_period.start_date,

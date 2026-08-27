@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
 from money.models import Account, AccountingPeriod, Transaction
 
@@ -7,7 +7,7 @@ def consulting_quarters(request, period_id):
     CONSULTING_ID = 47
     CONSULTING_EXTRAS_ID = 49
 
-    ap = AccountingPeriod.objects.get(pk=period_id)
+    ap = get_object_or_404(AccountingPeriod, pk=period_id)
     START_DATE = ap.start_date
     END_DATE = ap.end_date
 

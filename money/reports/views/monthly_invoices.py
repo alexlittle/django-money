@@ -14,6 +14,10 @@ class MonthlyInvoicesView(ListView):
         context["totals"] = self.object_list.aggregate(
             total_sales_tax=Sum(F("sales_tax_charged")), total_incl_sales_tax=Sum(F("credit"))
         )
+        if context["totals"]["total_sales_tax"] is None:
+            context["totals"]["total_sales_tax"] = 0
+        if context["totals"]["total_incl_sales_tax"] is None:
+            context["totals"]["total_incl_sales_tax"] = 0
         total_excl_sales_tax = 0
         for t in self.object_list:
             total_excl_sales_tax = total_excl_sales_tax + t.get_excl_sales_tax()

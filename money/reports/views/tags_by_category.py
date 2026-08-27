@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic import TemplateView
 
@@ -50,7 +51,7 @@ class TagsByCategoryView(TemplateView):
 
         transactions = Transaction.objects.filter(transactiontag__tag__in=tags)
         if period_id:
-            accounting_period = AccountingPeriod.objects.get(pk=period_id)
+            accounting_period = get_object_or_404(AccountingPeriod, pk=period_id)
             context["period"] = accounting_period
             context["transactions"] = (
                 transactions.filter(

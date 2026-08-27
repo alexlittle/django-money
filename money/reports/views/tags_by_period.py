@@ -1,6 +1,7 @@
 import datetime
 
 from django.db.models import Sum
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic import TemplateView
 
@@ -69,7 +70,7 @@ class TagsByPeriodView(TemplateView):
         context = super().get_context_data(**kwargs)
         period_id = kwargs["period_id"]
 
-        period = AccountingPeriod.objects.get(pk=period_id)
+        period = get_object_or_404(AccountingPeriod, pk=period_id)
 
         years = []
         for i in range(2022, datetime.datetime.today().year + 1, 1):
@@ -81,17 +82,20 @@ class TagsByPeriodView(TemplateView):
         context["period"] = period
         context["years"] = years
         context["periods"] = periods
-        context["tags"] = (
+        tagged = (
             Tag.objects.filter(
                 transactiontag__transaction__date__gte=period.start_date,
                 transactiontag__transaction__date__lte=period.end_date,
             )
-            .values("id", "name", "category")
             .annotate(
                 sum_in=Sum("transactiontag__allocation_credit"),
                 sum_out=Sum("transactiontag__allocation_debit"),
             )
+            .distinct()
         )
+        context["tags"] = [
+            {"tag": tag, "sum_in": tag.sum_in, "sum_out": tag.sum_out} for tag in tagged
+        ]
         context["categories"] = (
             Tag.objects.filter(
                 transactiontag__transaction__date__gte=period.start_date,
