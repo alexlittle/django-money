@@ -40,7 +40,7 @@ class Account(models.Model):
     active = models.BooleanField(blank=False, default=True)
     currency = models.CharField(max_length=3, choices=settings.CURRENCIES_AVAILABLE)
     type = models.CharField(max_length=100, choices=ACCOUNT_TYPES, default="cash")
-    notes = models.TextField(blank=True, default=None, null=True)
+    notes = models.TextField(blank=True, default="")
     order = models.IntegerField(default=1000)
 
     class Meta:
@@ -343,7 +343,7 @@ class RegularPayment(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
-    category = models.CharField(max_length=100, choices=TAG_CATEGORIES, blank=True, null=True)
+    category = models.CharField(max_length=100, choices=TAG_CATEGORIES, blank=True, default="")
     active = models.BooleanField(default=True)
 
     class Meta:
@@ -367,7 +367,7 @@ class Transaction(models.Model):
     sales_tax_charged = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     sales_tax_paid = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     sales_tax_rate = models.DecimalField(decimal_places=2, max_digits=20, default=0)
-    file = models.FileField(upload_to="transaction", blank=True, default=None)
+    file = models.FileField(upload_to="transaction", blank=True, default="")
 
     def filename(self):
         if not self.file.name:
@@ -435,7 +435,7 @@ class AccountingPeriod(models.Model):
 
 class InvoiceTemplate(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
-    description = models.TextField(blank=True, default=None, null=True)
+    description = models.TextField(blank=True, default="")
     active = models.BooleanField(blank=False, default=True)
     debit_ex_alv = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     debit_alv = models.DecimalField(decimal_places=2, max_digits=20, default=0)
