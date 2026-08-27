@@ -18,4 +18,4 @@ DATABASES = {
 SECRET_KEY = "ci-only-not-a-real-secret"
 DEBUG = False
 
-EXCLUDE_ACCOUNT_IDS = 9999
+EXCLUDE_ACCOUNT_IDS = (9999,)
