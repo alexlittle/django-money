@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "money",
     "mathfilters",
-    "wkhtmltopdf",
 ]
 
 

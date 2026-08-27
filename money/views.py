@@ -1,5 +1,4 @@
 import datetime
-import os
 
 from django.conf import settings
 from django.core.paginator import EmptyPage, InvalidPage, Paginator
@@ -7,10 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic.edit import FormView
-from wkhtmltopdf.views import PDFTemplateResponse
 
-from money.forms import InvoicesForm
 from money.models import Account, RegularPayment, Transaction
 
 
@@ -104,61 +100,3 @@ def update_regular_payments():
         next_date = rp.next_date + datetime.timedelta(days=31)
         rp.next_date = next_date
         rp.save()
-
-
-def transaction_receipt_view(request, transaction_id):
-    transaction = Transaction.objects.get(pk=transaction_id)
-    template = "money/receipt.html"
-
-    context = {
-        "transaction": transaction,
-    }
-
-    file_date = transaction.date.strftime("%Y-%m-%d")
-    return PDFTemplateResponse(
-        request=request,
-        show_content_in_browser=False,
-        filename=f"{file_date}-receipt-{transaction_id}.pdf",
-        template=template,
-        context=context,
-    )
-
-
-class CreateInvoicesView(FormView):
-    template_name = "money/create_invoices.html"
-    form_class = InvoicesForm
-    success_url = "/invoices/create/done/"
-
-    def form_valid(self, form):
-        invoice_date = form.cleaned_data["issue_date"]
-        due_date = form.cleaned_data["due_date"]
-        title = form.cleaned_data["title"]
-        send_to_ids = form.cleaned_data["send_to"]
-        ref_nos = form.cleaned_data["ref_nos"].split(",")
-        template = "money/kollektiivi_invoice.html"
-
-        tempdate = datetime.datetime.strptime(due_date, "%d.%m.%Y").date()
-        year = tempdate.year
-        month = f"{tempdate.month:02d}"
-        for idx, invoice in enumerate(send_to_ids):
-            context = {
-                "invoice_date": invoice_date,
-                "due_date": due_date,
-                "title": title,
-                "ref": ref_nos[idx],
-                "invoice_info": invoice,
-                "acc_name": settings.INVOICE_ACCOUNT_NAME,
-                "acc_iban": settings.INVOICE_ACCOUNT_IBAN,
-                "acc_bic": settings.INVOICE_ACCOUNT_BIC,
-            }
-            response = PDFTemplateResponse(
-                request=self.request, filename="invoice.pdf", template=template, context=context
-            )
-
-            filename = f"invoice-{year}-{month}-{invoice.name.lower()}-{ref_nos[idx]}.pdf"
-            output_path = os.path.join(settings.INVOICE_OUTPUT_DIR, filename)
-            with open(output_path, "wb") as f:
-                f.write(response.rendered_content)
-
-            # return render(self.request, template, context)
-        return super().form_valid(form)

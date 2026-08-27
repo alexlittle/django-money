@@ -182,7 +182,6 @@ source = { virtual = "." }
 dependencies = [
     { name = "django" },
     { name = "django-mathfilters" },
-    { name = "django-wkhtmltopdf" },
     { name = "mysqlclient" },
     { name = "python-dateutil" },
     { name = "pytz" },
@@ -209,7 +208,6 @@ local = [
 requires-dist = [
     { name = "django", specifier = "==6.0.7" },
     { name = "django-mathfilters", specifier = "==1.0.0" },
-    { name = "django-wkhtmltopdf", specifier = "==3.4.0" },
     { name = "mysqlclient", specifier = "==2.2.8" },
     { name = "python-dateutil", specifier = "==2.9.0.post0" },
     { name = "pytz", specifier = "==2026.2" },
@@ -227,18 +225,6 @@ dev = [
     { name = "setuptools", specifier = "==84.0.0" },
 ]
 local = [{ name = "django-extensions", specifier = "==4.1" }]
-
-[[package]]
-name = "django-wkhtmltopdf"
-version = "3.4.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "six" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c1/c0/bcb57d3cfa364e0a98aba92b15132b629f69d27d362256577f611f8f0f35/django-wkhtmltopdf-3.4.0.tar.gz", hash = "sha256:b12222a6c588c645d62d971a2a34e3802ac76023cf94c557068f39f478b2b984", size = 12950, upload-time = "2022-02-24T23:26:04.29Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/fc/6b/8a8302e04b8af78862c7505dd5eafb1854e091b83741ecb166137a4aca31/django_wkhtmltopdf-3.4.0-py2.py3-none-any.whl", hash = "sha256:c954d016b84b195bb52d8a22a1ed1c5e4eb499c9aa8f6aed89dac57247fc8fc1", size = 15946, upload-time = "2022-02-24T23:26:02.852Z" },
-]
 
 [[package]]
 name = "docstring-parser-fork"
