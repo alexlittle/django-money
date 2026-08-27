@@ -1,15 +1,19 @@
-/*
-bf7c0b - mid brown
-e7d2a7 - light brown
-89a324 - mid green
-5c5441 - dark green/brown
+:root {
+  --colour-mid-brown: #bf7c0b;
+  --colour-light-brown: #e7d2a7;
+  --colour-mid-green: #89a324;
+  --colour-dark-green-brown: #5c5441;
 
+  --colour-very-light-blue: #f8ffff;
+  --colour-light-blue: #e0ffff;
+  --colour-mid-blue: #2fcbfe;
+  --colour-dark-blue: #04689a;
 
-f8ffff - very light blue
-e0ffff - light blue
-2fcbfe - mid blue
-04689a - dark blue
-*/
+  --colour-body-text: #5a5a5a;
+  --colour-brand-text: #111111;
+  --colour-nav-text: #010101;
+  --colour-negative: #ff0000;
+}
 
 html {
   position: relative;
@@ -18,7 +22,7 @@ html {
 
 body {
   padding-bottom: 40px;
-  color: #5a5a5a;
+  color: var(--colour-body-text);
   margin-bottom: 60px;
   font-family: 'Ubuntu', sans-serif;
 }
@@ -27,12 +31,12 @@ body {
 /* Customise the navbar */
 
 .navbar-light {
-  	border-bottom: 1px solid #04689a;
+  	border-bottom: 1px solid var(--colour-dark-blue);
     background-repeat: repeat-x;
 }
 
 .navbar-light .navbar-brand {
-	color: #111111;
+	color: var(--colour-brand-text);
 	font-weight: bold;
 }
 
@@ -41,26 +45,26 @@ body {
 }
 
 .strapline {
-	color: #04689a;
+	color: var(--colour-dark-blue);
 	font-size: 80%;
 	font-weight: normal;
 }
 
 .navbar-light .navbar-nav > .nav-item > a
 {
-	color: #010101;
+	color: var(--colour-nav-text);
 }
 
 .navbar-light .navbar-nav > .nav-item > a:focus,
 .navbar-light .navbar-nav > .nav-item > a:hover
 {
-	color: #04689a;
+	color: var(--colour-dark-blue);
 }
 
 .navbar-light .navbar-nav > .active  a.nav-link,
 .navbar-light .navbar-nav > .nav-item .active > a.nav-link:focus,
 .navbar-light .navbar-nav > .nav-item .active > a.nav-link:hover {
-    color: #04689a;
+    color: var(--colour-dark-blue);
 }
 
 .footer {
@@ -69,8 +73,8 @@ body {
   width: 100%;
   /* Set the fixed height of the footer here */
   height: 60px;
-  background-color: #f8ffff;
-  border-top: 1px solid #2fcbfe;
+  background-color: var(--colour-very-light-blue);
+  border-top: 1px solid var(--colour-mid-blue);
   padding-top:10px;
 }
 
@@ -92,5 +96,5 @@ td.total {
 }
 
 th.negative, td.negative {
-	color:#ff0000;
+	color: var(--colour-negative);
 }
