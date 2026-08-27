@@ -2,37 +2,43 @@ import datetime
 
 import dateutil.relativedelta
 from django.conf import settings
-from django.shortcuts import render
+from django.views.generic import TemplateView
 
 from money.models import Transaction
 
 
-def by_year_view(request):
+class ByYearView(TemplateView):
+    template_name = "money/reports/by_year.html"
 
-    now = datetime.datetime.now()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-    report = []
+        now = datetime.datetime.now()
 
-    for i in range(10, -1, -1):
-        report_year = now - dateutil.relativedelta.relativedelta(years=i)
+        report = []
 
-        report_row = {"year": report_year.year, "sum_in": 0, "sum_out": 0}
+        for i in range(10, -1, -1):
+            report_year = now - dateutil.relativedelta.relativedelta(years=i)
 
-        for k, _v in settings.CURRENCIES_AVAILABLE:
-            transactions = (
-                Transaction.objects.filter(
-                    account__currency=k, date__year=report_year.year, on_statement=True
+            report_row = {"year": report_year.year, "sum_in": 0, "sum_out": 0}
+
+            for k, _v in settings.CURRENCIES_AVAILABLE:
+                transactions = (
+                    Transaction.objects.filter(
+                        account__currency=k, date__year=report_year.year, on_statement=True
+                    )
+                    .exclude(payment_type="Transfer")
+                    .exclude(account__id__in=settings.EXCLUDE_ACCOUNT_IDS)
                 )
-                .exclude(payment_type="Transfer")
-                .exclude(account__id__in=settings.EXCLUDE_ACCOUNT_IDS)
-            )
-            for t in transactions:
-                report_row["sum_in"] += t.get_credit_in_base_currency()
-                report_row["sum_out"] += t.get_debit_in_base_currency()
+                for t in transactions:
+                    report_row["sum_in"] += t.get_credit_in_base_currency()
+                    report_row["sum_out"] += t.get_debit_in_base_currency()
 
-        report_row["balance"] = report_row["sum_in"] - report_row["sum_out"]
+            report_row["balance"] = report_row["sum_in"] - report_row["sum_out"]
 
-        report.append(report_row)
+            report.append(report_row)
 
-    report.reverse()
-    return render(request, "money/reports/by_year.html", {"report": report})
+        report.reverse()
+
+        context["report"] = report
+        return context

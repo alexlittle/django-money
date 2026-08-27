@@ -5,20 +5,34 @@ from money.reports import views as report_views
 urlpatterns = [
     path("graph/", report_views.SummaryGraph.as_view(), name="graph"),
     path("graph/annual/<int:year>/", report_views.AnnualGraphsView.as_view(), name="graphs_annual"),
-    path("investment-graph/", report_views.graph_investment_view, name="investment_graph"),
-    path("bymonth/", report_views.by_month_view, name="by_month"),
     path(
-        "monthly-transactions/", report_views.monthly_transactions_view, name="monthly_transactions"
+        "investment-graph/",
+        report_views.GraphInvestmentView.as_view(),
+        name="investment_graph",
+    ),
+    path("bymonth/", report_views.ByMonthView.as_view(), name="by_month"),
+    path(
+        "monthly-transactions/",
+        report_views.MonthlyTransactionsView.as_view(),
+        name="monthly_transactions",
     ),
     path(
         "monthly-transactions/<int:year>/<int:month>/",
-        report_views.monthly_transactions_view,
+        report_views.MonthlyTransactionsView.as_view(),
         name="monthly_transactions",
     ),
-    path("byyear/", report_views.by_year_view, name="by_year"),
-    path("consulting/<int:period_id>/", report_views.consulting_quarters, name="consulting"),
-    path("annual/<int:year>/", report_views.consulting_annual, name="consulting_annual"),
-    path("bills/", report_views.bills_view, name="bills"),
+    path("byyear/", report_views.ByYearView.as_view(), name="by_year"),
+    path(
+        "consulting/<int:period_id>/",
+        report_views.ConsultingQuartersView.as_view(),
+        name="consulting",
+    ),
+    path(
+        "annual/<int:year>/",
+        report_views.ConsultingAnnualView.as_view(),
+        name="consulting_annual",
+    ),
+    path("bills/", report_views.BillsView.as_view(), name="bills"),
     path("tags/", report_views.TagsByYearView.as_view(), name="tags_all"),
     path("tags/year/<int:year>/", report_views.TagsByYearView.as_view(), name="tags_by_year"),
     path(

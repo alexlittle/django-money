@@ -1,45 +1,51 @@
 import dateutil.relativedelta
 from django.conf import settings
-from django.shortcuts import render
 from django.utils import timezone
+from django.views.generic import TemplateView
 
 from money.models import Transaction
 
 
-def by_month_view(request):
+class ByMonthView(TemplateView):
+    template_name = "money/reports/by_month.html"
 
-    now = timezone.now()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-    report = []
+        now = timezone.now()
 
-    for i in range(96, -1, -1):
-        report_month = now - dateutil.relativedelta.relativedelta(months=i)
+        report = []
 
-        report_row = {
-            "month": report_month.month,
-            "year": report_month.year,
-            "sum_in": 0,
-            "sum_out": 0,
-        }
+        for i in range(96, -1, -1):
+            report_month = now - dateutil.relativedelta.relativedelta(months=i)
 
-        for k, _v in settings.CURRENCIES_AVAILABLE:
-            transactions = (
-                Transaction.objects.filter(
-                    account__currency=k,
-                    date__year=report_month.year,
-                    date__month=report_month.month,
-                    on_statement=True,
+            report_row = {
+                "month": report_month.month,
+                "year": report_month.year,
+                "sum_in": 0,
+                "sum_out": 0,
+            }
+
+            for k, _v in settings.CURRENCIES_AVAILABLE:
+                transactions = (
+                    Transaction.objects.filter(
+                        account__currency=k,
+                        date__year=report_month.year,
+                        date__month=report_month.month,
+                        on_statement=True,
+                    )
+                    .exclude(payment_type="Transfer")
+                    .exclude(account__id__in=settings.EXCLUDE_ACCOUNT_IDS)
                 )
-                .exclude(payment_type="Transfer")
-                .exclude(account__id__in=settings.EXCLUDE_ACCOUNT_IDS)
-            )
 
-            for t in transactions:
-                report_row["sum_in"] += t.get_credit_in_base_currency()
-                report_row["sum_out"] += t.get_debit_in_base_currency()
+                for t in transactions:
+                    report_row["sum_in"] += t.get_credit_in_base_currency()
+                    report_row["sum_out"] += t.get_debit_in_base_currency()
 
-        report_row["balance"] = report_row["sum_in"] - report_row["sum_out"]
+            report_row["balance"] = report_row["sum_in"] - report_row["sum_out"]
 
-        report.append(report_row)
-    report.reverse()
-    return render(request, "money/reports/by_month.html", {"report": report})
+            report.append(report_row)
+        report.reverse()
+
+        context["report"] = report
+        return context
