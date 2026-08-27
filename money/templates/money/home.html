@@ -10,10 +10,10 @@
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th>{% trans 'Account' %}</th>
-					<th class="number">{% trans 'Balance' %} ({{ curr.currency}})</th>
-					<th class="number">{% trans 'On Statement' %} ({{ curr.currency}})</th>
-					<th class="number">{% trans 'In Base Currency' %} ({{ BASE_CURRENCY }})</th>
+					<th id="cash-account-{{ curr.currency }}">{% trans 'Account' %}</th>
+					<th id="cash-balance-{{ curr.currency }}" class="number">{% trans 'Balance' %} ({{ curr.currency}})</th>
+					<th id="cash-on-statement-{{ curr.currency }}" class="number">{% trans 'On Statement' %} ({{ curr.currency}})</th>
+					<th id="cash-base-currency-{{ curr.currency }}" class="number">{% trans 'In Base Currency' %} ({{ BASE_CURRENCY }})</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -29,10 +29,10 @@
 	</tbody>
 	<tfoot>
 				<tr>
-					<th>Total</th>
-					<th class="number">{{ curr.total_balance|intcomma }}</th>
-					<th class="number">{{ curr.total_on_statement|intcomma }}</th>
-					<th class="number">{{ curr.total_base_currency|floatformat:"2g" }}</th>
+					<th id="cash-total-{{ curr.currency }}">Total</th>
+					<th id="cash-total-balance-{{ curr.currency }}" class="number">{{ curr.total_balance|intcomma }}</th>
+					<th id="cash-total-on-statement-{{ curr.currency }}" class="number">{{ curr.total_on_statement|intcomma }}</th>
+					<th id="cash-total-base-currency-{{ curr.currency }}" class="number">{{ curr.total_base_currency|floatformat:"2g" }}</th>
 				</tr>
 			</tfoot>
 	</table>
@@ -45,10 +45,10 @@
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th>{% trans 'Account' %}</th>
-					<th class="number">{% trans 'Valuation' %}</th>
-					<th class="number">{% trans 'Valuation date' %}</th>
-					<th class="number">{% trans 'In Base Currency' %} ({{ BASE_CURRENCY }})</th>
+					<th id="invest-account-{{ curr.currency }}">{% trans 'Account' %}</th>
+					<th id="invest-valuation-{{ curr.currency }}" class="number">{% trans 'Valuation' %}</th>
+					<th id="invest-valuation-date-{{ curr.currency }}" class="number">{% trans 'Valuation date' %}</th>
+					<th id="invest-base-currency-{{ curr.currency }}" class="number">{% trans 'In Base Currency' %} ({{ BASE_CURRENCY }})</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -64,10 +64,10 @@
 	</tbody>
 	<tfoot>
 				<tr>
-					<th>Total</th>
-					<th class="number">{{ curr.total_valuation|intcomma }}</th>
-					<th>&nbsp;</th>
-					<th class="number">{{ curr.total_base_currency|floatformat:"2g" }}</th>
+					<th id="invest-total-{{ curr.currency }}">Total</th>
+					<th id="invest-total-valuation-{{ curr.currency }}" class="number">{{ curr.total_valuation|intcomma }}</th>
+					<th id="invest-total-valuation-date-{{ curr.currency }}">&nbsp;</th>
+					<th id="invest-total-base-currency-{{ curr.currency }}" class="number">{{ curr.total_base_currency|floatformat:"2g" }}</th>
 				</tr>
 			</tfoot>
 	</table>
@@ -80,10 +80,10 @@
 	<table class="table table-striped">
 		<thead>
 			<tr>
-				<th>{% trans 'Account' %}</th>
-				<th class="number">{% trans 'Valuation' %}</th>
-				<th class="number">{% trans 'Valuation date' %}</th>
-				<th class="number">{% trans 'In Base Currency' %} ({{ BASE_CURRENCY }})</th>
+				<th id="property-account">{% trans 'Account' %}</th>
+				<th id="property-valuation" class="number">{% trans 'Valuation' %}</th>
+				<th id="property-valuation-date" class="number">{% trans 'Valuation date' %}</th>
+				<th id="property-base-currency" class="number">{% trans 'In Base Currency' %} ({{ BASE_CURRENCY }})</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -105,10 +105,10 @@
 </tbody>
 <tfoot>
 			<tr>
-				<th>Total</th>
+				<th id="property-total">Total</th>
 				<td class="number">&nbsp;</td>
-				<th>&nbsp;</th>
-				<th class="number">{{ property.total_base_currency|floatformat:"2g" }}</th>
+				<th id="property-total-valuation-date">&nbsp;</th>
+				<th id="property-total-base-currency" class="number">{{ property.total_base_currency|floatformat:"2g" }}</th>
 			</tr>
 		</tfoot>
 </table>
@@ -119,11 +119,11 @@
 	<table class="table table-striped">
 		<thead>
 			<tr>
-				<th>{% trans 'Account' %}</th>
-				<th class="number">{% trans 'Valuation' %}</th>
-				<th class="number">{% trans 'Valuation date' %}</th>
-				<th class="number">{% trans 'In Base Currency' %} ({{ BASE_CURRENCY }})</th>
-				<th class="number">{% trans 'Est. Monthly Value' %} ({{ BASE_CURRENCY }})</th>
+				<th id="pension-account">{% trans 'Account' %}</th>
+				<th id="pension-valuation" class="number">{% trans 'Valuation' %}</th>
+				<th id="pension-valuation-date" class="number">{% trans 'Valuation date' %}</th>
+				<th id="pension-base-currency" class="number">{% trans 'In Base Currency' %} ({{ BASE_CURRENCY }})</th>
+				<th id="pension-est-monthly-value" class="number">{% trans 'Est. Monthly Value' %} ({{ BASE_CURRENCY }})</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -145,11 +145,11 @@
 </tbody>
 <tfoot>
 			<tr>
-				<th>Total</th>
+				<th id="pension-total">Total</th>
 				<td class="number">&nbsp;</td>
-				<th>&nbsp;</th>
-				<th class="number">{{ pensions.total_base_currency|floatformat:"2g" }}</th>
-				<th class="number">{{ pensions.total_est_monthly|floatformat:"2g" }}</th>
+				<th id="pension-total-valuation-date">&nbsp;</th>
+				<th id="pension-total-base-currency" class="number">{{ pensions.total_base_currency|floatformat:"2g" }}</th>
+				<th id="pension-total-est-monthly-value" class="number">{{ pensions.total_est_monthly|floatformat:"2g" }}</th>
 			</tr>
 		</tfoot>
 </table>

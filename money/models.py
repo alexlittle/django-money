@@ -405,7 +405,7 @@ class TransactionTag(models.Model):
     quantity = models.IntegerField(default=0)
     allocation_credit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     allocation_debit = models.DecimalField(decimal_places=2, max_digits=20, default=0)
-    description = models.CharField(max_length=200, blank=True, null=True, default=None)
+    description = models.CharField(max_length=200, blank=True, default="")
 
     def get_credit_in_base_currency(self):
         if self.transaction.account.currency == settings.BASE_CURRENCY:
