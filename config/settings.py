@@ -164,7 +164,7 @@ CURRENCIES_AVAILABLE = (("GBP", "GBP"), ("EUR", "EUR"))
 
 
 try:
-    from config.local_settings import *  # noqa: F403
+    from config.local_settings import *  # noqa: F403#NOSONAR
 except ImportError:
     import warnings
 
