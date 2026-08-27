@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
 
@@ -53,10 +54,12 @@ class SummaryGraphTests(SummaryGraphTestBase):
         self.assertEqual(latest["property"], Decimal("1000"))
         self.assertEqual(latest["total"], Decimal("1700"))
 
-    def test_hardcoded_consulting_extras_account_excluded_from_cash_total(self):
-        # The view hardcodes CONSULTING_EXTRAS_ID = 49 and excludes it from
-        # the cash total regardless of any settings.EXCLUDE_ACCOUNT_IDS config.
-        consulting_extras = self.make_account(pk=49, type="cash", name="Consulting extras")
+    def test_consulting_extras_account_excluded_from_cash_total(self):
+        # The view excludes settings.CONSULTING_EXTRAS_ACCOUNT_ID from the
+        # cash total regardless of any settings.EXCLUDE_ACCOUNT_IDS config.
+        consulting_extras = self.make_account(
+            pk=settings.CONSULTING_EXTRAS_ACCOUNT_ID, type="cash", name="Consulting extras"
+        )
         from money.models import Transaction
 
         Transaction.objects.create(

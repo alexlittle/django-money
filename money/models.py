@@ -391,6 +391,14 @@ class Transaction(models.Model):
             ex_rate = ExchangeRate.at_date(self.date, self.account.currency, settings.BASE_CURRENCY)
             return self.debit / (1 / ex_rate)
 
+    @property
+    def full_description(self):
+        return self.description
+
+    @property
+    def edit_transaction_id(self):
+        return self.id
+
 
 class Valuation(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
@@ -424,6 +432,36 @@ class TransactionTag(models.Model):
                 self.transaction.date, self.transaction.account.currency, settings.BASE_CURRENCY
             )
             return self.allocation_debit / (1 / ex_rate)
+
+    @property
+    def date(self):
+        return self.transaction.date
+
+    @property
+    def account(self):
+        return self.transaction.account
+
+    @property
+    def payment_type(self):
+        return self.transaction.payment_type
+
+    @property
+    def credit(self):
+        return self.allocation_credit
+
+    @property
+    def debit(self):
+        return self.allocation_debit
+
+    @property
+    def full_description(self):
+        if self.description:
+            return f"{self.transaction.description} - {self.description}"
+        return self.transaction.description
+
+    @property
+    def edit_transaction_id(self):
+        return self.transaction.id
 
 
 class AccountingPeriod(models.Model):

@@ -27,45 +27,6 @@
     </tbody>
 </table>
 
-<h2>
-{% if period %}
-    {{ period.title }}
-{% else %}
-    {% trans 'All Dates' %}
-{% endif %}
-</h2>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>{% trans 'Date' %}</th>
-            <th>{% trans 'Account' %}</th>
-            <th>{% trans 'Description' %}</th>
-            <th class="number">{% trans 'Type' %}</th>
-            <th class="number">{% trans 'Currency' %}</th>
-            <th class="number">{% trans 'Credit' %}</th>
-            <th class="number">{% trans 'Debit' %}</th>
-            <th class="number">{% trans 'Credit' %} {{ BASE_CURRENCY }} </th>
-            <th class="number">{% trans 'Debit' %} {{ BASE_CURRENCY }}</th>
-            <th class="number">{% trans 'Options' %}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for t in transactiontags %}
-         <tr>
-             <td>{{ t.transaction.date|naturalday }}</td>
-             <td>{{ t.transaction.account.name }}</td>
-             <td>{{ t.transaction.description }}{% if t.description %} - {{ t.description }}{% endif %} </td>
-             <td class="number">{{ t.transaction.payment_type }}</td>
-             <td class="number">{{ t.transaction.account.currency }}</td>
-             <td class="number">{% if t.allocation_credit != 0 %} {{ t.allocation_credit|floatformat:"2g" }} {% endif %}</td>
-             <td class="number">{% if t.allocation_debit != 0 %}{{ t.allocation_debit|floatformat:"2g" }} {% endif %}</td>
-             <td class="number">{% if t.get_credit_in_base_currency != 0 %}{{ t.get_credit_in_base_currency|floatformat:"2g" }} {% endif %}</td>
-             <td class="number">{% if t.get_debit_in_base_currency != 0 %}{{ t.get_debit_in_base_currency|floatformat:"2g" }} {% endif %}</td>
-
-             <td class="number"><a href="{% url 'admin:money_transaction_change' t.transaction.id %}">Edit</a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% include "money/reports/_transaction_history.html" with transaction_rows=transactiontags %}
 
 {% endblock %}
