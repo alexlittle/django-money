@@ -242,7 +242,7 @@ class Account(models.Model):
         accs = Account.objects.filter(active=True, type=type, currency=currency)
         total = 0
         for acc in accs:
-            if acc.get_valuation() != 0:
+            if acc.get_valuation():
                 total += acc.get_valuation().value
         return total
 
@@ -370,6 +370,8 @@ class Transaction(models.Model):
     file = models.FileField(upload_to="transaction", blank=True, default=None)
 
     def filename(self):
+        if not self.file.name:
+            return ""
         return os.path.basename(self.file.name)
 
     def get_excl_sales_tax(self):
