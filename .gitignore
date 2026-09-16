@@ -13,3 +13,4 @@
 /uwsgi.sock
 /env/
 /.coverage
+/.python-version
