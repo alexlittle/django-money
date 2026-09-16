@@ -69,7 +69,7 @@ class AccountView(TemplateView):
 
         try:
             transactions = paginator.page(page)
-        except (EmptyPage, InvalidPage):
+        except EmptyPage, InvalidPage:
             transactions = paginator.page(paginator.num_pages)
 
         context["account"] = account
