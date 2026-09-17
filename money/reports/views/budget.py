@@ -64,6 +64,7 @@ class BudgetByPeriodView(TemplateView):
         personal_transactions = expense_transactions.filter(tag__category__in=("house", "personal"))
         personal_expenses_tags = (
             Tag.objects.filter(category__in=("house", "personal"))
+            .exclude(active=False)
             .values("name", "id")
             .distinct()
             .order_by("name")
