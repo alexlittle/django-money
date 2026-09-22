@@ -9,7 +9,7 @@ authors = [
 dependencies = [
     "django==6.1.1",
     "django-mathfilters==1.0.0",
-    "mysqlclient==2.2.8",
+    "mysqlclient==2.3.0",
     "python-dateutil==2.9.0.post0",
 ]
 
@@ -61,7 +61,7 @@ dev = [
     "pydoclint==0.9.1",
     "setuptools==84.0.0",
     "pytest==9.1.1",
-    "ruff==0.16.7",
+    "ruff==0.16.8",
     "pytest-django==4.14.0",
 ]
 local = [
