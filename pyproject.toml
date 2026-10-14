@@ -7,7 +7,7 @@ authors = [
 ]
 
 dependencies = [
-    "django==6.1.1",
+    "django==6.1.2",
     "django-mathfilters==1.0.0",
     "mysqlclient==2.3.0",
     "python-dateutil==2.9.0.post0",
@@ -58,17 +58,17 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 dev = [
     "pytest-cov==7.1.0",
     "interrogate==1.7.0",
-    "pydoclint==0.9.1",
+    "pydoclint==0.11.0",
     "setuptools==84.0.0",
     "pytest==9.1.1",
-    "ruff==0.16.9",
+    "ruff==0.17.0",
     "pytest-django==4.14.0",
 ]
 local = [
     "django-extensions==4.1"
 ]
 deploy = [
-    "mod-wsgi==6.0.6"
+    "mod-wsgi==6.1.0"
 ]
 
 [tool.uv]
