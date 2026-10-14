@@ -2,11 +2,12 @@ import datetime
 
 from django.core.management.base import BaseCommand
 from django.db.models import Sum
+from django.utils import timezone
 
 from money.models import Transaction
 
-START_DATE = datetime.date(2025, 4, 6)
-END_DATE = datetime.date(2026, 4, 6)
+START_DATE = timezone.make_aware(datetime.datetime(2025, 4, 6))
+END_DATE = timezone.make_aware(datetime.datetime(2026, 4, 6))
 
 
 class Command(BaseCommand):
