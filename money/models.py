@@ -135,13 +135,11 @@ class Account(models.Model):
             return self.balance / rate
 
     @staticmethod
-    def get_balance_base_currency_at_date(account, date, tag=None, rate_cache=None):
+    def get_balance_base_currency_at_date(account, date, tag=None):
         if account.currency == settings.BASE_CURRENCY:
             return Account.get_balance_at_date(account, date, tag)
         else:
-            rate = ExchangeRate.at_date(
-                date, settings.BASE_CURRENCY, account.currency, rate_cache=rate_cache
-            )
+            rate = ExchangeRate.at_date(date, settings.BASE_CURRENCY, account.currency)
             balance = Account.get_balance_at_date(account, date, tag)
             if balance:
                 return balance / rate
@@ -175,7 +173,7 @@ class Account(models.Model):
                 return 0
 
     @staticmethod
-    def get_valuation_base_currency_at_date(account, date, rate_cache=None):
+    def get_valuation_base_currency_at_date(account, date):
         if account.currency == settings.BASE_CURRENCY:
             valuation = Account.get_valuation_at_date(account, date)
             if valuation:
@@ -183,9 +181,7 @@ class Account(models.Model):
             else:
                 return 0
         else:
-            rate = ExchangeRate.at_date(
-                date, settings.BASE_CURRENCY, account.currency, rate_cache=rate_cache
-            )
+            rate = ExchangeRate.at_date(date, settings.BASE_CURRENCY, account.currency)
             valuation = Account.get_valuation_at_date(account, date)
             if valuation:
                 return valuation.value / rate
@@ -310,20 +306,14 @@ class ExchangeRate(models.Model):
         return 1
 
     @staticmethod
-    def at_date(date, from_currency, to_currency, rate_cache=None):
-        """Rate in force at ``date``; pass a dict as ``rate_cache`` to reuse lookups."""
-        key = (date, from_currency, to_currency)
-        if rate_cache is not None and key in rate_cache:
-            return rate_cache[key]
-
+    def at_date(date, from_currency, to_currency):
         rate = ExchangeRate._latest_rate(from_currency, to_currency, date)
-        if rate is None:
-            inverse = ExchangeRate._latest_rate(to_currency, from_currency, date)
-            rate = 1 / inverse if inverse is not None else 1
-
-        if rate_cache is not None:
-            rate_cache[key] = rate
-        return rate
+        if rate is not None:
+            return rate
+        rate = ExchangeRate._latest_rate(to_currency, from_currency, date)
+        if rate is not None:
+            return 1 / rate
+        return 1
 
 
 class RegularPayment(models.Model):

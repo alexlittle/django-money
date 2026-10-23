@@ -1,9 +1,9 @@
-"""Characterisation tests for the values produced by the summary graph.
+"""Tests for the values produced by the summary graph.
 
 These pin the exact figures the view produces for a known data set, so the
-calculation can be refactored (fewer queries, caching, etc.) without changing
-any numbers. Expected values are worked out by hand in the comments below, not
-copied from the code's output.
+calculation can be refactored without changing any numbers. Expected values are
+worked out by hand in the comments below, not copied from the code's output.
+A month includes everything dated before the start of the following month.
 
 Months are addressed as "n months ago": n=0 is the current month and
 ``balances[96 - n]`` is its entry.
@@ -11,10 +11,13 @@ Months are addressed as "n months ago": n=0 is the current month and
 
 import calendar
 import datetime
+import random
 from decimal import Decimal
 
 from dateutil.relativedelta import relativedelta
+from django.db import connection
 from django.test import TestCase
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from django.utils import timezone
 
@@ -99,10 +102,9 @@ class GraphKnownDataTests(GraphValuesBase):
         self.rate("GBP", "EUR", "2.0", at(2, 1))
 
         self.credit(current, 1000, at(5, 10))
-        # Exactly on the cut-off (23:59:00 on the last day): counted that month.
+        # Late on the last day of the month: still counted in that month.
         self.credit(current, 11, at(4, last_day_of(4), 23, 59, 0))
         self.debit(current, 300, at(3, 15))
-        # 30 seconds after the cut-off: counted from the following month.
         self.credit(current, 77, at(3, last_day_of(3), 23, 59, 30))
 
         self.credit(euro, 200, at(4, 5))
@@ -115,8 +117,8 @@ class GraphKnownDataTests(GraphValuesBase):
 
     # Cash (GBP + EUR converted at the rate in force at the month's cut-off):
     #   n>=6: 0 | n=5: 1000 | n=4: 1011 + 200/1.25 = 1171
-    #   n=3: 1011 - 300 + 200/1.25 = 871 | n<=2: 788 + 200/2.0 = 888
-    EXPECTED_CASH = {5: 1000, 4: 1171, 3: 871, 2: 888, 1: 888, 0: 888}
+    #   n=3: 1011 - 300 + 77 + 200/1.25 = 948 | n<=2: 788 + 200/2.0 = 888
+    EXPECTED_CASH = {5: 1000, 4: 1171, 3: 948, 2: 888, 1: 888, 0: 888}
 
     # Investments (EUR fund also converted at the cut-off rate):
     #   ISA 400 from n=6, 450 from n=2 | Euro fund 500 from n=4: 400 at 1.25, 250 at 2.0
@@ -150,6 +152,11 @@ class GraphKnownDataTests(GraphValuesBase):
             start = month_start(n)
             self.assertEqual((d.year, d.month, d.day), (start.year, start.month, last_day_of(n)))
             self.assertEqual((d.hour, d.minute), (23, 59))
+
+    def test_page_needs_only_a_few_queries(self):
+        with CaptureQueriesContext(connection) as queries:
+            self.balances()
+        self.assertLessEqual(len(queries), 6)
 
 
 class GraphEdgeCaseTests(GraphValuesBase):
@@ -200,3 +207,68 @@ class GraphEdgeCaseTests(GraphValuesBase):
         self.debit(current, 250, at(2, 6))
         self.assertEqual(self.months_ago(2)["cash"], Decimal(-150))
         self.assertEqual(self.months_ago(2)["total"], Decimal(-150))
+
+
+class GraphMatchesPerAccountCalculationTests(GraphValuesBase):
+    """Cross-check the page against the per-account model methods on random data."""
+
+    def test_matches_account_methods_for_every_month(self):
+        rng = random.Random(1234)
+        cash = [
+            self.account("Cash GBP 1"),
+            self.account("Cash GBP 2", active=False),
+            self.account("Cash EUR 1", currency="EUR"),
+            self.account("Cash EUR 2", currency="EUR"),
+        ]
+        invest = [self.account("ISA", type="invest"), self.account("EUR fund", "invest", "EUR")]
+        prop = [self.account("House", "property"), self.account("EUR flat", "property", "EUR")]
+
+        # Rates in both directions, so the direct and inverse paths are both used.
+        for n in (40, 30, 22, 15, 9, 3):
+            self.rate("GBP", "EUR", f"{rng.uniform(1.05, 1.4):.5f}", at(n, rng.randint(1, 28)))
+        for n in (60, 25, 5):
+            self.rate("EUR", "GBP", f"{rng.uniform(0.7, 0.95):.5f}", at(n, rng.randint(1, 28)))
+
+        for acc in cash:
+            for _ in range(60):
+                n = rng.randint(0, 80)
+                # Mix of mid-month and last-day entries, including late on the last day.
+                day = rng.choice([rng.randint(1, 28), last_day_of(n)])
+                when = at(n, day, rng.randint(0, 23), rng.randint(0, 59), rng.randint(0, 59))
+                amount = rng.randint(1, 50000) / 100
+                if rng.random() < 0.6:
+                    self.credit(acc, amount, when)
+                else:
+                    self.debit(acc, amount, when)
+
+        for acc in invest + prop:
+            for n in rng.sample(range(0, 90), 12):
+                day = rng.randint(1, last_day_of(n))
+                self.valuation(
+                    acc, rng.randint(1000, 900000) / 100, month_start(n).replace(day=day)
+                )
+
+        # Decimal addition rounds, so add in the order the view does (model ordering).
+        def in_view_order(accounts):
+            return sorted(accounts, key=lambda a: (a.order, a.name))
+
+        cash, invest, prop = in_view_order(cash), in_view_order(invest), in_view_order(prop)
+
+        for entry in self.balances():
+            last_day = entry["date"]
+            next_month = datetime.datetime(last_day.year, last_day.month, 1, tzinfo=last_day.tzinfo)
+            cutoff = next_month + relativedelta(months=1) - datetime.timedelta(microseconds=1)
+
+            expected_cash = sum(
+                Account.get_balance_base_currency_at_date(a, cutoff) or 0 for a in cash
+            )
+            expected_invest = sum(
+                Account.get_valuation_base_currency_at_date(a, cutoff) for a in invest
+            )
+            expected_property = sum(
+                Account.get_valuation_base_currency_at_date(a, cutoff) for a in prop
+            )
+            with self.subTest(month=last_day.strftime("%Y-%m")):
+                self.assertEqual(entry["cash"], expected_cash)
+                self.assertEqual(entry["invest"], expected_invest)
+                self.assertEqual(entry["property"], expected_property)
