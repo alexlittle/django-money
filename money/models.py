@@ -121,14 +121,11 @@ class Account(models.Model):
 
     @staticmethod
     def get_valuation_at_date(account, date):
-        v_tmp = Valuation.objects.filter(account=account, date__lte=date).aggregate(
-            date=Max("date")
+        return (
+            Valuation.objects.filter(account=account, date__lte=date)
+            .order_by("-date", "-id")
+            .first()
         )
-        if v_tmp["date"] is not None:
-            valuation = Valuation.objects.get(account=account, date=v_tmp["date"])
-            return valuation
-        else:
-            return None
 
     def get_balance_base_currency(self):
         if self.currency == settings.BASE_CURRENCY:
@@ -138,11 +135,13 @@ class Account(models.Model):
             return self.balance / rate
 
     @staticmethod
-    def get_balance_base_currency_at_date(account, date, tag=None):
+    def get_balance_base_currency_at_date(account, date, tag=None, rate_cache=None):
         if account.currency == settings.BASE_CURRENCY:
             return Account.get_balance_at_date(account, date, tag)
         else:
-            rate = ExchangeRate.at_date(date, settings.BASE_CURRENCY, account.currency)
+            rate = ExchangeRate.at_date(
+                date, settings.BASE_CURRENCY, account.currency, rate_cache=rate_cache
+            )
             balance = Account.get_balance_at_date(account, date, tag)
             if balance:
                 return balance / rate
@@ -176,16 +175,20 @@ class Account(models.Model):
                 return 0
 
     @staticmethod
-    def get_valuation_base_currency_at_date(account, date):
+    def get_valuation_base_currency_at_date(account, date, rate_cache=None):
         if account.currency == settings.BASE_CURRENCY:
-            if Account.get_valuation_at_date(account, date):
-                return Account.get_valuation_at_date(account, date).value
+            valuation = Account.get_valuation_at_date(account, date)
+            if valuation:
+                return valuation.value
             else:
                 return 0
         else:
-            rate = ExchangeRate.at_date(date, settings.BASE_CURRENCY, account.currency)
-            if Account.get_valuation_at_date(account, date):
-                return Account.get_valuation_at_date(account, date).value / rate
+            rate = ExchangeRate.at_date(
+                date, settings.BASE_CURRENCY, account.currency, rate_cache=rate_cache
+            )
+            valuation = Account.get_valuation_at_date(account, date)
+            if valuation:
+                return valuation.value / rate
             else:
                 return 0
 
@@ -289,45 +292,38 @@ class ExchangeRate(models.Model):
     rate = models.DecimalField(decimal_places=5, max_digits=20)
 
     @staticmethod
+    def _latest_rate(from_currency, to_currency, date=None):
+        rates = ExchangeRate.objects.filter(from_cur=from_currency, to_cur=to_currency)
+        if date is not None:
+            rates = rates.filter(date__lte=date)
+        latest = rates.order_by("-date", "-id").first()
+        return latest.rate if latest else None
+
+    @staticmethod
     def most_recent(from_currency, to_currency):
-        tmp_date = ExchangeRate.objects.filter(
-            from_cur=from_currency, to_cur=to_currency
-        ).aggregate(date=Max("date"))
-        if tmp_date["date"] is not None:
-            rate = ExchangeRate.objects.get(
-                from_cur=from_currency, to_cur=to_currency, date=tmp_date["date"]
-            )
-            return rate.rate
-        tmp_date = ExchangeRate.objects.filter(
-            from_cur=to_currency, to_cur=from_currency
-        ).aggregate(date=Max("date"))
-        if tmp_date["date"] is not None:
-            rate = ExchangeRate.objects.get(
-                from_cur=to_currency, to_cur=from_currency, date=tmp_date["date"]
-            )
-            return 1 / rate.rate
+        rate = ExchangeRate._latest_rate(from_currency, to_currency)
+        if rate is not None:
+            return rate
+        rate = ExchangeRate._latest_rate(to_currency, from_currency)
+        if rate is not None:
+            return 1 / rate
         return 1
 
     @staticmethod
-    def at_date(date, from_currency, to_currency):
+    def at_date(date, from_currency, to_currency, rate_cache=None):
+        """Rate in force at ``date``; pass a dict as ``rate_cache`` to reuse lookups."""
+        key = (date, from_currency, to_currency)
+        if rate_cache is not None and key in rate_cache:
+            return rate_cache[key]
 
-        tmp_date = ExchangeRate.objects.filter(
-            from_cur=from_currency, to_cur=to_currency, date__lte=date
-        ).aggregate(date=Max("date"))
-        if tmp_date["date"] is not None:
-            rate = ExchangeRate.objects.get(
-                from_cur=from_currency, to_cur=to_currency, date=tmp_date["date"]
-            )
-            return rate.rate
-        tmp_date = ExchangeRate.objects.filter(
-            from_cur=to_currency, to_cur=from_currency, date__lte=date
-        ).aggregate(date=Max("date"))
-        if tmp_date["date"] is not None:
-            rate = ExchangeRate.objects.get(
-                from_cur=to_currency, to_cur=from_currency, date=tmp_date["date"]
-            )
-            return 1 / rate.rate
-        return 1
+        rate = ExchangeRate._latest_rate(from_currency, to_currency, date)
+        if rate is None:
+            inverse = ExchangeRate._latest_rate(to_currency, from_currency, date)
+            rate = 1 / inverse if inverse is not None else 1
+
+        if rate_cache is not None:
+            rate_cache[key] = rate
+        return rate
 
 
 class RegularPayment(models.Model):

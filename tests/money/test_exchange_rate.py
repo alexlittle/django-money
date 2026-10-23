@@ -78,3 +78,25 @@ class AtDateTests(ExchangeRateTestBase):
         self.make_rate("GBP", "EUR", "1.15000", now)
         self.make_rate("EUR", "GBP", "0.87000", now)
         self.assertEqual(ExchangeRate.at_date(now, "GBP", "EUR"), Decimal("1.15000"))
+
+
+class AtDateRateCacheTests(ExchangeRateTestBase):
+    def test_cache_avoids_repeat_queries_and_returns_same_rate(self):
+        now = timezone.now()
+        self.make_rate("GBP", "EUR", "1.15000", now)
+        cache = {}
+
+        with self.assertNumQueries(1):
+            first = ExchangeRate.at_date(now, "GBP", "EUR", rate_cache=cache)
+        with self.assertNumQueries(0):
+            second = ExchangeRate.at_date(now, "GBP", "EUR", rate_cache=cache)
+
+        self.assertEqual(first, Decimal("1.15000"))
+        self.assertEqual(second, first)
+
+    def test_cache_also_stores_the_default_rate_of_1(self):
+        now = timezone.now()
+        cache = {}
+        ExchangeRate.at_date(now, "GBP", "EUR", rate_cache=cache)
+        with self.assertNumQueries(0):
+            self.assertEqual(ExchangeRate.at_date(now, "GBP", "EUR", rate_cache=cache), 1)
