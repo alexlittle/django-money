@@ -86,20 +86,20 @@ class OnStatementTests(AccountTestBase):
 class GetBalanceTests(AccountTestBase):
     def test_returns_zero_when_no_transactions(self):
         account = self.make_account()
-        self.assertEqual(account.get_balance(), 0)
+        self.assertEqual(account.balance, 0)
 
     def test_sums_credit_minus_debit(self):
         account = self.make_account()
         self.make_transaction(account, credit=100)
         self.make_transaction(account, debit=40)
-        self.assertEqual(account.get_balance(), Decimal("60"))
+        self.assertEqual(account.balance, Decimal("60"))
 
     def test_only_includes_this_accounts_transactions(self):
         account = self.make_account(name="A")
         other = self.make_account(name="B")
         self.make_transaction(account, credit=100)
         self.make_transaction(other, credit=999)
-        self.assertEqual(account.get_balance(), Decimal("100"))
+        self.assertEqual(account.balance, Decimal("100"))
 
 
 class GetBalanceAtDateTests(AccountTestBase):

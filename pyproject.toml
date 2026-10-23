@@ -8,6 +8,7 @@ authors = [
 
 dependencies = [
     "django==6.1.2",
+    "django-debug-toolbar>=8.0.0",
     "django-mathfilters==1.0.0",
     "mysqlclient==2.3.0",
     "python-dateutil==2.9.0.post0",
@@ -34,7 +35,7 @@ style = "google"
 exclude = "tests|docs"
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "config.settings"
+DJANGO_SETTINGS_MODULE = "settings.dev"
 python_files = ["test_*.py"]
 
 [tool.coverage.run]

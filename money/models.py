@@ -1,5 +1,6 @@
 import datetime
 import os
+from functools import cached_property
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
@@ -60,14 +61,12 @@ class Account(models.Model):
             return trans_cred["credit__sum"]
         return trans_cred["credit__sum"] - trans_deb["debit__sum"]
 
-    def get_balance(self):
-        trans_cred = Transaction.objects.filter(account=self).aggregate(Sum("credit"))
-        trans_deb = Transaction.objects.filter(account=self).aggregate(Sum("debit"))
-
-        debit_sum = trans_deb["debit__sum"] if trans_deb["debit__sum"] else 0
-        credit_sum = trans_cred["credit__sum"] if trans_cred["credit__sum"] else 0
-
-        return credit_sum - debit_sum
+    @cached_property
+    def balance(self):
+        totals = Transaction.objects.filter(account=self).aggregate(
+            credit=Sum("credit"), debit=Sum("debit")
+        )
+        return (totals["credit"] or 0) - (totals["debit"] or 0)
 
     @staticmethod
     def get_balance_at_date(account, date, tag=None):
@@ -133,10 +132,10 @@ class Account(models.Model):
 
     def get_balance_base_currency(self):
         if self.currency == settings.BASE_CURRENCY:
-            return self.get_balance()
+            return self.balance
         else:
             rate = ExchangeRate.most_recent(settings.BASE_CURRENCY, self.currency)
-            return self.get_balance() / rate
+            return self.balance / rate
 
     @staticmethod
     def get_balance_base_currency_at_date(account, date, tag=None):
@@ -215,8 +214,8 @@ class Account(models.Model):
         accs = Account.objects.filter(active=True, type=type, currency=currency)
         total = 0
         for acc in accs:
-            if acc.get_balance():
-                total += acc.get_balance()
+            if acc.balance:
+                total += acc.balance
         return total
 
     @staticmethod

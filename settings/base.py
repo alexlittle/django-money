@@ -25,9 +25,9 @@ ADMINS = (("Alex Little", "consult@alexlittle.net"),)
 
 SITE_ID = 1
 
-ROOT_URLCONF = "config.urls"
+ROOT_URLCONF = "settings.urls"
 
-WSGI_APPLICATION = "config.wsgi.application"
+WSGI_APPLICATION = "settings.wsgi.application"
 
 
 INSTALLED_APPS = [
@@ -111,7 +111,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 #####################################################################
 # Authentication
-LOGIN_URL = urls.reverse_lazy("profile_login")
+LOGIN_URL = urls.reverse_lazy("admin:login")
 AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 #####################################################################
 
@@ -161,14 +161,3 @@ SESSION_COOKIE_NAME = "money"
 
 BASE_CURRENCY = "GBP"
 CURRENCIES_AVAILABLE = (("GBP", "GBP"), ("EUR", "EUR"))
-
-
-try:
-    from config.local_settings import *  # noqa: F403#NOSONAR
-except ImportError:
-    import warnings
-
-    warnings.warn(
-        "Using default settings. Add `config/local_settings.py` for custom settings.",
-        stacklevel=2,
-    )

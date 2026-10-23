@@ -14,3 +14,5 @@
 /env/
 /.coverage
 /.python-version
+/settings/dev.py
+/settings/apache.py
