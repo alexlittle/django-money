@@ -41,7 +41,7 @@ python_files = ["test_*.py"]
 [tool.coverage.run]
 relative_files = true
 source = ["."]
-omit = ["*/migrations/*", "*/tests/*", "*/settings*.py", "manage.py", "env/*", "docs/*"]
+omit = ["*/migrations/*", "*/tests/*", "*/settings*.py", "manage.py", ".venv/*", "docs/*"]
 
 [tool.ruff]
 line-length = 100
@@ -51,8 +51,10 @@ target-version = "py314"
 select = ["E", "F", "I", "UP", "B", "SIM"]
 
 [tool.ruff.lint.per-file-ignores]
-"config/settings.py" = ["F403", "F405"]
-"config/settings_ci.py" = ["F403", "F405"]
+"settings/dev.py" = ["F403", "F405"]
+"settings/ci.py" = ["F403", "F405"]
+"settings/apache.py" = ["F403", "F405"]
+"settings/base.py" = ["F403", "F405"]
 "money/reports/views/__init__py" = ["F403", "F405"]
 
 [dependency-groups]
