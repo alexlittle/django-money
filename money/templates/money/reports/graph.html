@@ -3,12 +3,14 @@
 
 {% block extra_scripts %}
 	<script src="{% static 'vendor/plotly-7.1.0.min.js' %}"></script>
+	<script src="{% static 'money/charts.js' %}" defer></script>
 {% endblock extra_scripts %}
 
 {% block content %}
 
 <h2>Graph</h2>
 
-<div class="graph">{{ chart|safe }}</div>
+{{ chart|json_script:"chart-balances" }}
+<div class="graph" data-chart="chart-balances"></div>
 
 {% endblock %}

@@ -309,37 +309,70 @@ class BaseCurrencyConversionTests(AccountTestBase):
         self.assertEqual(Account.get_paid_in_base_currency_at_date(account, now), Decimal("100"))
 
 
-class CompoundInterestTests(AccountTestBase):
-    def test_returns_zero_when_no_valuation_at_start_of_period(self):
-        account = self.make_account()
-        self.make_valuation(account, 150, date=timezone.now())
-        self.assertEqual(account.get_compound_interest(years=5), 0)
+class AnnualisedReturnTests(AccountTestBase):
+    def setUp(self):
+        self.now = timezone.now()
+        self.account = self.make_account(type="invest")
 
-    def test_returns_zero_when_no_valuation_at_end_of_period(self):
-        account = self.make_account()
-        self.assertEqual(account.get_compound_interest(years=5), 0)
+    def ago(self, days):
+        return self.now - timedelta(days=days)
 
-    def test_calculates_annualised_growth_rate(self):
-        account = self.make_account()
-        now = timezone.now()
-        self.make_valuation(account, 100, date=now - timedelta(days=730))
-        self.make_valuation(account, 121, date=now)
+    def test_none_when_no_valuation_at_start_of_period(self):
+        self.make_valuation(self.account, 150, date=self.now)
+        self.assertIsNone(self.account.get_annualised_return(years=5))
 
-        rate = account.get_compound_interest(years=2)
-        self.assertAlmostEqual(rate, 10.0, places=6)
+    def test_none_when_no_valuations(self):
+        self.assertIsNone(self.account.get_annualised_return(years=5))
 
-    def test_raises_zero_division_error_when_start_valuation_is_zero(self):
-        # Known bug: get_compound_interest() only checks the start/end
-        # Valuation rows for truthiness, not their `value`. A `value=0`
-        # row (e.g. an investment account before its first deposit) is
-        # truthy, so this reaches float(end) / float(0) and blows up.
-        account = self.make_account()
-        now = timezone.now()
-        self.make_valuation(account, 0, date=now - timedelta(days=730))
-        self.make_valuation(account, 100, date=now)
+    def test_none_when_start_and_end_are_the_same_valuation(self):
+        self.make_valuation(self.account, 150, date=self.ago(400))
+        self.assertIsNone(self.account.get_annualised_return(years=1))
 
-        with self.assertRaises(ZeroDivisionError):
-            account.get_compound_interest(years=2)
+    def test_growth_with_no_deposits(self):
+        self.make_valuation(self.account, 100, date=self.ago(730))
+        self.make_valuation(self.account, 121, date=self.now)
+        self.assertAlmostEqual(self.account.get_annualised_return(years=2), 10.0, places=4)
+
+    def test_deposits_are_not_counted_as_growth(self):
+        self.make_valuation(self.account, 1000, date=self.ago(730))
+        self.make_transaction(self.account, credit=1000, date=self.ago(365))
+        self.make_valuation(self.account, 2000, date=self.now)
+        self.assertAlmostEqual(self.account.get_annualised_return(years=2), 0.0, places=4)
+
+    def test_withdrawals_are_not_counted_as_losses(self):
+        self.make_valuation(self.account, 1000, date=self.ago(730))
+        self.make_transaction(self.account, debit=500, date=self.ago(365))
+        self.make_valuation(self.account, 500, date=self.now)
+        self.assertAlmostEqual(self.account.get_annualised_return(years=2), 0.0, places=4)
+
+    def test_zero_starting_valuation_does_not_raise(self):
+        self.make_valuation(self.account, 0, date=self.ago(730))
+        self.make_transaction(self.account, credit=100, date=self.ago(365))
+        self.make_valuation(self.account, 110, date=self.now)
+        self.assertAlmostEqual(self.account.get_annualised_return(years=2), 10.0, delta=0.2)
+
+    def test_transactions_outside_the_period_are_ignored(self):
+        self.make_transaction(self.account, credit=5000, date=self.ago(900))
+        self.make_valuation(self.account, 100, date=self.ago(730))
+        self.make_valuation(self.account, 121, date=self.now)
+        self.assertAlmostEqual(self.account.get_annualised_return(years=2), 10.0, places=4)
+
+    def test_returns_are_calculated_in_base_currency(self):
+        account = self.make_account(currency="EUR", type="invest", name="EUR fund")
+        self.make_rate("GBP", "EUR", "1", date=self.ago(800))
+        self.make_rate("GBP", "EUR", "2", date=self.ago(10))
+        self.make_valuation(account, 100, date=self.ago(730))
+        self.make_valuation(account, 100, date=self.now)
+        # 100 EUR = 100 GBP at the start but 50 GBP at the end
+        self.assertAlmostEqual(
+            account.get_annualised_return(years=2), (0.5**0.5 - 1) * 100, places=4
+        )
+
+    def test_none_when_no_solution(self):
+        # only money going out: no start valuation value and nothing at the end
+        self.make_valuation(self.account, 0, date=self.ago(730))
+        self.make_valuation(self.account, 0, date=self.now)
+        self.assertIsNone(self.account.get_annualised_return(years=2))
 
 
 class AggregateTotalsTests(AccountTestBase):

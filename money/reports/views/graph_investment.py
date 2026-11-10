@@ -43,13 +43,12 @@ class GraphInvestmentView(TemplateView):
 
             resp_account["valuations"] = valuations
             resp_account["chart"] = valuation_chart(valuations)
+            resp_account["chart_id"] = f"chart-{account.pk}"
 
-            resp_account["rate_10_year"] = account.get_compound_interest(10)
-            resp_account["rate_7_year"] = account.get_compound_interest(7)
-            resp_account["rate_5_year"] = account.get_compound_interest(5)
-            resp_account["rate_3_year"] = account.get_compound_interest(3)
-            resp_account["rate_2_year"] = account.get_compound_interest(2)
-            resp_account["rate_1_year"] = account.get_compound_interest(1)
+            resp_account["returns"] = [
+                {"years": years, "rate": account.get_annualised_return(years)}
+                for years in (1, 2, 3, 5, 7, 10)
+            ]
             accounts.append(resp_account)
 
         context["accounts"] = accounts

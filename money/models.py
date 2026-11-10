@@ -8,6 +8,8 @@ from django.db import models
 from django.db.models import F, Max, Sum
 from django.utils import timezone
 
+from money.finance import xirr
+
 PAYMENT_TYPES = (
     ("Card", "Card"),
     ("Transfer", "Transfer"),
@@ -268,17 +270,38 @@ class Account(models.Model):
             total += acc.get_monthly_valuation_base_currency()
         return total
 
-    def get_compound_interest(self, years):
-        start_date = datetime.datetime.now() - relativedelta(years=years)
-        start_acc_value = Account.get_valuation_at_date(self, start_date)
-        end_acc_value = Account.get_valuation_at_date(self, datetime.datetime.now())
-        if not start_acc_value or not end_acc_value:
-            return 0
-        start_valuation = start_acc_value.value
-        end_valuation = end_acc_value.value
+    def get_annualised_return(self, years):
+        """Return the annualised return (%) over the last ``years``, in the base currency.
 
-        rate = ((float(end_valuation) / float(start_valuation)) ** (1 / float(years)) - 1) * 100
-        return rate
+        This is the XIRR of the account: the starting valuation is treated as money put
+        in, each credit as a deposit and each debit as a withdrawal, and the latest
+        valuation as money taken out. Deposits and withdrawals therefore don't count as
+        growth. The period runs from the valuation in force at the start of the window to
+        the latest valuation, so the dates of those valuations are used rather than
+        today's. Returns None if there isn't enough history to work it out.
+        """
+        now = timezone.now()
+        start = Account.get_valuation_at_date(self, now - relativedelta(years=years))
+        end = Account.get_valuation_at_date(self, now)
+        if not start or not end or start.pk == end.pk:
+            return None
+
+        # a valuation is taken to be as at the end of its day
+        start_at = self._end_of_day(start.date)
+        end_at = self._end_of_day(end.date)
+
+        flows = [(start_at, -Account.get_valuation_base_currency_at_date(self, start_at))]
+        for t in Transaction.objects.filter(account=self, date__gte=start_at, date__lt=end_at):
+            flows.append((t.date, t.get_debit_in_base_currency() - t.get_credit_in_base_currency()))
+        flows.append((end_at, Account.get_valuation_base_currency_at_date(self, end_at)))
+
+        rate = xirr(flows)
+        return None if rate is None else rate * 100
+
+    @staticmethod
+    def _end_of_day(date):
+        midnight = datetime.datetime.combine(date, datetime.time.min)
+        return timezone.make_aware(midnight) + datetime.timedelta(days=1)
 
 
 class ExchangeRate(models.Model):

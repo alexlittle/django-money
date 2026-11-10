@@ -36,7 +36,13 @@ class SummaryGraphTests(SummaryGraphTestBase):
 
     def test_context_has_plotly_chart(self):
         response = self.client.get(reverse("money:graph"))
-        self.assertContains(response, "plotly-graph-div")
+        self.assertContains(response, 'id="chart-balances"')
+        self.assertContains(response, 'data-chart="chart-balances"')
+        self.assertContains(response, "charts.js")
+        self.assertEqual(
+            [t["name"] for t in response.context["chart"]["data"]],
+            ["Total", "Cash", "Investment", "Property"],
+        )
         self.assertContains(response, "plotly-7.1.0.min.js")
         self.assertNotContains(response, "google.com/jsapi")
 

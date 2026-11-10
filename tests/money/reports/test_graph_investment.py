@@ -43,7 +43,9 @@ class GraphInvestmentViewTests(GraphInvestmentViewTestBase):
 
         response = self.client.get(reverse("money:investment_graph"))
 
-        self.assertContains(response, "plotly-graph-div", count=2)
+        self.assertContains(response, 'data-chart="chart-', count=2)
+        self.assertContains(response, "charts.js")
+        self.assertNotContains(response, "|safe")
         self.assertContains(response, "plotly-7.1.0.min.js")
         self.assertNotContains(response, "google.com/jsapi")
 
