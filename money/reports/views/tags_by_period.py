@@ -16,7 +16,7 @@ class TagsByYearView(TemplateView):
         try:
             year = kwargs["year"]
         except KeyError:
-            year = 2022
+            year = datetime.date.today().year
 
         years = list(range(year, datetime.date.today().year + 1))
 
