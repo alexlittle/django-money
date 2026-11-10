@@ -34,6 +34,12 @@ class SummaryGraphTests(SummaryGraphTestBase):
         response = self.client.get(reverse("money:graph"))
         self.assertEqual(len(response.context["balances"]), 97)
 
+    def test_context_has_plotly_chart(self):
+        response = self.client.get(reverse("money:graph"))
+        self.assertContains(response, "plotly-graph-div")
+        self.assertContains(response, "plotly-7.1.0.min.js")
+        self.assertNotContains(response, "google.com/jsapi")
+
     def test_latest_balance_totals_cash_invest_and_property(self):
         cash = self.make_account(type="cash", name="Current")
         invest = self.make_account(type="invest", name="ISA")

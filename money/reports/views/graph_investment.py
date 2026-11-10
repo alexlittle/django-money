@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.views.generic import TemplateView
 
 from money.models import Account
+from money.reports.charts import valuation_chart
 
 
 class GraphInvestmentView(TemplateView):
@@ -41,6 +42,7 @@ class GraphInvestmentView(TemplateView):
                 valuations.append(valuation)
 
             resp_account["valuations"] = valuations
+            resp_account["chart"] = valuation_chart(valuations)
 
             resp_account["rate_10_year"] = account.get_compound_interest(10)
             resp_account["rate_7_year"] = account.get_compound_interest(7)

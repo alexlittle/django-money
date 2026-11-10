@@ -37,6 +37,16 @@ class GraphInvestmentViewTests(GraphInvestmentViewTestBase):
         self.assertEqual(len(accounts[0]["valuations"]), 97)
         self.assertEqual(accounts[0]["valuations"][-1]["value"], Decimal("500"))
 
+    def test_renders_a_plotly_chart_per_account(self):
+        self.make_account(name="ISA")
+        self.make_account(name="SIPP")
+
+        response = self.client.get(reverse("money:investment_graph"))
+
+        self.assertContains(response, "plotly-graph-div", count=2)
+        self.assertContains(response, "plotly-7.1.0.min.js")
+        self.assertNotContains(response, "google.com/jsapi")
+
     def test_excludes_inactive_investment_accounts(self):
         self.make_account(active=False)
 

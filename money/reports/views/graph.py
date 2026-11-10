@@ -7,6 +7,7 @@ from django.views.generic import TemplateView
 
 from money.models import Account
 from money.reports.balance_history import monthly_balances
+from money.reports.charts import balance_chart
 
 
 def _last_day_of_month(base_date, tz):
@@ -42,7 +43,9 @@ class SummaryGraph(TemplateView):
             ) + dateutil.relativedelta.relativedelta(months=1)
             month_ends.append((last_day, boundary))
 
-        context["balances"] = monthly_balances(
+        balances = monthly_balances(
             month_ends, tz, cash_accounts, invest_accounts, property_accounts
         )
+        context["balances"] = balances
+        context["chart"] = balance_chart(balances)
         return context
