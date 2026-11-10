@@ -16,11 +16,9 @@ class TagsByYearView(TemplateView):
         try:
             year = kwargs["year"]
         except KeyError:
-            year = datetime.datetime.today().year
+            year = 2022
 
-        years = []
-        for i in range(2022, datetime.datetime.today().year + 1, 1):
-            years.append(i)
+        years = list(range(year, datetime.date.today().year + 1))
 
         periods = AccountingPeriod.objects.filter(
             active=True, start_date__lte=timezone.now()
@@ -72,9 +70,7 @@ class TagsByPeriodView(TemplateView):
 
         period = get_object_or_404(AccountingPeriod, pk=period_id)
 
-        years = []
-        for i in range(2022, datetime.datetime.today().year + 1, 1):
-            years.append(i)
+        years = list(range(2022, datetime.date.today().year + 1))
 
         periods = AccountingPeriod.objects.filter(
             active=True, start_date__lte=timezone.now()

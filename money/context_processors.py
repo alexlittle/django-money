@@ -16,8 +16,5 @@ def get_accounting_periods(_request):
 
 
 def tags_menu(_request):
-    menu = []
     tags = Tag.objects.order_by().values("category").distinct()
-    for t in tags:
-        menu.append(t)
-    return {"TAG_MENU": menu}
+    return {"TAG_MENU": list(tags)}
