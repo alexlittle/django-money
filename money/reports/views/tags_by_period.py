@@ -7,6 +7,9 @@ from django.views.generic import TemplateView
 
 from money.models import AccountingPeriod, Tag, TransactionTag
 
+# Transaction tags were only started being added in this year
+FIRST_TAGGED_YEAR = 2022
+
 
 class TagsByYearView(TemplateView):
     template_name = "money/reports/tags_by_period.html"
@@ -18,7 +21,7 @@ class TagsByYearView(TemplateView):
         except KeyError:
             year = datetime.date.today().year
 
-        years = list(range(year, datetime.date.today().year + 1))
+        years = list(range(FIRST_TAGGED_YEAR, datetime.date.today().year + 1))
 
         periods = AccountingPeriod.objects.filter(
             active=True, start_date__lte=timezone.now()
@@ -70,7 +73,7 @@ class TagsByPeriodView(TemplateView):
 
         period = get_object_or_404(AccountingPeriod, pk=period_id)
 
-        years = list(range(2022, datetime.date.today().year + 1))
+        years = list(range(FIRST_TAGGED_YEAR, datetime.date.today().year + 1))
 
         periods = AccountingPeriod.objects.filter(
             active=True, start_date__lte=timezone.now()

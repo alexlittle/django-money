@@ -62,6 +62,11 @@ class TagsByYearViewTests(TagsByPeriodTestBase):
         current_year = timezone.now().year
         self.assertEqual(response.context["years"], list(range(2022, current_year + 1)))
 
+    def test_years_list_is_the_same_when_a_year_is_selected(self):
+        response = self.client.get(reverse("money:tags_by_year", args=[2024]))
+        current_year = timezone.now().year
+        self.assertEqual(response.context["years"], list(range(2022, current_year + 1)))
+
     def test_categories_and_tags_only_include_the_requested_year(self):
         account = self.make_account()
         tag = self.make_tag(name="Groceries", category="house")

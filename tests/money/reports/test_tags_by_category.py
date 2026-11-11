@@ -67,6 +67,35 @@ class TagsByCategoryViewTests(TagsByCategoryViewTestBase):
         self.assertEqual(totals[2024]["sum_out"], Decimal("40"))
         self.assertEqual(totals[2024]["balance"], Decimal("60"))
 
+    def test_totals_by_year_covers_every_year_from_2022_with_zeros_for_empty_ones(self):
+        account = self.make_account()
+        tz = timezone.get_default_timezone()
+        # older transactions must not extend the range
+        self.make_transaction(account, timezone.datetime(1998, 5, 1, tzinfo=tz))
+
+        response = self.client.get(reverse("money:tags_by_category", args=["house"]))
+
+        rows = response.context["totals_by_year"]
+        self.assertEqual([r["year"] for r in rows], list(range(timezone.now().year, 2021, -1)))
+        self.assertTrue(all(r["sum_in"] == 0 and r["sum_out"] == 0 for r in rows))
+
+    def test_transaction_with_two_tags_in_same_category_is_counted_once(self):
+        account = self.make_account()
+        tag1 = self.make_tag(name="Groceries", category="house")
+        tag2 = self.make_tag(name="Repairs", category="house")
+        now = timezone.now()
+        period = self.make_period(now - timezone.timedelta(days=30), now, title="Current")
+        transaction = self.make_transaction(account, now - timezone.timedelta(days=1), credit=100)
+        self.make_transaction_tag(transaction, tag1)
+        self.make_transaction_tag(transaction, tag2)
+
+        response = self.client.get(reverse("money:tags_by_category", args=["house"]))
+
+        totals = {row["year"]: row for row in response.context["totals_by_year"]}
+        self.assertEqual(totals[now.year]["sum_in"], Decimal("100"))
+        periods = {p["id"]: p for p in response.context["periods"]}
+        self.assertEqual(periods[period.id]["sum_in"], Decimal("100"))
+
     def test_periods_summarised_only_for_active_periods_that_have_started(self):
         account = self.make_account()
         tag = self.make_tag(category="house")

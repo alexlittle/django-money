@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.views.generic import TemplateView
 
 from money.models import AccountingPeriod, Tag, Transaction
+from money.reports.views.tags_by_period import FIRST_TAGGED_YEAR
 
 
 class TagsByCategoryView(TemplateView):
@@ -18,14 +19,13 @@ class TagsByCategoryView(TemplateView):
 
         context["totals_by_year"] = []
 
-        years = Transaction.objects.filter(transactiontag__tag__in=tags).values_list(
-            "date__year", flat=True
-        )
-        years = set(years)
+        current_year = timezone.now().year
 
-        for year in years:
+        for year in range(current_year, FIRST_TAGGED_YEAR - 1, -1):
             year_totals = {"year": year, "sum_in": 0, "sum_out": 0, "balance": 0}
-            transactions = Transaction.objects.filter(transactiontag__tag__in=tags, date__year=year)
+            transactions = Transaction.objects.filter(
+                transactiontag__tag__in=tags, date__year=year
+            ).distinct()
             for transaction in transactions:
                 year_totals["sum_in"] += transaction.get_credit_in_base_currency()
                 year_totals["sum_out"] += transaction.get_debit_in_base_currency()
@@ -42,7 +42,7 @@ class TagsByCategoryView(TemplateView):
             p = {"id": ap.id, "title": ap.title, "sum_in": 0, "sum_out": 0, "balance": 0}
             transactions = Transaction.objects.filter(
                 transactiontag__tag__in=tags, date__gte=ap.start_date, date__lte=ap.end_date
-            )
+            ).distinct()
             for transaction in transactions:
                 p["sum_in"] += transaction.get_credit_in_base_currency()
                 p["sum_out"] += transaction.get_debit_in_base_currency()
